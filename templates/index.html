@@ -28,70 +28,8 @@
     <h2>Autonomous life settings</h2>
 
     <!-- COLUM 1-->
-    <div style="width: 50%; float: left;">
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>
-            Autonomous state: 
-          </span> 
-        </div>
-        <div class="btn_wrapper">
-          <div class="dropdown">
-            <button class="dropbtn">State &#8711;</button>
-            <div class="dropdown-content">
-              <a href="#">Interactive</a>
-              <a href="#">Solitary</a>
-              <a href="#">Safeguard</a>
-              <a href="#">Disabled</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Toggle collision avoidance:</span>
-        </div>
-        <div class="btn_wrapper">
-          <button onclick="" class="toggle_btw">On</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Toggle breathing: </span>
-        </div>
-        <div class="btn_wrapper">
-          <button onclick="myFunction()" class="toggle_btw">On</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Toggle blinking: </span>
-        </div>
-        <div class="btn_wrapper">
-          <button onclick="myFunction()" class="toggle_btw">On</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Toggle basic awareness: </span>
-        </div>
-        <div class="btn_wrapper">
-          <button onclick="myFunction()" class="toggle_btw">On</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- COLUM 2-->
-    <div style="width: 50%; float: left;">
+    <!-- <div style="width: 50%; float: left;"> -->
+    <div style="width: 100%; float: left;">
       <div class="row">
         <div class="btn_label_wrapper">
           <span>
@@ -288,7 +226,7 @@
   <!-- Camera stream  -->
   <div class="camera">
     <h2>Camera</h2>
-    <img src="../static/imgs/umea_logo.png" style="width: 500px">
+    <img src="../static/imgs/umea_logo.png" style="max-width: 400px">
   </div>  
 
   <!-- Pepper  motion comands -->
@@ -420,7 +358,57 @@
 
   <!-- Footer -->
   <div class="footer">
-    <h2>Footer</h2>
+    <h2>Other</h2>
+
+    <div class="col_one_of_three">
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Toggle eye light</span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="myFunction()" class="toggle_btw">On</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Toggle ear light</span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="myFunction()" class="toggle_btw">On</button>
+        </div>
+      </div>
+      <br>
+
+    </div>
+
+    <div class="col_one_of_three">
+      <div class="row">
+        <button>Arbitrary action 1</button>
+      </div>
+      <br>
+
+      <div class="row">
+        <button>Arbitrary action 2</button>
+      </div>
+      <br>
+
+    </div>
+
+    <div class="col_one_of_three">
+      <div class="row">
+        <button>Arbitrary action 3</button>
+      </div>
+      <br>
+
+      <div class="row">
+        <button>Arbitrary action 4</button>
+      </div>
+      <br>
+
+    </div>
   </div>
 </div>
 

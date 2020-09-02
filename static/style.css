@@ -29,10 +29,10 @@ body {
 .grid-container {
   display: grid;
   grid-template-areas:
-    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings'
-    'pepper_speech pepper_speech autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings'
+    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings autonomous_life_settings pepper_motion pepper_motion'
+    'pepper_speech pepper_speech autonomous_life_settings autonomous_life_settings autonomous_life_settings pepper_motion pepper_motion'
     'pepper_speech pepper_speech camera camera camera pepper_motion pepper_motion'
-    'footer footer footer footer footer pepper_motion pepper_motion';
+    'footer footer footer footer footer footer footer';
   grid-gap: 10px;
   background-color: var(--pal_blue);
   padding: 10px;
@@ -131,8 +131,13 @@ body {
   text-align: left;
 }
 
-.speech_lbl_wrapper{
+.speech_lbl_wrapper {
   width: 50%;
   float: left;
   text-align: right;
+}
+
+.col_one_of_three {
+  width: 33%;
+  float: left;
 }
