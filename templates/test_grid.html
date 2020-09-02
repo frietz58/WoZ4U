@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+.left { grid-area: left;}
+.right { grid-area: right;}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'left right right';
+  grid-gap: 10px;
+  background-color: var(--pal_blue);
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  /* padding: 20px 0; */
+  /* font-size: 30px; */
+}
+
+.toggle_btw{
+  
+}
+
+.btn_wrapper {
+}
+
+.label_wrapper {
+  float:left;
+  width: 80%;
+  text-align: right;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-container">
+  <!-- Pepper  select -->
+  <div class="left" style="background-color: aquamarine;">
+    <h2>Select robot</h2>
+  </div>
+
+  <!-- Pepper  settings -->
+  <div class="right" style="background-color: blue;">
+    <h2>Autonomous life settings</h2>
+      <div class="row">
+        <div class="label_wrapper">
+          <span>Toggle collision avoidance:</span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="" class="toggle_btw">On</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label_wrapper">
+          <span>Toggle breathing: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="myFunction()" class="toggle_btw">On</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label_wrapper">
+          <span>Toggle blinking: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="myFunction()" class="toggle_btw">On</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label_wrapper">
+          <span>Toggle basic awareness: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button onclick="myFunction()" class="toggle_btw">On</button>
+        </div>
+      </div>
+
+    </div>
+
+</body>
+</html>
