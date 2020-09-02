@@ -30,6 +30,7 @@ body {
   display: grid;
   grid-template-areas:
     'pepper_select pepper_select autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings'
+    'pepper_speech pepper_speech autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings'
     'pepper_speech pepper_speech camera camera camera pepper_motion pepper_motion'
     'footer footer footer footer footer pepper_motion pepper_motion';
   grid-gap: 10px;
@@ -46,35 +47,35 @@ body {
 
 /* ============== DROPDOWN MENU ============== */ 
 .dropbtn {
-  /*
-    background-color: var(--pal_yellow);
-    color: white;
-    font-size: 16px;
-    border: none;
-    width: 60%;
-    */
-  }
-  
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-  
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
+/*
+  background-color: var(--pal_yellow);
+  color: white;
+  font-size: 16px;
+  border: none;
+  width: 60%;
+  */
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
 
 .dropdown-content a:hover {background-color: #ddd;}
 
@@ -135,5 +136,3 @@ body {
   float: left;
   text-align: right;
 }
-
-
