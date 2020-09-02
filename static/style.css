@@ -24,14 +24,14 @@ body {
 .pepper_speech { grid-area: pepper_speech; }
 .camera { grid-area: camera; }
 .pepper_motion { grid-area: pepper_motion; }
-.item5 { grid-area: footer; }
+.footer { grid-area: footer; }
 
 .grid-container {
   display: grid;
   grid-template-areas:
-    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings pepper_settings pepper_settings pepper_settings'
-    'pepper_speech camera camera camera camera camera pepper_motion'
-    'footer footer footer footer footer footer footer';
+    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings autonomous_life_settings'
+    'pepper_speech pepper_speech camera camera camera pepper_motion pepper_motion'
+    'footer footer footer footer footer pepper_motion pepper_motion';
   grid-gap: 10px;
   background-color: var(--pal_blue);
   padding: 10px;
@@ -40,24 +40,24 @@ body {
 .grid-container > div {
   background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  padding: 20px 0;
+  /* padding: 20px 0; */
   /* font-size: 30px; */
 }
 
 /* ============== DROPDOWN MENU ============== */ 
 .dropbtn {
+  /*
     background-color: var(--pal_yellow);
     color: white;
-    padding: 16px;
     font-size: 16px;
     border: none;
     width: 60%;
+    */
   }
   
   .dropdown {
     position: relative;
     display: inline-block;
-    width: 100%;
   }
   
   .dropdown-content {
@@ -87,13 +87,18 @@ body {
 
 /* ============== OTHER ============== */ 
 
+.row {
+  width: 100%;
+}
+
 .toggle_btw {
+  /*
   background-color: var(--pal_green);
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    width: 60%;
+  color: white;
+  font-size: 16px;
+  border: none;
+  width: 60%;
+  */
 }
 
 .toggle_btw:hover {
@@ -104,14 +109,31 @@ body {
   width: 50%; 
   float: left;
   text-align: right;
-  line-height: 51px; /* centers text vertically, DEPENDS ON HEIGHT OF NEIGHBOR DIV */
+  /* line-height: 51px; */ /* centers text vertically, DEPENDS ON HEIGHT OF NEIGHBOR DIV */
 }
 
 .btn_wrapper {
-  width: 50%; 
+  /* width: 50%; 
   float: left;
-  padding: 5px 0px;
-  /* text-align: left; */
+  padding: 0px 0px;
+  */
+  text-align: left;
+}
+
+.speech_btn:hover {
+  filter: brightness(90%);
+
+}
+
+
+.speech_btn_wrapper {
+  text-align: left;
+}
+
+.speech_lbl_wrapper{
+  width: 50%;
+  float: left;
+  text-align: right;
 }
 
 
