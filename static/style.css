@@ -1,0 +1,117 @@
+
+/* ============== Color palette ============== */ 
+/* https://coolors.co/264653-2a9d8f-e9c46a-f4a261-e76f51 */
+
+:root {
+  --pal_red:#E76F51;
+  --pal_orange: #F4A261;
+  --pal_yellow: #E9C46A;
+  --pal_green: #2A9D8F;
+  --pal_blue: #264653;
+}
+
+body {
+  font-family: Helvetica;
+}
+
+/* ============== GRID ============== */ 
+.pepper_select { 
+    grid-area: pepper_select;
+    justify-self: stretch; 
+}
+.autonomous_life_settings { grid-area: autonomous_life_settings;}
+.pepper_settings { grid-area: pepper_settings;}
+.pepper_speech { grid-area: pepper_speech; }
+.camera { grid-area: camera; }
+.pepper_motion { grid-area: pepper_motion; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings pepper_settings pepper_settings pepper_settings'
+    'pepper_speech camera camera camera camera camera pepper_motion'
+    'footer footer footer footer footer footer footer';
+  grid-gap: 10px;
+  background-color: var(--pal_blue);
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  /* font-size: 30px; */
+}
+
+/* ============== DROPDOWN MENU ============== */ 
+.dropbtn {
+    background-color: var(--pal_yellow);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    width: 60%;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {
+  /*background-color: #2196F3;*/
+  filter: brightness(90%);
+}
+
+/* ============== OTHER ============== */ 
+
+.toggle_btw {
+  background-color: var(--pal_green);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    width: 60%;
+}
+
+.toggle_btw:hover {
+  filter: brightness(90%);
+}
+
+.btn_label_wrapper {
+  width: 50%; 
+  float: left;
+  text-align: right;
+  line-height: 51px; /* centers text vertically, DEPENDS ON HEIGHT OF NEIGHBOR DIV */
+}
+
+.btn_wrapper {
+  width: 50%; 
+  float: left;
+  padding: 5px 0px;
+  /* text-align: left; */
+}
+
+

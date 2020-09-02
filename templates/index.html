@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../static/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="grid-container">
+  <!-- Pepper  select -->
+  <div class="pepper_select">
+    <h2>Select robot</h2>
+    <!-- IDEA HERE: Make it so that the value of the button takes the value of the selection-->
+      <div class="dropdown">
+        <button class="dropbtn">Robot</button>
+        <div class="dropdown-content">
+          <a href="#">192.168.10.1</a>
+          <a href="#">192.168.10.2</a>
+          <a href="#">192.168.10.3</a>
+        </div>
+      </div>
+  </div>
+
+  <!-- Pepper  settings -->
+  <div class="autonomous_life_settings">
+    <h2>Autonomous life settings</h2>
+    
+    <div>
+      <div class="btn_label_wrapper">
+        <span>
+          Autonomous state: 
+        </span> 
+      </div>
+      <div class="btn_wrapper">
+        <div class="dropdown">
+          <button class="dropbtn">State</button>
+          <div class="dropdown-content">
+            <a href="#">Interactive</a>
+            <a href="#">Solitary</a>
+            <a href="#">Safeguard</a>
+            <a href="#">Disabled</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <div>
+      <div class="btn_label_wrapper">
+        <span>Toggle collision avoidance:</span>
+      </div>
+      <div class="btn_wrapper">
+        <button onclick="" class="toggle_btw">On</button>
+      </div>
+    </div>
+    
+
+    
+    <div>
+      <div class="btn_label_wrapper">
+        <span>Toggle breathing: </span>
+      </div>
+      <div class="btn_wrapper">
+        <button onclick="myFunction()" class="toggle_btw">On</button>
+      </div>
+    </div>
+    
+
+    <div>
+      <div class="btn_label_wrapper">
+        <span>Toggle blinking: </span>
+      </div>
+      <div class="btn_wrapper">
+        <button onclick="myFunction()" class="toggle_btw">On</button>
+      </div>
+    </div>
+    <br>
+
+    <div>
+      <div class="btn_label_wrapper">
+        <span>Toggle basic awareness: </span>
+      </div>
+      <div class="btn_wrapper">
+        <button onclick="myFunction()" class="toggle_btw">On</button>
+      </div>
+    </div>
+    <br>
+  
+  </div>
+
+  <!-- Pepper  speech commands -->
+  <div class="pepper_speech">Pepper speech</div>
+
+  <!-- Camera stream  -->
+  <div class="camera">Camera</div>  
+
+  <!-- Pepper  motion comands -->
+  <div class="pepper_motion">Pepper motion</div>
+
+  <!-- Footer -->
+  <div class="item5">Footer</div>
+</div>
+
+</body>
+</html>
