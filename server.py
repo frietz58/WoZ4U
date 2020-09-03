@@ -8,8 +8,8 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route("/select_robot")
-def select_robot():
+@app.route("/connect_robot")
+def connect_robot():
     ip = request.args.get('ip', type=str)
     print(ip)
 
@@ -32,7 +32,21 @@ def set_autonomous_state():
     return {
        "status": "ok",
        "state": state 
-    }  
+    }
+
+@app.route("/toggle_setting")
+def toggle_setting():
+    setting = request.args.get('setting', type=str)
+    print(setting)
+
+    # TODO: toggle setting
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "setting": setting,
+        # TODO: return state
+    }
 
 
 if __name__ == '__main__':
