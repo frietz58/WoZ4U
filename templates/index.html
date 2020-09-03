@@ -6,13 +6,18 @@
 <script type=text/javascript>
   //function select_robot(robot_ip){
   function select_robot(){
-    robot_ip = document.getElementById("pepper_select_ips").value;
-    $.getJSON(
+    robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
+    $("#connect_btn").css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $.getJSON( // async call flask function with arguments
       "/select_robot?ip=" + robot_ip,
       function(data) {
         console.log(data);
       }
-    );
+    ).done(function() {
+      $("#connect_btn").css("background-color", "#2A9D8F"); // set color of button to green on success
+  }).fail(function() {
+    $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
+  })
   };
 </script>
 </head>
@@ -35,7 +40,7 @@
 
       <div class="row">
         <a href="#" onclick="select_robot()">
-          <button class="speech_btn">Connect</button>
+          <button class="speech_btn" id="connect_btn">Connect</button>
         </a>
       </div>
       <br>
@@ -266,7 +271,7 @@
         </tr>
         <tr>
           <td style="text-align: right;">Drive</td>
-          <td style="text-align: left;">: FN + Arrow keys/td>
+          <td style="text-align: left;">: FN + Arrow keys</td>
         </tr>
       </table>
     </div>

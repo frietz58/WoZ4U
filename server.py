@@ -1,4 +1,5 @@
 from flask import Flask, render_template, Response, url_for, request
+import time
 
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ def select_robot():
     print(ip)
 
     # TODO: Connect to pepper
+    time.sleep(2)
 
     return {
         "status": "ok",
