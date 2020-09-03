@@ -3,6 +3,18 @@
 <head>
 <link rel="stylesheet" type="text/css" href="../static/style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type=text/javascript>
+  //function select_robot(robot_ip){
+  function select_robot(){
+    robot_ip = document.getElementById("pepper_select_ips").value;
+    $.getJSON(
+      "/select_robot?ip=" + robot_ip,
+      function(data) {
+        console.log(data);
+      }
+    );
+  };
+</script>
 </head>
 <body>
 
@@ -10,16 +22,22 @@
   <!-- Pepper  select -->
   <div class="pepper_select">
     <h2>Select robot</h2>
-    <!-- IDEA HERE: Make it so that the value of the button takes the value of the selection-->
-      <div class="dropdown">
-        <button class="dropbtn">Robot &#8711;</button>
-        <div class="dropdown-content">
-          <a href="#">192.168.10.1</a>
-          <a href="#">192.168.10.2</a>
-          <a href="#">192.168.10.3</a>
-        </div>
-      </div>
+    <div class="row">
+      <select name="pepper_ips" id="pepper_select_ips">
+        <option value="192.168.10.1">192.168.10.1</option>
+        <option value="192.168.10.2">192.168.10.2</option>
+        <option value="192.168.10.3">192.168.10.3</option>
+      </select>
       <br>
+      <br>
+    </div>
+
+
+      <div class="row">
+        <a href="#" onclick="select_robot()">
+          <button class="speech_btn">Connect</button>
+        </a>
+      </div>
       <br>
   </div>
 
@@ -36,17 +54,17 @@
             Autonomous state: 
           </span> 
         </div>
+        
         <div class="btn_wrapper">
-          <div class="dropdown">
-            <button class="dropbtn">State &#8711;</button>
-            <div class="dropdown-content">
-              <a href="#">Interactive</a>
-              <a href="#">Solitary</a>
-              <a href="#">Safeguard</a>
-              <a href="#">Disabled</a>
-            </div>
-          </div>
+          <select name="pepper_ips" id="pepper_select_ips">
+            <option value="Interactive">Interactive</option>
+            <option value="Solitary">Solitary</option>
+            <option value="Safeguard">Safeguard</option>
+            <option value="Disabled">Disabled</option>
+          </select>
+          <button>Set</button>
         </div>
+
       </div>
       <br>
 
