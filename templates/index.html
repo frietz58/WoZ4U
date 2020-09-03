@@ -15,10 +15,26 @@
       }
     ).done(function() {
       $("#connect_btn").css("background-color", "#2A9D8F"); // set color of button to green on success
-  }).fail(function() {
-    $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
-  })
+    }).fail(function() {
+      $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
+    })
   };
+
+  function set_autonomous_state(){
+    state = document.getElementById("autonomous_states").value; // get ip from select option
+    $("#auto_state_set").css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $.getJSON( // async call flask function with arguments
+      "/set_autonomous_state?state=" + state,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#auto_state_set").css("background-color", "#2A9D8F"); // set color of button to green on success
+    }).fail(function() {
+      $("#auto_state_set").css("background-color", "#E76F51"); // set color of button to red on fail  });
+    })
+  }
+
 </script>
 </head>
 <body>
@@ -61,13 +77,15 @@
         </div>
         
         <div class="btn_wrapper">
-          <select name="pepper_ips" id="pepper_select_ips">
+          <select name="pepper_ips" id="autonomous_states">
             <option value="Interactive">Interactive</option>
             <option value="Solitary">Solitary</option>
             <option value="Safeguard">Safeguard</option>
             <option value="Disabled">Disabled</option>
           </select>
-          <button>Set</button>
+          <a href="#" onclick="set_autonomous_state()">
+            <button class="speech_btn" id="auto_state_set">Set</button>
+          </a>
         </div>
 
       </div>

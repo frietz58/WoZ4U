@@ -21,9 +21,18 @@ def select_robot():
         "ip": ip
         }
 
-@app.route("/pepper_vision")
-def pepper_vision():
-    return render_template("pepper_vision.html")
+@app.route("/set_autonomous_state")
+def set_autonomous_state():
+    state = request.args.get('state', type=str)
+    print(state)
+
+    # TODO: set State
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "state": state 
+    }  
 
 
 if __name__ == '__main__':
