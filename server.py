@@ -1,6 +1,9 @@
 from flask import Flask, render_template, Response, url_for, request
 import time
 
+import qi
+from naoqi import ALProxy
+
 
 app = Flask(__name__)
 
@@ -8,13 +11,27 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+def get_all_states():
+    # Gets the states of all UI elements on the interface
+    pass
+
 @app.route("/connect_robot")
 def connect_robot():
     ip = request.args.get('ip', type=str)
+    port = 9559
     print(ip)
 
-    # TODO: Connect to pepper
-    time.sleep(2)
+    global session
+    session = qi.Session()
+    
+    try:
+        session.connect(str("tcp://" + str(ip) + ":" + str(port)))
+    except RuntimeError, e:
+        print e
+
+    tts = session.service("ALTextToSpeech")
+    tts.setVolume(0.05)
+    tts.say("Connected")
 
     return {
         "status": "ok",
