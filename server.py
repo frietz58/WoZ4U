@@ -48,6 +48,21 @@ def toggle_setting():
         # TODO: return state
     }
 
+@app.route("/say_text")
+def say_text():
+    msg = request.args.get('msg', type=str)
+    print(msg)
+
+    # TODO: Say the text
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "text": msg,
+        # TODO: return state
+    }
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -64,6 +64,22 @@
     )
   }
 
+  function say_custom_text() {
+    let text = $("#custom_text_msg").val();
+    // $("#custom_text_btn").css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $("#custom_text_btn").html("...")
+    $("#custom_text_btn").addClass("example_c_ongoing")
+    $.getJSON(
+      "/say_text?msg=" + text,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#custom_text_btn").html("Say it")
+      $("#custom_text_btn").removeClass("example_c_ongoing")
+    })
+  }
+
 </script>
 </head>
 <body>
@@ -187,8 +203,8 @@
   <br>
     
     <div class="row">
-      <input type="text" placeholder="custom msg">
-      <button class="speech_btn">Say it!</button>
+      <input type="text" placeholder="custom msg" id="custom_text_msg">
+      <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">Say it!</button>
     </div>
     <br>
         
@@ -197,7 +213,7 @@
         <span>Voice cmd 1</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -207,7 +223,7 @@
         <span>Voice cmd 2</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -217,7 +233,7 @@
         <span>Voice cmd 3</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -227,7 +243,7 @@
         <span>Voice cmd 4</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -237,7 +253,7 @@
         <span>Voice cmd 5</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -247,7 +263,7 @@
         <span>Voice cmd 6</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -257,7 +273,7 @@
         <span>Voice cmd 7</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -267,7 +283,7 @@
         <span>Voice cmd 8</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -277,7 +293,7 @@
         <span>Voice cmd 9</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
     <br>
@@ -287,7 +303,7 @@
         <span>Voice cmd 10</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="speech_btn">Say it!</button>
+        <button class="example_c">Say it!</button>
       </div>
     </div>
 

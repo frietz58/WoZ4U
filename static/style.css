@@ -100,3 +100,30 @@ body {
   width: 33%;
   float: left;
 }
+
+/* ============== BUTTON ============== */ 
+.example_c {
+  color: #494949 !important;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: #ffffff;
+   /* padding: 20px; */
+  border: 2px solid #494949 !important;
+  display: inline-block;
+  /* transition: all 0.4s ease 0s; */
+  margin-left: 10px;
+}
+
+.example_c_ongoing {
+  color: #ffffff !important;
+  background: #2A9D8F;
+  border-color: #2A9D8F !important;
+}
+
+
+.example_c:hover {
+  color: #ffffff !important;
+  background: #2A9D8F;
+  border-color: #2A9D8F !important;
+  /* transition: all 0.4s ease 0s; */
+}
