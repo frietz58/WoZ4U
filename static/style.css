@@ -116,14 +116,26 @@ body {
 
 .example_c_ongoing {
   color: #ffffff !important;
-  background: #2A9D8F;
+  background: #F4A261 !important; 
+  border-color: #F4A261 !important;
+}
+
+.example_c_green {
+  color: #ffffff !important;
+  background: #2A9D8F !important; 
   border-color: #2A9D8F !important;
+}
+
+.example_c_red {
+  color: #ffffff !important;
+  background: #E76F51 !important;
+  border-color: #E76F51 !important;
 }
 
 
 .example_c:hover {
   color: #ffffff !important;
-  background: #2A9D8F;
-  border-color: #2A9D8F !important;
+  background: #264653 !important;
+  border-color: #264653 !important;
   /* transition: all 0.4s ease 0s; */
 }

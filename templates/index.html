@@ -8,19 +8,23 @@
   //function connect_robot(robot_ip){
   function connect_robot(){
     robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
-    $("#connect_btn").css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $("#connect_btn").html("..."); // set btn text to ...
+    $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/connect_robot?ip=" + robot_ip,
       function(data) {
         console.log(data);
       }
     ).done(function() {
-      $("#connect_btn").css("background-color", "#2A9D8F"); // set color of button to green on success
+      $("#connect_btn").html("Connected"); // set btn text to ...
+      $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#connect_btn").addClass("example_c_green"); // give class for succes
+
       // TODO: SET ALL STATE BUTTON ACCORINDGLY, NOT SIMPLE GREEN
-      $("#toggle_btn_collision_avoidance").css("background-color", "#2A9D8F");
-      $("#toggle_btn_breathing").css("background-color", "#2A9D8F");
-      $("#toggle_btn_blinking").css("background-color", "#2A9D8F");
-      $("#toggle_btn_basic_awareness").css("background-color", "#2A9D8F");
+      $("#toggle_btn_collision_avoidance").addClass("example_c_green"); // give class for succes
+      $("#toggle_btn_breathing").addClass("example_c_green"); // give class for succes
+      $("#toggle_btn_blinking").addClass("example_c_green"); // give class for succes
+      $("#toggle_btn_basic_awareness").addClass("example_c_green"); // give class for succes
     }).fail(function() {
       $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
     })
@@ -29,24 +33,29 @@
   function set_autonomous_state(){
     state = document.getElementById("autonomous_states").value;
     $("#auto_state_set").html("...")
-    $("#auto_state_set").css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $("#auto_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/set_autonomous_state?state=" + state,
       function(data) {
         console.log(data);
       }
     ).done(function() {
-      $("#auto_state_set").css("background-color", "#2A9D8F"); // set color of button to green on success
       $("#auto_state_set").html("Set")
+      $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#auto_state_set").addClass("example_c_green"); // give class for succes
     }).fail(function() {
-      $("#auto_state_set").css("background-color", "#E76F51"); // set color of button to red on fail  });
+      $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#auto_state_set").addClass("example_c_red"); // give class for succes
       $("#auto_state_set").html("FAIL")
 
     })
   }
 
   function toggle_setting(setting){
-    $("#toggle_btn_" + setting).css("background-color", "#E9C46A"); // set color of button to yellow during processing
+    $("#toggle_btn_" + setting).addClass("example_c_ongoing"); // give it the css class for "processing"
+    $("#toggle_btn_" + setting).removeClass("example_c_green"); // remove class for ongoing
+    $("#toggle_btn_" + setting).removeClass("example_c_red"); // remove class for ongoing
+
     let curr_state =  $("#toggle_btn_" + setting).html()
     $("#toggle_btn_" + setting).html("...")
     $.getJSON( // async call flask function with arguments
@@ -55,10 +64,13 @@
         console.log(data);
         if (curr_state == "On") {
           $("#toggle_btn_" + setting).html("Off")
-          $("#toggle_btn_" + setting).css("background-color", "#E76F51"); // set color of button to red
+          $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
+          $("#toggle_btn_" + setting).addClass("example_c_red"); // give class for succes
         } else {
           $("#toggle_btn_" + setting).html("On")
           $("#toggle_btn_" + setting).css("background-color", "#2A9D8F"); // set color of button to green
+          $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
+          $("#toggle_btn_" + setting).addClass("example_c_green"); // give class for succes
         }
       }
     )
@@ -118,7 +130,7 @@
 
       <div class="row">
         <a href="#" onclick="connect_robot()">
-          <button class="speech_btn" id="connect_btn">Connect</button>
+          <button class="example_c" id="connect_btn">Connect</button>
         </a>
       </div>
       <br>
@@ -146,7 +158,7 @@
             <option value="Disabled">Disabled</option>
           </select>
           <a href="#" onclick="set_autonomous_state()">
-            <button class="speech_btn" id="auto_state_set">Set</button>
+            <button class="example_c" id="auto_state_set">Set</button>
           </a>
         </div>
 
@@ -158,7 +170,7 @@
           <span>Toggle collision avoidance:</span>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_collision_avoidance" onclick="toggle_setting('collision_avoidance')" class="toggle_btw">On</button>
+          <button id="toggle_btn_collision_avoidance" onclick="toggle_setting('collision_avoidance')" class="example_c">On</button>
         </div>
       </div>
       <br>
@@ -168,7 +180,7 @@
           <span>Toggle breathing: </span>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_breathing" onclick="toggle_setting('breathing')" class="toggle_btw">On</button>
+          <button id="toggle_btn_breathing" onclick="toggle_setting('breathing')" class="example_c">On</button>
         </div>
       </div>
       <br>
@@ -178,7 +190,7 @@
           <span>Toggle blinking: </span>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_blinking" onclick="toggle_setting('blinking')" class="toggle_btw">On</button>
+          <button id="toggle_btn_blinking" onclick="toggle_setting('blinking')" class="example_c">On</button>
         </div>
       </div>
       <br>
@@ -188,7 +200,7 @@
           <span>Toggle basic awareness: </span>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_basic_awareness" onclick="toggle_setting('basic_awareness')" class="toggle_btw">On</button>
+          <button id="toggle_btn_basic_awareness" onclick="toggle_setting('basic_awareness')" class="example_c">On</button>
         </div>
       </div>
       <br>
