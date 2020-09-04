@@ -103,12 +103,12 @@ body {
 
 /* ============== BUTTON ============== */ 
 .example_c {
-  color: #494949 !important;
+  color: #494949;
   text-transform: uppercase;
   text-decoration: none;
   background: #ffffff;
    /* padding: 20px; */
-  border: 2px solid #494949 !important;
+  border: 2px solid #494949;
   display: inline-block;
   /* transition: all 0.4s ease 0s; */
   margin-left: 10px;
@@ -121,21 +121,21 @@ body {
 }
 
 .example_c_green {
-  color: #ffffff !important;
-  background: #2A9D8F !important; 
-  border-color: #2A9D8F !important;
+  color: #ffffff;
+  background: #2A9D8F; 
+  border-color: #2A9D8F;
 }
 
 .example_c_red {
-  color: #ffffff !important;
-  background: #E76F51 !important;
-  border-color: #E76F51 !important;
+  color: #ffffff;
+  background: #E76F51;
+  border-color: #E76F51;
 }
 
 
 .example_c:hover {
-  color: #ffffff !important;
-  background: #264653 !important;
-  border-color: #264653 !important;
+  color: #ffffff;
+  background: #264653;
+  border-color: #264653;
   /* transition: all 0.4s ease 0s; */
 }
