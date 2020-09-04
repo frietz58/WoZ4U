@@ -59,9 +59,24 @@ def say_text():
     return {
        "status": "ok",
        "text": msg,
-        # TODO: return state
     }
 
+@app.route("/say_predefined_text")
+def say_predefined_text():
+    index = request.args.get('index', type=str)
+    print(index)
+
+    # TODO: Read the text from file
+    msg = "some predefined text"
+
+    # TODO: Say the text
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "index": index, 
+       "text": msg,
+    }
 
 
 if __name__ == '__main__':
