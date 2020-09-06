@@ -14,6 +14,10 @@ body {
   font-family: Helvetica;
 }
 
+a {
+  text-decoration: none; /* to remove the underscore they tiny underscore if we have a element that just contains a button*/
+}
+
 /* ============== GRID ============== */ 
 .pepper_select { 
     grid-area: pepper_select;
@@ -25,13 +29,14 @@ body {
 .camera { grid-area: camera; }
 .pepper_motion { grid-area: pepper_motion; }
 .footer { grid-area: footer; }
+.tablet { grid-area: tablet;}
 
 .grid-container {
   display: grid;
   grid-template-areas:
-    'pepper_select pepper_select autonomous_life_settings autonomous_life_settings autonomous_life_settings pepper_motion pepper_motion'
-    'pepper_speech pepper_speech autonomous_life_settings autonomous_life_settings autonomous_life_settings pepper_motion pepper_motion'
-    'pepper_speech pepper_speech camera camera camera pepper_motion pepper_motion'
+    'pepper_select tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
+    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
+    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
     'footer footer footer footer footer footer footer';
   grid-gap: 10px;
   background-color: var(--pal_blue);
