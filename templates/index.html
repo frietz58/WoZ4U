@@ -122,6 +122,26 @@
     })
   }
 
+  function show_img(index) {
+    // go over all buttons and send reset styling, there can always be only one image that is being displayed
+    for (i = 0; i < 10; i++) {
+      $("#image_"+i).html("SHOW")
+      $("#image_"+i).removeClass("example_c_green")
+
+    }
+    $.getJSON(
+      "/show_img?index=" + index,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#image_"+index).html("BEING SHOWN"); // set btn text
+      $("#image_"+index).addClass("example_c_green")
+    })
+    
+
+  }
+
 </script>
 </head>
 <body>
@@ -161,13 +181,107 @@
   <div class="tablet">
     <h2>Pepper Tablet</h2>
 
-    <!-- 
     <div class="row">
-      <input type="text" placeholder="custom msg" id="custom_text_msg">
-      <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+      <div class="speech_lbl_wrapper">
+        <span>Image 0</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_0" onclick="show_img(0)">SHOW</button>
+      </div>
     </div>
     <br>
-    -->
+
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 1</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_1" onclick="show_img(1)">SHOW</button>
+      </div>
+    </div>
+    <br>
+    
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 2</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_2" onclick="show_img(2)">SHOW</button>
+      </div>
+    </div>
+    <br>
+    
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 3</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_3" onclick="show_img(3)">SHOW</button>
+      </div>
+    </div>
+    <br>   
+
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 4</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_4" onclick="show_img(4)">SHOW</button>
+      </div>
+    </div>
+    <br>
+        
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 5</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_5" onclick="show_img(5)">SHOW</button>
+      </div>
+    </div>
+    <br>
+        
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 6</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_6" onclick="show_img(6)">SHOW</button>
+      </div>
+    </div>
+    <br>
+        
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 7</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_7" onclick="show_img(7)">SHOW</button>
+      </div>
+    </div>
+    <br>
+        
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 8</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_8" onclick="show_img(8)">SHOW</button>
+      </div>
+    </div>
+    <br>
+        
+    <div class="row">
+      <div class="speech_lbl_wrapper">
+        <span>Image 9</span>
+      </div>
+      <div class="speech_btn_wrapper">
+        <button class="example_c" id="image_9" onclick="show_img(9)">SHOW</button>
+      </div>
+    </div>
+    <br>
+    
+    
   </div>
 
 

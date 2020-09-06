@@ -112,6 +112,23 @@ def play_audio():
        "audio_file": path,
     }
 
+@app.route("/show_img")
+def show_img():
+    index = request.args.get('index', type=str)
+    print(index)
+
+    # TODO: get img file path
+    path = "some/img/path"
+
+    # TODO: show the image on peppers tablet
+
+    return {
+        # TODO: Return the prev index so that we can reset the button
+       "status": "ok",
+       "index": index, 
+       "image": path,
+    }
+
 
 if __name__ == '__main__':
     app.run(debug=True)
