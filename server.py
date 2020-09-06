@@ -12,7 +12,7 @@ def index():
     return render_template('index.html')
 
 def get_all_states():
-    # Gets the states of all UI elements on the interface
+
     pass
 
 @app.route("/connect_robot")
@@ -30,13 +30,13 @@ def connect_robot():
         print e
 
     tts = session.service("ALTextToSpeech")
-    tts.setVolume(0.05)
+    tts.setVolume(0.02)
     tts.say("Connected")
 
     return {
         "status": "ok",
         "ip": ip
-        }
+    }
 
 @app.route("/set_autonomous_state")
 def set_autonomous_state():
@@ -93,6 +93,23 @@ def say_predefined_text():
        "status": "ok",
        "index": index, 
        "text": msg,
+    }
+
+@app.route("/play_audio")
+def play_audio():
+    index = request.args.get('index', type=str)
+    print(index)
+
+    # TODO: get audio file path
+    path = "some/path"
+
+    # TODO: Play the audio
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "index": index, 
+       "audio_file": path,
     }
 
 

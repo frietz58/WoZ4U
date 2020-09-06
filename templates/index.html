@@ -93,7 +93,6 @@
   }
 
   function say_predefined_text(index) {
-
     $("#voice_cmd_"+index).html("..."); // set btn text to ...
     $("#voice_cmd_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
     
@@ -108,9 +107,33 @@
     })
   }
 
+  function play_audio(index) {
+    $("#audio_file_"+index).html("..."); // set btn text to ...
+    $("#audio_file_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
+    
+    $.getJSON(
+      "/play_audio?index=" + index,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#audio_file_"+index).html("PLAY")
+      $("#audio_file_"+index).removeClass("example_c_ongoing")
+    })
+  }
+
 </script>
 </head>
 <body>
+
+<div class="row" style="margin-bottom: 8px;">
+  <a href="#" target="_blank">
+    <button class="example_c" id="view_camera_stream">Pepper Camera stream</button>
+  </a>
+  <a href="#" target="_blank">
+    <button class="example_c" id="listen_microphone">Pepper Microphone</button>
+  </a>
+</div>
 
 <div class="grid-container">
   <!-- Pepper  select -->
@@ -134,6 +157,19 @@
       </div>
       <br>
   </div>
+
+  <div class="tablet">
+    <h2>Pepper Tablet</h2>
+
+    <!-- 
+    <div class="row">
+      <input type="text" placeholder="custom msg" id="custom_text_msg">
+      <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+    </div>
+    <br>
+    -->
+  </div>
+
 
   <!-- Pepper  settings -->
   <div class="autonomous_life_settings">
@@ -235,114 +271,225 @@
       <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
     </div>
     <br>
+    <!-- COLUM 1: SPEECH-->
+    <div style="width: 50%; float: left;">
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 0</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_0" onclick="say_predefined_text(0)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+          
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 1</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_1" onclick="say_predefined_text(1)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 2</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_2" onclick="say_predefined_text(2)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 3</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_3" onclick="say_predefined_text(3)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 4</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_4" onclick="say_predefined_text(4)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 5</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_5" onclick="say_predefined_text(5)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 6</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_6" onclick="say_predefined_text(6)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 7</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_7" onclick="say_predefined_text(7)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 8</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_8" onclick="say_predefined_text(8)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Voice cmd 9</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" id="voice_cmd_9" onclick="say_predefined_text(9)">SAY IT</button>
+        </div>
+      </div>
+      <br>
+
+  </div>
+
+  <!-- COLUM 2: Audio files-->
+  <div style="width: 50%; float: left;">
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 0</span>
+        <span>Audio 0</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_0" onclick="say_predefined_text(0)">SAY IT</button>
+        <button class="example_c" id="audio_file_0" onclick="play_audio(0)">PLAY</button>
       </div>
     </div>
     <br>
         
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 1</span>
+        <span>Audio 1</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_1" onclick="say_predefined_text(1)">SAY IT</button>
+        <button class="example_c" id="audio_file_1" onclick="play_audio(1)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 2</span>
+        <span>Audio 2</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_2" onclick="say_predefined_text(2)">SAY IT</button>
+        <button class="example_c" id="audio_file_2" onclick="play_audio(2)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 3</span>
+        <span>Audio 3</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_3" onclick="say_predefined_text(3)">SAY IT</button>
+        <button class="example_c" id="audio_file_3" onclick="play_audio(3)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 4</span>
+        <span>Audio 4</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_4" onclick="say_predefined_text(4)">SAY IT</button>
+        <button class="example_c" id="audio_file_4" onclick="play_audio(4)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 5</span>
+        <span>Audio 5</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_5" onclick="say_predefined_text(5)">SAY IT</button>
+        <button class="example_c" id="audio_file_5" onclick="play_audio(5)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 6</span>
+        <span>Audio 6</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_6" onclick="say_predefined_text(6)">SAY IT</button>
+        <button class="example_c" id="audio_file_6" onclick="play_audio(6)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 7</span>
+        <span>Audio 7</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_7" onclick="say_predefined_text(7)">SAY IT</button>
+        <button class="example_c" id="audio_file_7" onclick="play_audio(7)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 8</span>
+        <span>Audio 8</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_8" onclick="say_predefined_text(8)">SAY IT</button>
+        <button class="example_c" id="audio_file_8" onclick="play_audio(8)">PLAY</button>
       </div>
     </div>
     <br>
 
     <div class="row">
       <div class="speech_lbl_wrapper">
-        <span>Voice cmd 9</span>
+        <span>Audio 9</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="voice_cmd_9" onclick="say_predefined_text(9)">SAY IT</button>
+        <button class="example_c" id="audio_file_9" onclick="play_audio(9)">PLAY</button>
       </div>
     </div>
     <br>
 
   </div>
 
+  </div>
+
   <!-- Camera stream  -->
+  <!-- 
   <div class="camera">
     <h2>Camera</h2>
     <img src="../static/imgs/umea_logo.png" style="max-width: 400px">
   </div>  
+  -->
 
   <!-- Pepper  motion comands -->
   <div class="pepper_motion">
