@@ -138,22 +138,11 @@
       $("#image_"+index).html("BEING SHOWN"); // set btn text
       $("#image_"+index).addClass("example_c_green")
     })
-    
-
   }
 
 </script>
 </head>
 <body>
-
-<div class="row" style="margin-bottom: 8px;">
-  <a href="#" target="_blank">
-    <button class="example_c" id="view_camera_stream">Pepper Camera stream</button>
-  </a>
-  <a href="#" target="_blank">
-    <button class="example_c" id="listen_microphone">Pepper Microphone</button>
-  </a>
-</div>
 
 <div class="grid-container">
   <!-- Pepper  select -->
@@ -176,6 +165,28 @@
         </a>
       </div>
       <br>
+
+      <div class="row">
+        <a href="#" target="_blank">
+          <button class="example_c" id="view_camera_stream">Show camera stream</button>
+        </a>
+      </div>
+      <br>
+
+      <div class="row">
+        <a href="#" target="_blank">
+          <button class="example_c" id="listen_microphone">Play microphone stream</button>
+        </a>
+      </div>
+      <br>
+
+      <div class="row">
+        <a href="#" target="_blank">
+          <button class="example_c" id="listen_microphone">Show tablet view</button>
+        </a>
+      </div>
+      <br>
+
   </div>
 
   <div class="tablet">
@@ -610,9 +621,7 @@
     <h2>Pepper motion</h2>
 
     <div class="row">
-      <img src="../static/imgs/arrow_keys.png" style="max-height:150px;">
-      <br>
-      <br>
+      <img src="../static/imgs/arrow_keys.png" style="max-height:80px;">
       <table style="width:100%">
         <tr>
           <td style="text-align: right;">Move head</td>
