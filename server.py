@@ -29,13 +29,47 @@ def connect_robot():
     except RuntimeError, e:
         print e
 
-    tts = session.service("ALTextToSpeech")
-    tts.setVolume(0.02)
-    tts.say("Connected")
+    tts_srv = session.service("ALTextToSpeech")
+    tts_srv.setVolume(0.02)
+    tts_srv.say("Connected")
+
+    al_srv = session.service("ALAutonomousLife")
+    autonomous_state = al_srv.getState()
+
+    ba_srv = session.service("ALBasicAwareness")
+    engagement_state = ba_srv.getEngagementMode()
+    ba_runnning = ba_srv.isRunning()
+
+    ab_srv = session.service("ALAutonomousBlinking")
+    blinking_enabled = ab_srv.isEnabled()
+
+    motion_srv = session.service("ALMotion")
+    orthogonal_collision = motion_srv.getOrthogonalSecurityDistance()
+    orthogonal_collision = round(orthogonal_collision, 3)
+
+    tangential_collision = motion_srv.getTangentialSecurityDistance()
+    tangential_collision = round(tangential_collision, 3)
+
+    body_breathing = motion_srv.getBreathEnabled("Body")
+    legs_breathing = motion_srv.getBreathEnabled("Legs")
+    arms_breathing = motion_srv.getBreathEnabled("Arms")
+    head_breathing = motion_srv.getBreathEnabled("Head")
+
+
 
     return {
         "status": "ok",
-        "ip": ip
+        "ip": ip,
+        "autonomous_state": autonomous_state,
+        "engagement_state": engagement_state,
+        "ba_is_running": ba_runnning,
+        "blinking_enabled": blinking_enabled,
+        "orthogonal_collision": orthogonal_collision,
+        "tangential_collision": tangential_collision,
+        "head_breathing": head_breathing,
+        "arms_breathing": arms_breathing,
+        "body_breathing": body_breathing,
+        "legs_breathing": legs_breathing
     }
 
 @app.route("/set_autonomous_state")
@@ -127,6 +161,19 @@ def show_img():
        "status": "ok",
        "index": index, 
        "image": path,
+    }
+
+@app.route("/set_engagement_state")
+def set_engagement_state():
+    state = request.args.get('state', type=str)
+    print(state)
+
+    # TODO: set State
+    time.sleep(2)
+
+    return {
+       "status": "ok",
+       "engagement_state": state 
     }
 
 

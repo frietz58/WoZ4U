@@ -5,6 +5,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type=text/javascript>
 
+  //applies styling to a toggle button, depending on the value it should take
+  function toggle_btn_handle(identifier, bool, onText="ON", offText="OFF"){
+    if (bool) {
+      $(identifier).addClass("example_c_green");
+      $(identifier).html(onText)
+    } else {
+      $(identifier).addClass("example_c_red");
+      $(identifier).html(offText)
+
+    }
+  }
+
   //function connect_robot(robot_ip){
   function connect_robot(){
     robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
@@ -14,17 +26,23 @@
       "/connect_robot?ip=" + robot_ip,
       function(data) {
         console.log(data);
-      }
-    ).done(function() {
+
+        $("#tangential_collision").val(data["tangential_collision"] + "m")
+        $("#orthogonal_collision").val(data["orthogonal_collision"] + "m")
+
+        $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
+
+        toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
+        toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
+        toggle_btn_handle("#toggle_head_breathing", data["head_breathing"])
+        toggle_btn_handle("#toggle_arms_breathing", data["arms_breathing"])
+        toggle_btn_handle("#toggle_body_breathing", data["body_breathing"])
+        toggle_btn_handle("#toggle_legs_breathing", data["legs_breathing"])
+
+      }).done(function() {
       $("#connect_btn").html("Connected"); // set btn text to ...
       $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#connect_btn").addClass("example_c_green"); // give class for succes
-
-      // TODO: SET ALL STATE BUTTON ACCORINDGLY, NOT SIMPLE GREEN
-      $("#toggle_btn_collision_avoidance").addClass("example_c_green"); // give class for succes
-      $("#toggle_btn_breathing").addClass("example_c_green"); // give class for succes
-      $("#toggle_btn_blinking").addClass("example_c_green"); // give class for succes
-      $("#toggle_btn_basic_awareness").addClass("example_c_green"); // give class for succes
     }).fail(function() {
       $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
     })
@@ -38,8 +56,7 @@
       "/set_autonomous_state?state=" + state,
       function(data) {
         console.log(data);
-      }
-    ).done(function() {
+    }).done(function() {
       $("#auto_state_set").html("Set")
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_green"); // give class for succes
@@ -137,6 +154,27 @@
     ).done(function() {
       $("#image_"+index).html("BEING SHOWN"); // set btn text
       $("#image_"+index).addClass("example_c_green")
+    })
+  }
+
+  function set_engagement_state() {
+    state = document.getElementById("engagement_states").value;
+    $("#engagement_state_set").html("...")
+    $("#engagement_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
+    $.getJSON( // async call flask function with arguments
+      "/set_engagement_state?state=" + state,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#engagement_state_set").html("Set")
+      $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#engagement_state_set").addClass("example_c_green"); // give class for succes
+    }).fail(function() {
+      $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#engagement_state_set").addClass("example_c_red"); // give class for succes
+      $("#engagement_state_set").html("FAIL")
+
     })
   }
 
@@ -292,7 +330,6 @@
     </div>
     <br>
     
-    
   </div>
 
 
@@ -327,21 +364,19 @@
 
       <div class="row">
         <div class="btn_label_wrapper">
-          <span>Toggle collision avoidance:</span>
+          <span>Tangential collision avoidance:</span>
         </div>
-        <div class="btn_wrapper">
-          <button id="toggle_btn_collision_avoidance" onclick="toggle_setting('collision_avoidance')" class="example_c">On</button>
-        </div>
+        <input type="text" placeholder="1" id="tangential_collision" style="width: 30%; float: left; margin-left: 10px;">
+        <button id="tangential_collision_set" onclick="" class="example_c">Set</button>
       </div>
       <br>
 
       <div class="row">
         <div class="btn_label_wrapper">
-          <span>Toggle breathing: </span>
+          <span>Orthogonal collision avoidance:</span>
         </div>
-        <div class="btn_wrapper">
-          <button id="toggle_btn_breathing" onclick="toggle_setting('breathing')" class="example_c">On</button>
-        </div>
+        <input type="text" placeholder="1" id="orthogonal_collision" style="width: 30%; float: left; margin-left: 10px;">
+        <button id="orthogonal_collision_set" onclick="" class="example_c">Set</button>
       </div>
       <br>
 
@@ -361,6 +396,67 @@
         </div>
         <div class="btn_wrapper">
           <button id="toggle_btn_basic_awareness" onclick="toggle_setting('basic_awareness')" class="example_c">On</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row" style="position: relative;">
+        <div class="btn_label_wrapper">
+          <span>
+            Engagement mode: 
+          </span> 
+        </div>
+        
+        <div class="btn_wrapper">
+          <select name="engagement_state" id="engagement_states">
+            <option value="Unengaged">Unengaged</option>
+            <option value="SemiEngaged">SemiEngaged</option>
+            <option value="FullyEngaged">FullyEngaged</option>
+          </select>
+          <a href="#" onclick="set_engagement_state()">
+            <button class="example_c" id="engagement_state_set">Set</button>
+          </a>
+        </div>
+
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Head breathing: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button id="toggle_head_breathing" onclick="toggle_setting('head_breathing')" class="example_c">On</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Arms breathing: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button id="toggle_arms_breathing" onclick="toggle_setting('arms_breathing')" class="example_c">On</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Body breathing: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button id="toggle_body_breathing" onclick="toggle_setting('body_breathing')" class="example_c">On</button>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="btn_label_wrapper">
+          <span>Legs breathing: </span>
+        </div>
+        <div class="btn_wrapper">
+          <button id="toggle_legs_breathing" onclick="toggle_setting('legs_breathing')" class="example_c">On</button>
         </div>
       </div>
       <br>
