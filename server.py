@@ -40,6 +40,9 @@ def connect_robot():
     tts_srv = qi_session.service("ALTextToSpeech")
     tts_srv.setVolume(0.02)
     tts_srv.say("Connected")
+    volume_lvl = tts_srv.getVolume()
+    voice_pitch = tts_srv.getParameter("pitchShift")
+    voice_pitch = round(voice_pitch, 3)
 
     al_srv = qi_session.service("ALAutonomousLife")
     autonomous_state = al_srv.getState()
@@ -75,7 +78,9 @@ def connect_robot():
         "head_breathing": head_breathing,
         "arms_breathing": arms_breathing,
         "body_breathing": body_breathing,
-        "legs_breathing": legs_breathing
+        "legs_breathing": legs_breathing,
+        "volume_lvl": volume_lvl,
+        "voice_pitch": voice_pitch
     }
 
 @app.route("/set_autonomous_state")

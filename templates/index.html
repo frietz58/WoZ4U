@@ -33,10 +33,13 @@
       function(data) {
         console.log(data);
 
-        $("#tangential_collision").val(data["tangential_collision"] + "m")
-        $("#orthogonal_collision").val(data["orthogonal_collision"] + "m")
+        $("#tangential_collision").val(data["tangential_collision"] + " m")
+        $("#orthogonal_collision").val(data["orthogonal_collision"] + " m")
 
         $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
+
+        $("#volume_slider").val(data["volume_lvl"])
+        $("#voice_pitch").val(data["voice_pitch"])
 
         toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
         toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
@@ -50,6 +53,7 @@
       $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#connect_btn").addClass("example_c_green"); // give class for succes
     }).fail(function() {
+      $("#connect_btn").html("FAILURE"); // set btn text to ...
       $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
     })
   };
@@ -482,19 +486,22 @@
 
     <div class="row">
       <span>Adjust volume</span>
-      <input type="range" min="1" max="100" value="50">
+      <input id="volume_slider" type="range" min="1" max="100" value="50">
     </div>
     <br>
 
     <div class="row">
-      <span>Set speed</span>
+      <span>Voice speed</span>
       <input type="number" value="1">
+      <button id="voice_speed_btn" onclick="" class="example_c">Set</button>
+
     </div>
     <br>
 
     <div class="row">
-      <span>Set pitch</span>
-      <input type="number" value="1">
+      <span>Voice pitch</span>
+      <input id="voice_pitch" type="number" value="1">
+      <button id="voice_pitch_btn" onclick="" class="example_c">Set</button>
   </div>
   <br>
     
@@ -513,7 +520,13 @@
           <span>{{msg["short"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_{{loop.index0}}" onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">SAY IT</button>
+          <button 
+            title='{{msg["full_text"]}}'
+            class="example_c" 
+            id="voice_cmd_{{loop.index0}}" 
+            onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">
+            SAY IT
+          </button>
         </div>
       </div>
       <br>
