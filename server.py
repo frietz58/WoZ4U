@@ -1,6 +1,8 @@
 from flask import Flask, render_template, Response, url_for, request
 import time
 
+import yaml
+
 import qi
 from naoqi import ALProxy
 
@@ -9,41 +11,47 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-def get_all_states():
-
-    pass
+    try:
+        global qi_session
+        if qi_session is not None:
+            print("Reconnect")
+            global ip
+            print(ip)
+            return render_template("index.html", config=config, reconnect=True, reconnect_ip=ip)
+    except NameError:
+        return render_template('index.html', config=config, reconnect=False)
 
 @app.route("/connect_robot")
 def connect_robot():
+    global ip
     ip = request.args.get('ip', type=str)
     port = 9559
-    print(ip)
 
-    global session
-    session = qi.Session()
+
+    global qi_session
+    qi_session = qi.Session()
     
     try:
-        session.connect(str("tcp://" + str(ip) + ":" + str(port)))
-    except RuntimeError, e:
-        print e
-
-    tts_srv = session.service("ALTextToSpeech")
+        qi_session.connect(str("tcp://" + str(ip) + ":" + str(port)))
+    except RuntimeError as msg:
+        print("qi session connect error!:")
+        print(msg)
+    
+    tts_srv = qi_session.service("ALTextToSpeech")
     tts_srv.setVolume(0.02)
     tts_srv.say("Connected")
 
-    al_srv = session.service("ALAutonomousLife")
+    al_srv = qi_session.service("ALAutonomousLife")
     autonomous_state = al_srv.getState()
 
-    ba_srv = session.service("ALBasicAwareness")
+    ba_srv = qi_session.service("ALBasicAwareness")
     engagement_state = ba_srv.getEngagementMode()
     ba_runnning = ba_srv.isRunning()
 
-    ab_srv = session.service("ALAutonomousBlinking")
+    ab_srv = qi_session.service("ALAutonomousBlinking")
     blinking_enabled = ab_srv.isEnabled()
 
-    motion_srv = session.service("ALMotion")
+    motion_srv = qi_session.service("ALMotion")
     orthogonal_collision = motion_srv.getOrthogonalSecurityDistance()
     orthogonal_collision = round(orthogonal_collision, 3)
 
@@ -54,8 +62,6 @@ def connect_robot():
     legs_breathing = motion_srv.getBreathEnabled("Legs")
     arms_breathing = motion_srv.getBreathEnabled("Arms")
     head_breathing = motion_srv.getBreathEnabled("Head")
-
-
 
     return {
         "status": "ok",
@@ -170,5 +176,4 @@ if __name__ == '__main__':
         config = yaml.safe_load(f)
         print(config)
 
-    app.secret_key = 'very-secret-key'
     app.run(debug=True)

@@ -13,13 +13,19 @@
     } else {
       $(identifier).addClass("example_c_red");
       $(identifier).html(offText)
-
     }
   }
 
   //function connect_robot(robot_ip){
-  function connect_robot(){
-    robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
+  function connect_robot(ip=""){
+    if (ip=="") {
+      console.log("no ip given: " + ip)
+      robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
+    } else {
+      console.log("ip given: " + ip)
+      robot_ip = ip
+    }
+
     $("#connect_btn").html("..."); // set btn text to ...
     $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
@@ -203,7 +209,7 @@
 
 
       <div class="row">
-        <a href="#" onclick="connect_robot()">
+        <a href="#" onclick="connect_robot(ip='')">
           <button class="example_c" id="connect_btn">Connect</button>
         </a>
       </div>
