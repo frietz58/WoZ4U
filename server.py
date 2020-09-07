@@ -105,27 +105,11 @@ def say_text():
     print(msg)
 
     # TODO: Say the text
-    time.sleep(2)
+    tts = qi_session.service("ALTextToSpeech")
+    tts.say(msg)
 
     return {
        "status": "ok",
-       "text": msg,
-    }
-
-@app.route("/say_predefined_text")
-def say_predefined_text():
-    index = request.args.get('index', type=str)
-    print(index)
-
-    # TODO: Read the text from file
-    msg = "some predefined text"
-
-    # TODO: Say the text
-    time.sleep(2)
-
-    return {
-       "status": "ok",
-       "index": index, 
        "text": msg,
     }
 
@@ -178,4 +162,13 @@ def set_engagement_state():
 
 
 if __name__ == '__main__':
+
+    global config
+    with open("config.yaml", "r") as f:
+        # The FullLoader parameter handles the conversion from YAML
+        # scalar values to Python the dictionary format
+        config = yaml.safe_load(f)
+        print(config)
+
+    app.secret_key = 'very-secret-key'
     app.run(debug=True)

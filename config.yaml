@@ -1,0 +1,33 @@
+messages: 
+  # Avoid special characters in messages, this can break the backend.
+  # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
+  -
+    short: Title # This will be shown in the GUI
+    full_text: This is the complete message that we want the pepper robot to say. # This will be the spoken message
+  -
+    short: Hello
+    full_text: Hello, Im pepper.
+  -
+    short: Insult
+    full_text: Here are the test results; you are a horrible person.
+  -
+    short: Blah
+    full_text: blah blah blah blah blah, blah blah blah, blah.
+  -
+    short: Voice cmd 4
+    full_text: This is voice command 4
+  -
+    short: Voice cmd 5
+    full_text: This is voice command 5
+  -
+    short: Voice cmd 6
+    full_text: This is voice command 6
+  -
+    short: Voice cmd 7
+    full_text: This is voice command 7
+  -
+    short: Voice cmd 8
+    full_text: This is voice command 8
+  -
+    short: Voice cmd 9
+    full_text: This is voice command 9

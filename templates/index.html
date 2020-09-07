@@ -109,12 +109,12 @@
     })
   }
 
-  function say_predefined_text(index) {
+  function say_predefined_text(text, index) {
     $("#voice_cmd_"+index).html("..."); // set btn text to ...
     $("#voice_cmd_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
     
     $.getJSON(
-      "/say_predefined_text?index=" + index,
+      "/say_text?msg=" + text,
       function(data) {
         console.log(data);
       }
@@ -177,6 +177,11 @@
 
     })
   }
+
+  {% if reconnect %}
+    console.log("reconnecting")
+    connect_robot(ip='{{reconnect_ip}}')
+  {% endif %}
 
 </script>
 </head>
@@ -495,105 +500,19 @@
     <!-- COLUM 1: SPEECH-->
     <div style="width: 50%; float: left;">
 
+      {%for msg in config["messages"]%}
+      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
       <div class="row">
         <div class="speech_lbl_wrapper">
-          <span>Voice cmd 0</span>
+          <span>{{msg["short"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_0" onclick="say_predefined_text(0)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-          
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 1</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_1" onclick="say_predefined_text(1)">SAY IT</button>
+          <button class="example_c" id="voice_cmd_{{loop.index0}}" onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">SAY IT</button>
         </div>
       </div>
       <br>
 
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 2</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_2" onclick="say_predefined_text(2)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 3</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_3" onclick="say_predefined_text(3)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 4</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_4" onclick="say_predefined_text(4)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 5</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_5" onclick="say_predefined_text(5)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 6</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_6" onclick="say_predefined_text(6)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 7</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_7" onclick="say_predefined_text(7)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 8</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_8" onclick="say_predefined_text(8)">SAY IT</button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Voice cmd 9</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c" id="voice_cmd_9" onclick="say_predefined_text(9)">SAY IT</button>
-        </div>
-      </div>
-      <br>
+      {%endfor%} 
 
   </div>
 
