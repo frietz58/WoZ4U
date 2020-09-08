@@ -31,3 +31,37 @@ messages:
   -
     short: Voice cmd 9
     full_text: This is voice command 9
+
+image_root_location: "/static/imgs/"
+
+images:
+  - 
+    title: Landscape
+    file_name: "landscape.jpg"
+  -
+    title: Umea logo
+    file_name: "umea_logo.png"
+  -
+    title: Arrow keys
+    file_name: "arrow_keys.png"
+  - 
+    title: Landscape 1
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 2
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 3
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 4
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 5
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 6
+    file_name: "landscape.jpg"
+  - 
+    title: Landscape 7
+    file_name: "landscape.jpg"

@@ -149,11 +149,14 @@ def show_img(img_name):
 
     return {
        "status": "ok",
+       "img_name": img_name
     }
 
 @app.route("/show_img_page/<img_name>")
 def show_img_page(img_name):
     img_path = "/static/imgs/" + img_name
+    img_path = config["image_root_location"] + img_name
+    print(img_path)
     return render_template("img_view.html", img_src=img_path)  # WORKS! 
 
 @app.route("/set_engagement_state")

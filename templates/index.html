@@ -245,105 +245,22 @@
   <div class="tablet">
     <h2>Pepper Tablet</h2>
 
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 0</span>
+    {%for img in config["images"]%}
+      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>{{img["title"]}}</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button class="example_c" 
+          id="image_{{loop.index0}}" 
+          onclick="show_img('{{img["file_name"]}}', {{loop.index0}})">SHOW</button>
+        </div>
       </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_0" onclick="show_img('example.jpg', 0)">SHOW</button>
-      </div>
-    </div>
-    <br>
+      <br>
 
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 1</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_1" onclick="show_img('arrow_keys.png', 1)">SHOW</button>
-      </div>
-    </div>
-    <br>
-    
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 2</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_2" onclick="show_img('umea_logo.png', 2)">SHOW</button>
-      </div>
-    </div>
-    <br>
-    
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 3</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_3" onclick="show_img(3)">SHOW</button>
-      </div>
-    </div>
-    <br>   
+      {%endfor%} 
 
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 4</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_4" onclick="show_img(4)">SHOW</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 5</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_5" onclick="show_img(5)">SHOW</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 6</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_6" onclick="show_img(6)">SHOW</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 7</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_7" onclick="show_img(7)">SHOW</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 8</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_8" onclick="show_img(8)">SHOW</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Image 9</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_9" onclick="show_img(9)">SHOW</button>
-      </div>
-    </div>
-    <br>
     
   </div>
 
