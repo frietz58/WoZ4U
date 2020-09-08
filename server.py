@@ -142,19 +142,19 @@ def play_audio():
 
 @app.route("/show_img/<img_name>")
 def show_img(img_name):
-    
-    # TODO: get img file path
-    path = "https://apod.nasa.gov/apod/image/2009/StMiMo_Hudson_960.jpg"
-
     tablet_srv = qi_session.service("ALTabletService")
-    # tablet_srv.showImage(path)
-    tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/example.jpg")
+    # very hacky, but this is the only way I got this to work... 
+    # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
+    tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + img_name)
 
     return {
-        # TODO: Return the prev index so that we can reset the button
        "status": "ok",
-       "image": path,
     }
+
+@app.route("/show_img_page/<img_name>")
+def show_img_page(img_name):
+    img_path = "/static/imgs/" + img_name
+    return render_template("img_view.html", img_src=img_path)  # WORKS! 
 
 @app.route("/set_engagement_state")
 def set_engagement_state():
@@ -175,24 +175,6 @@ def serve_image(img_name):
         return send_from_directory("static/imgs/", filename=img_name)
     except FileNotFoundError:
         abort(404)
-
-@app.route("/show_img_page/<img_name>")
-def show_img_page(img_name):
-    img_path = "/static/imgs/" + img_name
-
-    print(img_path)
-
-    time.sleep(2)
-
-    # tablet_srv = qi_session.service("ALTabletService")
-    # tablet_srv.showImage("http://130.239.183.189:5000/static/imgs/example.jpg")
-    # tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/example.jpg")
-
-    return render_template("img_view.html", img_src=img_path)  # WORKS! 
-
-    #return {
-    #    "status": "ok"
-    #}
 
 if __name__ == '__main__':
 
