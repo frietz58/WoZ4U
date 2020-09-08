@@ -150,21 +150,38 @@
   }
 
   function show_img(img_name, index) {
-    // go over all buttons and send reset styling, there can always be only one image that is being displayed
-    for (i = 0; i < 10; i++) {
-      $("#image_"+i).html("SHOW")
-      $("#image_"+i).removeClass("example_c_green")
-    }
-    
-    $.getJSON(
+    //depending on the state of the button, we either want to show or hide an image...
+    if ($("#image_btn_"+index).text() == "SHOW") {
+      // show the image on the tablet
+      $.getJSON(
       "/show_img/" + img_name,
       function(data) {
         console.log(data);
+      }).done(function() {
+        $("#image_btn_"+index).html("HIDE"); // set btn text
+        $("#image_btn_"+index).addClass("example_c_ongoing")
+      })
+    } else {
+      // clear the image from the tablet
+      $.getJSON(
+        "/clear_tablet",
+        function(data) {
+          console.log(data)
+        }).done(function() {
+          $("#image_btn_"+index).html("SHOW"); // set btn text
+          $("#image_btn_"+index).removeClass("example_c_ongoing")
+      })
+    }
+    
+
+    // iter over all buttons and reset style, except for the one that is currently being displayed
+    // https://stackoverflow.com/questions/5376431/wildcards-in-jquery-selectors
+    $("[id^=image_btn_]").each(function( iter_ind ) {
+      if (iter_ind != index) {
+        $("#image_btn_" + iter_ind).html("SHOW")
+        $("#image_btn_" + iter_ind).removeClass("example_c_ongoing")
       }
-    ).done(function() {
-      $("#image_"+index).html("BEING SHOWN"); // set btn text
-      $("#image_"+index).addClass("example_c_green")
-    })
+  });
   }
 
   function set_engagement_state() {
@@ -253,7 +270,7 @@
         </div>
         <div class="speech_btn_wrapper">
           <button class="example_c" 
-          id="image_{{loop.index0}}" 
+          id="image_btn_{{loop.index0}}" 
           onclick="show_img('{{img["file_name"]}}', {{loop.index0}})">SHOW</button>
         </div>
       </div>

@@ -159,6 +159,15 @@ def show_img_page(img_name):
     print(img_path)
     return render_template("img_view.html", img_src=img_path)  # WORKS! 
 
+@app.route("/clear_tablet")
+def clear_tablet():
+        tablet_srv = qi_session.service("ALTabletService")
+        tablet_srv.hideWebview()
+
+        return {
+            "status": "cleaned tablet webview"
+        }
+
 @app.route("/set_engagement_state")
 def set_engagement_state():
     state = request.args.get('state', type=str)
@@ -172,12 +181,6 @@ def set_engagement_state():
        "engagement_state": state 
     }
 
-@app.route("/serve_image/<img_name>")
-def serve_image(img_name):
-    try:
-        return send_from_directory("static/imgs/", filename=img_name)
-    except FileNotFoundError:
-        abort(404)
 
 if __name__ == '__main__':
 
