@@ -149,15 +149,31 @@
     })
   }
 
-  function show_img(index) {
+  function show_img(img_name, index) {
+    console.log("Show img")
     // go over all buttons and send reset styling, there can always be only one image that is being displayed
     for (i = 0; i < 10; i++) {
       $("#image_"+i).html("SHOW")
       $("#image_"+i).removeClass("example_c_green")
-
     }
+
+    /*
     $.getJSON(
-      "/show_img?index=" + index,
+      "/show_img_page/" + img_name,
+      function(data) {
+        console.log(data);
+      }
+    ).done(function() {
+      $("#image_"+index).html("BEING SHOWN"); // set btn text
+      $("#image_"+index).addClass("example_c_green")
+    })
+    */
+
+    //window.location.href = "/serve_image/" + img_name;
+
+    
+    $.getJSON(
+      "/show_img/" + img_name,
       function(data) {
         console.log(data);
       }
@@ -250,7 +266,7 @@
         <span>Image 0</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_0" onclick="show_img(0)">SHOW</button>
+        <button class="example_c" id="image_0" onclick="show_img('example.jpg', 0)">SHOW</button>
       </div>
     </div>
     <br>
@@ -260,7 +276,7 @@
         <span>Image 1</span>
       </div>
       <div class="speech_btn_wrapper">
-        <button class="example_c" id="image_1" onclick="show_img(1)">SHOW</button>
+        <button class="example_c" id="image_1" onclick="show_img('example.jpg', 1)">SHOW</button>
       </div>
     </div>
     <br>

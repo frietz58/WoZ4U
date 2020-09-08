@@ -1,7 +1,7 @@
-from flask import Flask, render_template, Response, url_for, request
-import time
+from flask import Flask, render_template, Response, url_for, request, send_file, abort, send_from_directory
 
 import yaml
+import time
 
 import qi
 from naoqi import ALProxy
@@ -115,7 +115,6 @@ def say_text():
     msg = request.args.get('msg', type=str)
     print(msg)
 
-    # TODO: Say the text
     tts = qi_session.service("ALTextToSpeech")
     tts.say(msg)
 
@@ -141,20 +140,19 @@ def play_audio():
        "audio_file": path,
     }
 
-@app.route("/show_img")
-def show_img():
-    index = request.args.get('index', type=str)
-    print(index)
-
+@app.route("/show_img/<img_name>")
+def show_img(img_name):
+    
     # TODO: get img file path
-    path = "some/img/path"
+    path = "https://apod.nasa.gov/apod/image/2009/StMiMo_Hudson_960.jpg"
 
-    # TODO: show the image on peppers tablet
+    tablet_srv = qi_session.service("ALTabletService")
+    # tablet_srv.showImage(path)
+    tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/example.jpg")
 
     return {
         # TODO: Return the prev index so that we can reset the button
        "status": "ok",
-       "index": index, 
        "image": path,
     }
 
@@ -171,6 +169,30 @@ def set_engagement_state():
        "engagement_state": state 
     }
 
+@app.route("/serve_image/<img_name>")
+def serve_image(img_name):
+    try:
+        return send_from_directory("static/imgs/", filename=img_name)
+    except FileNotFoundError:
+        abort(404)
+
+@app.route("/show_img_page/<img_name>")
+def show_img_page(img_name):
+    img_path = "/static/imgs/" + img_name
+
+    print(img_path)
+
+    time.sleep(2)
+
+    # tablet_srv = qi_session.service("ALTabletService")
+    # tablet_srv.showImage("http://130.239.183.189:5000/static/imgs/example.jpg")
+    # tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/example.jpg")
+
+    return render_template("img_view.html", img_src=img_path)  # WORKS! 
+
+    #return {
+    #    "status": "ok"
+    #}
 
 if __name__ == '__main__':
 
@@ -181,4 +203,4 @@ if __name__ == '__main__':
         config = yaml.safe_load(f)
         print(config)
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
