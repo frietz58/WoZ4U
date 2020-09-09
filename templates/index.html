@@ -43,10 +43,10 @@
 
         toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
         toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
-        toggle_btn_handle("#toggle_head_breathing", data["head_breathing"])
-        toggle_btn_handle("#toggle_arms_breathing", data["arms_breathing"])
-        toggle_btn_handle("#toggle_body_breathing", data["body_breathing"])
-        toggle_btn_handle("#toggle_legs_breathing", data["legs_breathing"])
+        toggle_btn_handle("#toggle_btn_head_breathing", data["head_breathing"])
+        toggle_btn_handle("#toggle_btn_arms_breathing", data["arms_breathing"])
+        toggle_btn_handle("#toggle_btn_body_breathing", data["body_breathing"])
+        toggle_btn_handle("#toggle_btn_legs_breathing", data["legs_breathing"])
 
       }).done(function() {
       $("#connect_btn").html("Connected"); // set btn text to ...
@@ -84,17 +84,21 @@
     $("#toggle_btn_" + setting).removeClass("example_c_red"); // remove class for ongoing
 
     let curr_state =  $("#toggle_btn_" + setting).html()
+
     $("#toggle_btn_" + setting).html("...")
+
+    let url = "/toggle_setting?setting=" + setting + "&curr_state=" + curr_state
+    console.log(url)
     $.getJSON( // async call flask function with arguments
-      "/toggle_setting?setting=" + setting,
+      url,
       function(data) {
         console.log(data);
-        if (curr_state == "On") {
+        if (curr_state == "ON") {
           $("#toggle_btn_" + setting).html("Off")
           $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
           $("#toggle_btn_" + setting).addClass("example_c_red"); // give class for succes
         } else {
-          $("#toggle_btn_" + setting).html("On")
+          $("#toggle_btn_" + setting).html("ON")
           $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
           $("#toggle_btn_" + setting).addClass("example_c_green"); // give class for succes
         }
@@ -342,7 +346,13 @@
           </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_blinking" onclick="toggle_setting('blinking')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_blinking" 
+          onclick="toggle_setting('blinking')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>
@@ -354,7 +364,13 @@
           </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_btn_basic_awareness" onclick="toggle_setting('basic_awareness')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_basic_awareness" 
+          onclick="toggle_setting('basic_awareness')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>
@@ -384,10 +400,16 @@
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
             Head breathing: 
-          </span>
+          </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_head_breathing" onclick="toggle_setting('head_breathing')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_head_breathing" 
+          onclick="toggle_setting('head_breathing')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>
@@ -399,7 +421,13 @@
           </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_arms_breathing" onclick="toggle_setting('arms_breathing')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_arms_breathing" 
+          onclick="toggle_setting('arms_breathing')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>
@@ -411,7 +439,13 @@
           </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_body_breathing" onclick="toggle_setting('body_breathing')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_body_breathing" 
+          onclick="toggle_setting('body_breathing')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>
@@ -423,7 +457,13 @@
           </a>
         </div>
         <div class="btn_wrapper">
-          <button id="toggle_legs_breathing" onclick="toggle_setting('legs_breathing')" class="example_c">On</button>
+          <button 
+          id="toggle_btn_legs_breathing" 
+          onclick="toggle_setting('legs_breathing')" 
+          class="example_c"
+          title="Current status">
+          On
+        </button>
         </div>
       </div>
       <br>

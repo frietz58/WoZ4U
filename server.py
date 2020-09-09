@@ -101,7 +101,39 @@ def set_autonomous_state():
 @app.route("/toggle_setting")
 def toggle_setting():
     setting = request.args.get('setting', type=str)
+    curr_state = request.args.get('curr_state', type=str)
+
     print(setting)
+    print(curr_state)
+
+    motion_srv = qi_session.service("ALMotion")
+    ab_srv = qi_session.service("ALAutonomousBlinking")
+
+    if setting == "blinking":
+        if curr_state == "ON":
+            ab_srv.setEnabled(False)
+        else:
+            ab_srv.setEnabled(True)
+    elif setting == "head_breathing":
+        if curr_state == "ON":
+            motion_srv.setBreathEnabled("Head", False)
+        else:
+            motion_srv.setBreathEnabled("Head", True)
+    elif setting == "arms_breathing":
+        if curr_state == "ON":
+            motion_srv.setBreathEnabled("Arms", False)
+        else:
+            motion_srv.setBreathEnabled("Arms", True)
+    elif setting == "body_breathing":
+        if curr_state == "ON":
+            motion_srv.setBreathEnabled("Body", False)
+        else:
+            motion_srv.setBreathEnabled("Body", True)
+    elif setting == "legs_breathing":
+            if curr_state == "ON":
+                motion_srv.setBreathEnabled("Legs", False)
+            else:
+                motion_srv.setBreathEnabled("Legs", True)
 
     # TODO: toggle setting
     time.sleep(2)
