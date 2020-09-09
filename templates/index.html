@@ -39,7 +39,7 @@
         $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
 
         $("#volume_slider").val(data["volume_lvl"] * 100)
-        $("#voice_pitch").val(data["voice_pitch"])
+        $("#voice_pitch_input").val(data["voice_pitch"] * 100)
 
         toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
         toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
@@ -211,8 +211,13 @@
     })
   }
 
-  function setVolume() {
-    target_volume = $("#volume_slider").val()
+  function setVolume(reset=false) {
+    if (reset) {
+      target_val = 10
+      $("#volume_slider").val(10)
+    } else {
+      target_volume = $("#volume_slider").val()
+    }
     $.getJSON(
       "/adjust_volume?volume=" + target_volume,
       function(data){
@@ -269,6 +274,32 @@
       $("#custom_gesture_btn").html("EXECUTE")
       $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
     });
+  }
+
+  function set_tts_param(param, reset=false) {
+    if (param == "speed") {
+      if (reset){
+        target_val = 100
+        $("#voice_speed_input").val(100);
+      } else {
+        target_val = $("#voice_speed_input").val();
+
+      }
+    } else {
+      if (reset) {
+        target_val = 100
+        $("#voice_pitch_input").val(100);
+
+      } else {
+        target_val = $("#voice_pitch_input").val();
+      }
+    }
+    $.getJSON(
+      "/set_tts_param?param=" + param + "&value=" + target_val,
+      function(data){
+        console.log(data);
+      }
+    );
   }
 
 
@@ -536,6 +567,52 @@
   <div class="pepper_speech">
     <h2>Pepper speech</h2>
 
+    <table style="width:100%">
+      <tr>
+        <td>Adjust volume</td>
+        <td>
+          <input 
+          id="volume_slider" 
+          type="range" 
+          min="1" max="100" value="50" 
+          onchange="setVolume()"
+          style="width: 100%;">
+        </td>
+        <td>
+          <button class="example_c" onclick="setVolume('speed', reset=true)">RESET</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Voice speed</td>
+        <td>
+          <input 
+          id="voice_speed_input" 
+          type="range" 
+          min="50" max="400" value="100" 
+          onchange="set_tts_param('speed')"
+          style="width: 100%;">
+        </td>
+        <td>
+          <button class="example_c" onclick="set_tts_param('speed', reset=true)">RESET</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Voice pitch</td>
+        <td>
+          <input 
+          id="voice_pitch_input" 
+          type="range" 
+          min="1" max="400" value="100" 
+          onchange="set_tts_param('pitchShift')" 
+          style="width: 100%;">
+        </td>
+        <td>
+          <button class="example_c" onclick="set_tts_param('pitchShift', reset=true)">RESET</button>
+        </td>
+      </tr>
+    </table>
+
+    <!--
     <div class="row">
       <span>Adjust volume</span>
       <input id="volume_slider" type="range" min="1" max="100" value="50" onchange="setVolume()">
@@ -544,18 +621,19 @@
 
     <div class="row">
       <span>Voice speed</span>
-      <input type="number" value="1">
-      <button id="voice_speed_btn" onclick="" class="example_c">Set</button>
+      <input id="voice_speed_input" type="range" min="50" max="400" value="100" onchange="set_tts_param('speed')">
+      <button class="example_c" onclick="set_tts_param('speed', reset=true)">RESET</button>
 
     </div>
     <br>
 
     <div class="row">
       <span>Voice pitch</span>
-      <input id="voice_pitch" type="number" value="1">
-      <button id="voice_pitch_btn" onclick="" class="example_c">Set</button>
-  </div>
-  <br>
+      <input id="voice_pitch_input" type="range" min="1" max="400" value="100" onchange="set_tts_param('pitchShift')">
+      <button class="example_c" onclick="set_tts_param('pitchShift', reset=true)">RESET</button>
+    </div>
+    <br>
+    -->
     
     <!-- COLUMN 1: SPEECH-->
     <div style="width: 50%; float: left;">
@@ -664,7 +742,7 @@
         </div>
         <div class="speech_btn_wrapper">
           <button 
-            title="{{anim_speech['string']}}"
+            title="{{anim_speech['tooltip']}}"
             class="example_c" 
             id="anim_speech_btn_{{loop.index0}}" 
             onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
@@ -691,7 +769,7 @@
           </div>
           <div class="speech_btn_wrapper">
             <button 
-              title="{{gesture['string']}}"
+              title="{{gesture['tooltip']}}"
               class="example_c" 
               id="gesture_btn_{{loop.index0}}" 
               onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">

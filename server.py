@@ -314,6 +314,30 @@ def exec_custom_gesture():
         "gesture": gesture
     }
 
+@app.route("/set_tts_param")
+def set_tts_param():
+    param = request.args.get("param", type=str)
+    value = request.args.get("value", type=float)
+
+    print(value)
+
+    tts_srv = qi_session.service("ALTextToSpeech")
+
+    if param == "pitchShift":
+        value = value // 100.0  # for pitch shift we need to adjust the range... nice consistency in the naoqi api >.<
+        print(value)
+        tts_srv.setParameter(param, value)
+    else:
+        tts_srv.setParameter(param, value)
+
+    return {
+            "status": "ok",
+            "param": param,
+            "value": value
+        }
+
+
+
 
 if __name__ == '__main__':
 

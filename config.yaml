@@ -53,35 +53,48 @@ animated_speech:
   -
     title: Over here
     string: "Hello! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
+    tooltip: blah
   -
     title: I am this tall
     string: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
+    tooltip: blah
   -
     title: Point far
     string: "^start(animations/Stand/Gestures/Far_3) Theyre taking the hobbits to Isengard! ^wait(animations/Stand/Gestures/Far_3)"
+    tooltip: blah
   -
     title: Show tablet
     string: "^start(ShowTablet_3) Look at my tablet. ^wait(ShowTablet_3)"
+    tooltip: blah
 
 gestures:
   -
     title: "Yes"
     string: "animations/Stand/Gestures/Yes_1"
+    tooltip: blah
   -
     title: No
     string: "animations/Stand/Gestures/No_1"
+    tooltip: blah
+
   -
     title: Wave
     string: "animations/Stand/Gestures/Hey_3"
+    tooltip: blah
+
   -
     title: Me
     string: "animations/Stand/Gestures/Me_1"
+    tooltip: blah
   -
     title: You
     string: "animations/Stand/Gestures/You_1"
+    tooltip: blah
   -
     title: Embarrassed
     string: "animations/Stand/Emotions/Neutral/Embarrassed_1"
+    tooltip: blah
   -
     title: Happy
     string: "animations/Stand/Emotions/Positive/Happy_4"
+    tooltip: blah
