@@ -89,7 +89,8 @@ def set_autonomous_state():
     state = request.args.get('state', type=str)
     print(state)
 
-    # TODO: set State
+    al_srv = qi_session.service("ALAutonomousLife")
+    al_srv.setState(state)
     time.sleep(2)
 
     return {

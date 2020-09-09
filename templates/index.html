@@ -34,9 +34,11 @@
         $("#tangential_collision").val(data["tangential_collision"] + " m")
         $("#orthogonal_collision").val(data["orthogonal_collision"] + " m")
 
+        $("#autonomous_states option[value=" + data["autonomous_state"]).attr("selected", "selected");
+
         $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
 
-        $("#volume_slider").val(data["volume_lvl"])
+        $("#volume_slider").val(data["volume_lvl"] * 100)
         $("#voice_pitch").val(data["voice_pitch"])
 
         toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
@@ -174,7 +176,6 @@
       })
     }
     
-
     // iter over all buttons and reset style, except for the one that is currently being displayed
     // https://stackoverflow.com/questions/5376431/wildcards-in-jquery-selectors
     $("[id^=image_btn_]").each(function( iter_ind ) {
@@ -299,10 +300,10 @@
         
         <div class="btn_wrapper">
           <select name="pepper_ips" id="autonomous_states">
-            <option value="Interactive">Interactive</option>
-            <option value="Solitary">Solitary</option>
-            <option value="Safeguard">Safeguard</option>
-            <option value="Disabled">Disabled</option>
+            <option value="interactive">Interactive</option>
+            <option value="solitary">Solitary</option>
+            <option value="safeguard">Safeguard</option>
+            <option value="disabled">Disabled</option>
           </select>
           <a href="#" onclick="set_autonomous_state()">
             <button class="example_c" id="auto_state_set">Set</button>
