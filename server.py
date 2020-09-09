@@ -282,6 +282,22 @@ def exec_anim_speech():
         "annotated_text": annotated_text
     }
 
+@app.route("/exec_gesture")
+def exec_gesture():
+    index = request.args.get('index', type=int)
+    print(index)
+
+    gesture = config["gestures"][index]["string"]
+
+    ap_srv = qi_session.service("ALAnimationPlayer")
+    ap_srv.run(gesture)
+
+    return {
+        "status": "ok",
+        "gesture": gesture
+    }
+
+
 
 if __name__ == '__main__':
 

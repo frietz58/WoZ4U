@@ -62,3 +62,26 @@ animated_speech:
   -
     title: Show tablet
     string: "^start(ShowTablet_3) Look at my tablet. ^wait(ShowTablet_3)"
+
+gestures:
+  -
+    title: "Yes"
+    string: "animations/Stand/Gestures/Yes_1"
+  -
+    title: No
+    string: "animations/Stand/Gestures/No_1"
+  -
+    title: Wave
+    string: "animations/Stand/Gestures/Hey_3"
+  -
+    title: Me
+    string: "animations/Stand/Gestures/Me_1"
+  -
+    title: You
+    string: "animations/Stand/Gestures/You_1"
+  -
+    title: Embarrassed
+    string: "animations/Stand/Emotions/Neutral/Embarrassed_1"
+  -
+    title: Happy
+    string: "animations/Stand/Emotions/Positive/Happy_4"

@@ -235,6 +235,20 @@
     });
   }
 
+  function exec_gesture(name, index) {
+    $("#gesture_btn_" + index).html("...")
+    $("#gesture_btn_" + index).addClass("example_c_ongoing"); // give it the css class for "processing"
+    $.getJSON(
+      "exec_gesture?index=" + index,
+      function(data){
+        console.log(data)
+      }
+    ).done(function() {
+      $("#gesture_btn_" + index).html("EXECUTE")
+      $("#gesture_btn_" + index).removeClass("example_c_ongoing"); // remove class for ongoing
+    });
+  }
+
   {% if reconnect %}
     console.log("reconnecting")
     connect_robot(ip='{{reconnect_ip}}')
@@ -620,7 +634,6 @@
       </a>
 
       {%for anim_speech in config["animated_speech"]%}
-      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
       <div class="row">
         <div class="speech_lbl_wrapper">
           <span>{{anim_speech["title"]}}</span>
@@ -647,108 +660,24 @@
       <h3>Gestures</h3>
     </a>
 
+    {%for gesture in config["gestures"]%}
       <div class="row">
         <div class="speech_lbl_wrapper">
-          <span>Motion 1</span>
+          <span>{{gesture["title"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
+          <button 
+            title="{{gesture['string']}}"
+            class="example_c" 
+            id="gesture_btn_{{loop.index0}}" 
+            onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
+            EXECUTE
+          </button>
         </div>
       </div>
       <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 2</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 3</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 4</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 5</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 6</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 7</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 8</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 9</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
-  
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Motion 10</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c">Execute</button>
-        </div>
-      </div>
-      <br>
+      {%endfor%}
     </div>
-
-    
 
   </div>
 
