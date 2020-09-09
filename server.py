@@ -199,8 +199,8 @@ def set_engagement_state():
     state = request.args.get('state', type=str)
     print(state)
 
-    # TODO: set State
-    time.sleep(2)
+    ba_srv = qi_session.service("ALBasicAwareness")
+    ba_srv.setEngagementMode(state)
 
     return {
        "status": "ok",
