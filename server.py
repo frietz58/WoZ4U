@@ -128,16 +128,62 @@ def play_audio():
     index = request.args.get('index', type=str)
     print(index)
 
-    # TODO: get audio file path
-    path = "some/path"
+    tabletService = qi_session.service("ALTabletService")
+    # js_code = "var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther30.wav'); audio.play();"
+    # tablet_srv.executeJS(js_code)
 
-    # TODO: Play the audio
-    time.sleep(2)
+    try:
+        # Display a local web page located in boot-config/html folder
+        # The ip of the robot from the tablet is 198.18.0.1
+        tabletService.showWebview("http://198.18.0.1/apps/boot-config/preloading_dialog.html")
+
+        time.sleep(1)
+
+        # Javascript script for displaying a prompt
+        # ALTabletBinding is a javascript binding inject in the web page displayed on the tablet
+        script = """
+            var name = prompt("Please enter your name", "Harry Pepper");
+            ALTabletBinding.raiseEvent(name)
+        """
+
+        js_code = """
+        var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
+        audio.volume = 0.1;
+        audio.play();"""
+
+        # Don't forget to disconnect the signal at the end
+        signalID = 0
+
+        # function called when the signal onJSEvent is triggered
+        # by the javascript function ALTabletBinding.raiseEvent(name)
+        #def callback(event):
+        #    print "your name is:", event
+        #    promise.setValue(True)
+
+        promise = qi.Promise()
+
+        # attach the callback function to onJSEvent signal
+        # signalID = tabletService.onJSEvent.connect(callback)
+
+        # inject and execute the javascript in the current web page displayed
+        tabletService.executeJS(js_code)
+
+        try:
+            promise.future().hasValue(30000)
+        except RuntimeError:
+            raise RuntimeError('Timeout: no signal triggered')
+
+    except Exception, e:
+        print "Error was:", e
+
+    # Hide the web view
+    tabletService.hideWebview()
+    # disconnect the signal
+    # tabletService.onJSEvent.disconnect(signalID)
 
     return {
        "status": "ok",
        "index": index, 
-       "audio_file": path,
     }
 
 @app.route("/show_img/<img_name>")
@@ -146,6 +192,14 @@ def show_img(img_name):
     # very hacky, but this is the only way I got this to work... 
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + img_name)
+
+    # this works as well...:
+    # js_code = """
+    #    var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
+    #    audio.volume = 0.1;
+    #    audio.play();"""
+
+    # tablet_srv.executeJS(js_code)
 
     return {
        "status": "ok",
