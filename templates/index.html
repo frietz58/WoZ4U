@@ -19,10 +19,8 @@
   //function connect_robot(robot_ip){
   function connect_robot(ip=""){
     if (ip=="") {
-      console.log("no ip given: " + ip)
       robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
     } else {
-      console.log("ip given: " + ip)
       robot_ip = ip
     }
 
@@ -134,10 +132,13 @@
     })
   }
 
-  function play_audio(index) {
+  function play_audio(name, index) {
     $("#audio_file_"+index).html("..."); // set btn text to ...
     $("#audio_file_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
     
+    console.log(name)
+    console.log(index)
+
     $.getJSON(
       "/play_audio?index=" + index,
       function(data) {
@@ -472,105 +473,25 @@
   <!-- COLUM 2: Audio files-->
   <div style="width: 50%; float: left;">
 
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 0</span>
+    {%for audio in config["audio_files"]%}
+      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>{{audio["title"]}}</span>
+        </div>
+        <div class="speech_btn_wrapper">
+          <button 
+            title="{{audio['url']}}"
+            class="example_c" 
+            id="audio_file_{{loop.index0}}" 
+            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})">
+            PLAY
+          </button>
+        </div>
       </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_0" onclick="play_audio(0)">PLAY</button>
-      </div>
-    </div>
-    <br>
-        
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 1</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_1" onclick="play_audio(1)">PLAY</button>
-      </div>
-    </div>
-    <br>
+      <br>
 
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 2</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_2" onclick="play_audio(2)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 3</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_3" onclick="play_audio(3)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 4</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_4" onclick="play_audio(4)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 5</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_5" onclick="play_audio(5)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 6</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_6" onclick="play_audio(6)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 7</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_7" onclick="play_audio(7)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 8</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_8" onclick="play_audio(8)">PLAY</button>
-      </div>
-    </div>
-    <br>
-
-    <div class="row">
-      <div class="speech_lbl_wrapper">
-        <span>Audio 9</span>
-      </div>
-      <div class="speech_btn_wrapper">
-        <button class="example_c" id="audio_file_9" onclick="play_audio(9)">PLAY</button>
-      </div>
-    </div>
-    <br>
+      {%endfor%}
 
   </div>
 

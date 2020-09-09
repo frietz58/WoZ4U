@@ -130,18 +130,27 @@ def play_audio():
     # ap_srv = qi_session.service("ALAudioPlayer")
     # ap_srv.playWebStream("https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav", 0.1, 0.0)
 
+    index = request.args.get('index', type=int)
+    print(index)
+
     tablet_srv = qi_session.service("ALTabletService")
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
 
     time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
 
+    url = config["audio_files"][index]["url"]
+
+    tts_srv = qi_session.service("ALTextToSpeech")
+    volume = tts_srv.getVolume()
+
     js_code = """
-        var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
-        audio.volume = 0.1;
-        audio.play();"""
+        var audio = new Audio('{}'); 
+        audio.volume = {};
+        audio.play();""".format(url, volume)
+
 
     tablet_srv.executeJS(js_code)
-    time.sleep(15)  # TODO: dynamic length 
+    time.sleep(60)  # TODO: dynamic length 
     tablet_srv.hideWebview()
 
     return {

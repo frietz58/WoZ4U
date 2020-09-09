@@ -13,55 +13,33 @@ messages:
   -
     short: Blah
     full_text: blah blah blah blah blah, blah blah blah, blah.
-  -
-    short: Voice cmd 4
-    full_text: This is voice command 4
-  -
-    short: Voice cmd 5
-    full_text: This is voice command 5
-  -
-    short: Voice cmd 6
-    full_text: This is voice command 6
-  -
-    short: Voice cmd 7
-    full_text: This is voice command 7
-  -
-    short: Voice cmd 8
-    full_text: This is voice command 8
-  -
-    short: Voice cmd 9
-    full_text: This is voice command 9
 
 image_root_location: "/static/imgs/"
 
 images:
   - 
     title: Landscape
-    file_name: "landscape.jpg"
+    file_name: landscape.jpg
   -
     title: Umea logo
-    file_name: "umea_logo.png"
+    file_name: umea_logo.png
   -
     title: Arrow keys
-    file_name: "arrow_keys.png"
+    file_name: arrow_keys.png
+
+audio_files:
   - 
-    title: Landscape 1
-    file_name: "landscape.jpg"
+    title: Cantina band
+    url: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav
   - 
-    title: Landscape 2
-    file_name: "landscape.jpg"
-  - 
-    title: Landscape 3
-    file_name: "landscape.jpg"
-  - 
-    title: Landscape 4
-    file_name: "landscape.jpg"
-  - 
-    title: Landscape 5
-    file_name: "landscape.jpg"
-  - 
-    title: Landscape 6
-    file_name: "landscape.jpg"
-  - 
-    title: Landscape 7
-    file_name: "landscape.jpg"
+    title: Pink Panther
+    url: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav
+  -
+    title: Star Wars
+    url: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
+  -
+    title: Imperial March
+    url: https://www2.cs.uic.edu/~i101/SoundFiles/ImperialMarch60.wav
+  -
+    title: Elephant walking
+    url: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
