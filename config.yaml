@@ -51,8 +51,14 @@ audio_files:
 
 animated_speech:
   -
-    title: Wave & Greet
-    string: "Hello! ^start(animations/Stand/Gestures/Hey_1) Nice to meet you!"
+    title: Over here
+    string: "Hello! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
   -
-    title: Test
-    string: blah
+    title: I am this tall
+    string: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
+  -
+    title: Point far
+    string: "^start(animations/Stand/Gestures/Far_3) Theyre taking the hobbits to Isengard! ^wait(animations/Stand/Gestures/Far_3)"
+  -
+    title: Show tablet
+    string: "^start(ShowTablet_3) Look at my tablet. ^wait(ShowTablet_3)"

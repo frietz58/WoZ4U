@@ -520,15 +520,16 @@
   </div>
   <br>
     
-    <div class="row">
-      <input type="text" placeholder="custom msg" id="custom_text_msg">
-      <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
-    </div>
-    <br>
     <!-- COLUMN 1: SPEECH-->
     <div style="width: 50%; float: left;">
     
       <h3>Text messages</h3>
+
+      <div class="row">
+        <input type="text" placeholder="custom msg" id="custom_text_msg">
+        <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+      </div>
+      <br>
 
       {%for msg in config["messages"]%}
       <!-- Here, we iterate over all the messages and create labels and buttons for each-->
@@ -636,11 +637,15 @@
       </div>
       <br>
       {%endfor%}
+  
+    </div>
 
     <!-- COLUMN 2: Gestures-->
     <div style="width: 50%; float: left;">
 
-    <h3>Gestures</h3>
+    <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
+      <h3>Gestures</h3>
+    </a>
 
       <div class="row">
         <div class="speech_lbl_wrapper">

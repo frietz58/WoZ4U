@@ -41,7 +41,7 @@ def connect_robot():
         print(msg)
     
     tts_srv = qi_session.service("ALTextToSpeech")
-    tts_srv.setVolume(0.02)
+    tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
     volume_lvl = tts_srv.getVolume()
     voice_pitch = tts_srv.getParameter("pitchShift")
