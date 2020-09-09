@@ -155,3 +155,9 @@ a {
   an image of height 800px does not fit on the tablet screen.
   Maybe something is off with our tablet...  */ 
 }
+
+.text_input {
+  width: 80%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

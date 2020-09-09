@@ -9,6 +9,7 @@ from utils import is_url
 import qi
 from naoqi import ALProxy
 
+from urlparse import unquote
 
 app = Flask(__name__)
 
@@ -297,6 +298,21 @@ def exec_gesture():
         "gesture": gesture
     }
 
+@app.route("/exec_custom_gesture")
+def exec_custom_gesture():
+    string = request.args.get("string", type=str)
+    print(string)
+
+    gesture = unquote(string)
+    print(gesture)
+
+    ap_srv = qi_session.service("ALAnimationPlayer")
+    ap_srv.run(gesture)
+
+    return {
+        "status": "ok",
+        "gesture": gesture
+    }
 
 
 if __name__ == '__main__':

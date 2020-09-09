@@ -249,6 +249,29 @@
     });
   }
 
+  function exec_custom_gesture() {
+    $("#custom_gesture_btn").html("...")
+    $("#custom_gesture_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+
+    let gesture_string = $("#custom_gesture_string").val();
+    gesture_string = gesture_string.trim()
+
+    gesture_string = encodeURIComponent(gesture_string)
+
+    console.log(gesture_string)
+
+    $.getJSON(
+      "exec_custom_gesture?string=" + gesture_string,
+      function(data){
+        console.log(data)
+      }
+    ).done(function() {
+      $("#custom_gesture_btn").html("EXECUTE")
+      $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
+    });
+  }
+
+
   {% if reconnect %}
     console.log("reconnecting")
     connect_robot(ip='{{reconnect_ip}}')
@@ -539,12 +562,6 @@
     
       <h3>Text messages</h3>
 
-      <div class="row">
-        <input type="text" placeholder="custom msg" id="custom_text_msg">
-        <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
-      </div>
-      <br>
-
       {%for msg in config["messages"]%}
       <!-- Here, we iterate over all the messages and create labels and buttons for each-->
       <div class="row">
@@ -564,6 +581,13 @@
       <br>
 
       {%endfor%} 
+
+      <div class="row">
+        <span>Direct message:</span>
+        <input type="text" placeholder="Type custom message here..." id="custom_text_msg" class="text_input">
+        <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+      </div>
+      <br>
 
   </div>
 
@@ -656,28 +680,39 @@
     <!-- COLUMN 2: Gestures-->
     <div style="width: 50%; float: left;">
 
-    <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
-      <h3>Gestures</h3>
-    </a>
+      <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
+        <h3>Gestures</h3>
+      </a>
 
-    {%for gesture in config["gestures"]%}
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{gesture["title"]}}</span>
+      {%for gesture in config["gestures"]%}
+        <div class="row">
+          <div class="speech_lbl_wrapper">
+            <span>{{gesture["title"]}}</span>
+          </div>
+          <div class="speech_btn_wrapper">
+            <button 
+              title="{{gesture['string']}}"
+              class="example_c" 
+              id="gesture_btn_{{loop.index0}}" 
+              onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
+              EXECUTE
+            </button>
+          </div>
         </div>
-        <div class="speech_btn_wrapper">
-          <button 
-            title="{{gesture['string']}}"
-            class="example_c" 
-            id="gesture_btn_{{loop.index0}}" 
-            onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
-            EXECUTE
-          </button>
+        <br>
+        {%endfor%}
+
+        <div class="row">
+          <span>Direct execution:</span>
+          <br>
+          <input type="text" placeholder="animations/Stand/Gestures/Hey_1" id="custom_gesture_string" class="text_input"><br>
+          <button class="example_c" onclick="exec_custom_gesture()" id="custom_gesture_btn">EXECUTE</button>
         </div>
+        <br>
+
       </div>
-      <br>
-      {%endfor%}
-    </div>
+
+
 
   </div>
 
