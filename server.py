@@ -239,6 +239,19 @@ def set_engagement_state():
        "engagement_state": state 
     }
 
+@app.route("/adjust_volume")
+def adjust_volume():
+    target = request.args.get('volume', type=float)
+    target = target / 100.0  # slider range is 1 - 100, api wants 0 - 1 
+
+    tts_srv = qi_session.service("ALTextToSpeech")
+    tts_srv.setVolume(target)
+
+    return {
+        "status": "ok",
+        "volume": target
+    } 
+
 
 if __name__ == '__main__':
 

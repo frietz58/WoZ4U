@@ -211,6 +211,16 @@
     })
   }
 
+  function setVolume() {
+    target_volume = $("#volume_slider").val()
+    $.getJSON(
+      "/adjust_volume?volume=" + target_volume,
+      function(data){
+        console.log(data);
+      }
+    );
+  }
+
   {% if reconnect %}
     console.log("reconnecting")
     connect_robot(ip='{{reconnect_ip}}')
@@ -478,7 +488,7 @@
 
     <div class="row">
       <span>Adjust volume</span>
-      <input id="volume_slider" type="range" min="1" max="100" value="50">
+      <input id="volume_slider" type="range" min="1" max="100" value="50" onchange="setVolume()">
     </div>
     <br>
 
