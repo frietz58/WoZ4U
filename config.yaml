@@ -27,19 +27,22 @@ images:
     title: Arrow keys
     file_name: arrow_keys.png
 
+audio_root_location: static/audio
+
 audio_files:
   - 
     title: Cantina band
-    url: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav
   - 
     title: Pink Panther
-    url: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav
   -
     title: Star Wars
-    url: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
   -
     title: Imperial March
-    url: https://www2.cs.uic.edu/~i101/SoundFiles/ImperialMarch60.wav
+    location: ImperialMarch60.wav
   -
     title: Elephant walking
-    url: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
+

@@ -4,6 +4,8 @@ import yaml
 import time
 import threading
 
+from utils import is_url
+
 import qi
 from naoqi import ALProxy
 
@@ -157,6 +159,12 @@ def say_text():
        "text": msg,
     }
 
+@app.route("/serve_audio/<path:filename>")
+def serve_audio(filename):
+    print(filename)
+    return send_from_directory(config["audio_root_location"], filename)
+
+
 @app.route("/play_audio")
 def play_audio():
     # doesn't work :/
@@ -171,7 +179,12 @@ def play_audio():
 
     time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
 
-    url = config["audio_files"][index]["url"]
+    location = config["audio_files"][index]["location"]
+
+    if not is_url(location):
+        location = "http://130.239.183.189:5000/serve_audio/" + location
+        print(location)
+
 
     tts_srv = qi_session.service("ALTextToSpeech")
     volume = tts_srv.getVolume()
@@ -179,7 +192,7 @@ def play_audio():
     js_code = """
         var audio = new Audio('{}'); 
         audio.volume = {};
-        audio.play();""".format(url, volume)
+        audio.play();""".format(location, volume)
 
 
     tablet_srv.executeJS(js_code)
@@ -195,6 +208,7 @@ def show_img(img_name):
     tablet_srv = qi_session.service("ALTabletService")
     # very hacky, but this is the only way I got this to work... 
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
+    # TODO: get IP dynamicaly
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + img_name)
 
     # this works as well...:
