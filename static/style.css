@@ -34,9 +34,9 @@ a {
 .grid-container {
   display: grid;
   grid-template-areas:
-    'pepper_select tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
-    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
-    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_speech pepper_motion'
+    'pepper_select tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
+    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
+    'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
     'footer footer footer footer footer footer footer';
   grid-gap: 10px;
   background-color: var(--pal_blue);

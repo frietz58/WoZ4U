@@ -11,10 +11,13 @@ messages:
     short: Insult
     full_text: Here are the test results; you are a horrible person.
   -
+    short: Compliment
+    full_text: Ive always thought you are virtually perfect.
+  -
     short: Blah
     full_text: blah blah blah blah blah, blah blah blah, blah.
 
-image_root_location: "/static/imgs/"
+image_root_location: /static/imgs/  # place image files here
 
 images:
   - 
@@ -27,7 +30,7 @@ images:
     title: Arrow keys
     file_name: arrow_keys.png
 
-audio_root_location: static/audio
+audio_root_location: static/audio  # place audio files here
 
 audio_files:
   - 
@@ -41,8 +44,15 @@ audio_files:
     location: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
   -
     title: Imperial March
-    location: ImperialMarch60.wav
+    location: ImperialMarch60.wav  # locally saved .wav file
   -
     title: Elephant walking
     location: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
 
+animated_speech:
+  -
+    title: Wave & Greet
+    string: "Hello! ^start(animations/Stand/Gestures/Hey_1) Nice to meet you!"
+  -
+    title: Test
+    string: blah

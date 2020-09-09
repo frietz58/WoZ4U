@@ -266,6 +266,22 @@ def adjust_volume():
         "volume": target
     } 
 
+@app.route("/exec_anim_speech")
+def exec_anim_speech():
+    index = request.args.get('index', type=int)
+    print(index)
+
+    annotated_text = config["animated_speech"][index]["string"]
+
+
+    as_srv = qi_session.service("ALAnimatedSpeech")
+    as_srv.say(annotated_text)
+
+    return {
+        "status": "ok",
+        "annotated_text": annotated_text
+    }
+
 
 if __name__ == '__main__':
 
