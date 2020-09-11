@@ -336,8 +336,26 @@ def set_tts_param():
             "value": value
         }
 
+@app.route("/set_collision_radius")
+def set_collision_radius():
+    param = request.args.get("param", type=str)
+    value = request.args.get("value", type=float)
+    print(param)
+    print(value)
 
+    time.sleep(1)
 
+    motion_srv = qi_session.service("ALMotion")
+
+    # get function dynamically from service object
+    call = motion_srv.__getattribute__("set" + param + "SecurityDistance")
+    call(value)
+
+    return {
+        "param": param,
+        "value": value
+    }  
+    
 
 if __name__ == '__main__':
 

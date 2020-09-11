@@ -321,7 +321,38 @@
   }
 
   function add_ongoing(identifier) {
+    $(identifier).removeClass("example_c_green")
     $(identifier).addClass("example_c_ongoing")
+  }
+
+  function set_collision_avoidance(type) {
+    // 
+    bt_identifier = ""
+    if (type == "tangential") {
+      bt_identifier = "#tangential_collision_set"
+      value = $("#tangential_collision").val()
+      payload = "?param=Tangential&value=" + value
+    } else {
+      bt_identifier= "#orthogonal_collision_set"
+      value = $("#orthogonal_collision").val()
+      payload = "?param=Orthogonal&value=" + value
+    }
+
+    // set corresponding btn 
+    $(bt_identifier).html("...")
+    $(bt_identifier).addClass("example_c_ongoing");
+
+    url = "/set_collision_radius" + payload
+    console.log(url)
+
+    $.getJSON(
+      url,
+      function(data){
+        console.log(data);
+      }).done(function() {
+      $(bt_identifier).html("SET")
+      $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+    });
   }
 
 
@@ -442,7 +473,7 @@
         id="tangential_collision" 
         style="width: 30%; float: left; margin-left: 10px;"
         onchange="add_ongoing('#tangential_collision_set')">
-        <button id="tangential_collision_set" onclick="" class="example_c">Set</button>
+        <button id="tangential_collision_set" onclick="set_collision_avoidance('tangential')" class="example_c">Set</button>
       </div>
       <br>
 
@@ -458,7 +489,7 @@
         id="orthogonal_collision" 
         style="width: 30%; float: left; margin-left: 10px;"
         onchange="add_ongoing('#orthogonal_collision_set')">
-        <button id="orthogonal_collision_set" onclick="" class="example_c">Set</button>
+        <button id="orthogonal_collision_set" onclick="set_collision_avoidance('orthogonal')" class="example_c">Set</button>
       </div>
       <br>
 
