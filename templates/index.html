@@ -31,8 +31,8 @@
       function(data) {
         console.log(data);
 
-        $("#tangential_collision").val(data["tangential_collision"] + " m")
-        $("#orthogonal_collision").val(data["orthogonal_collision"] + " m")
+        $("#tangential_collision").val(data["tangential_collision"])
+        $("#orthogonal_collision").val(data["orthogonal_collision"])
 
         $("#autonomous_states option[value=" + data["autonomous_state"]).attr("selected", "selected");
 
@@ -139,13 +139,19 @@
   }
 
   function play_audio(name, index) {
-    $("#audio_file_"+index).html("..."); // set btn text to ...
-    $("#audio_file_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
-    
-    console.log(name)
-    console.log(index)
 
-    $.getJSON(
+    // depending on value of btn we either start playing audio or interrupt it
+
+    console.log($("#audio_file_"+index).text())
+
+    if ($("#audio_file_"+index).text() == "PLAY") {
+      $("#audio_file_"+index).html("STOP");
+      $("#audio_file_"+index).addClass("example_c_ongoing");
+
+      console.log(name)
+      console.log(index)
+
+      $.getJSON(
       "/play_audio?index=" + index,
       function(data) {
         console.log(data);
@@ -154,6 +160,18 @@
       $("#audio_file_"+index).html("PLAY")
       $("#audio_file_"+index).removeClass("example_c_ongoing")
     })
+
+    } else {
+      // clearing the tablet removes the browser context though which the js audio signal is being played...
+      $.getJSON(
+        "/clear_tablet",
+        function(data) {
+          console.log(data)
+        }).done(function() {
+          $("#image_btn_"+index).html("SHOW");
+          $("#image_btn_"+index).removeClass("example_c_ongoing")
+      })
+    }
   }
 
   function show_img(img_name, index) {
@@ -684,9 +702,7 @@
             title="{{audio['location']}}"
             class="example_c" 
             id="audio_file_{{loop.index0}}" 
-            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})">
-            PLAY
-          </button>
+            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})">PLAY</button>
         </div>
       </div>
       <br>
@@ -757,7 +773,6 @@
 
     <!-- COLUMN 2: Gestures-->
     <div style="width: 50%; float: left;">
-
       <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
         <h3>Gestures</h3>
       </a>
