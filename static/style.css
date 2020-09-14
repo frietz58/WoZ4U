@@ -50,6 +50,7 @@ a {
   /* font-size: 30px; */
 }
 
+
 /* ============== OTHER ============== */ 
 
 .row {
@@ -160,4 +161,11 @@ a {
   width: 80%;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.single_cell_div {
+  display: inline-block; 
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  text-align: center;
 }

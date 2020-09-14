@@ -2,13 +2,41 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../static/style.css">
-<link rel="stylesheet" type="text/css" href="../static/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type=text/javascript>
+    function toggle_recording() {
+        console.log("toggling")
+        $.getJSON(
+            "/toggle_img_save",
+            function(data){
+                console.log(data)
+                if (data["SAVE_IMGS"]) { // if true means it is recording, so btn says stop recording
+                    $("#recording_btn").html("STOP RECORDING")
+                    $("#recording_btn").addClass("example_c_ongoing");
+                } else {
+                    $("#recording_btn").html("START RECORDING")
+                    $("#recording_btn").removeClass("example_c_ongoing");
+                }
+            }
+        )
+    }
+</script>
 </head>
-<body>
-    <div style="display: inline-block;"> <!-- https://stackoverflow.com/questions/450903/how-can-i-make-a-div-not-larger-than-its-contents -->
-        <h1>Pepper camera stream</h1>
-        <img id="bg" src="{{ url_for('video_feed') }}">
+<body style="background-color: #264653">
+    <div>
+        <div class="single_cell_div"> 
+            <div class="row">
+                <h1>Pepper camera stream</h1>
+                <img id="bg" src="{{ url_for('video_feed') }}">
+            </div>
+            <div class="row">
+                <button class="example_c" id="recording_btn" onclick="toggle_recording()">START RECORDING</button>
+            </div>
+            <br>
+            
+        </div>
     </div>
+    
 
 </body>
 </html>

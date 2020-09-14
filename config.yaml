@@ -98,3 +98,5 @@ gestures:
     title: Happy
     string: "animations/Stand/Emotions/Positive/Happy_4"
     tooltip: blah
+
+camera_save_dir: record_imgs

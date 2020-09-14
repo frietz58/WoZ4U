@@ -3,6 +3,8 @@ from flask import Flask, render_template, Response, url_for, request, send_file,
 import yaml
 import time
 import threading
+from datetime import datetime
+import os
 
 from utils import is_url
 from utils import alImage_to_PIL
@@ -535,6 +537,12 @@ def stream_generator():
             if alImage is not None:
                 pil_img = alImage_to_PIL(alImage)
 
+                timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
+                filename = timestamp + ".jpg"
+                save_path = os.path.join(config["camera_save_dir"], filename)
+                if SAVE_IMGS:
+                    pil_img.save(save_path, "JPEG")
+
                 jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
 
                 counter += 1
@@ -551,6 +559,16 @@ def stream_generator():
             for subscriber in video_srv.getSubscribers():
                 video_srv.unsubscribe(subscriber)
 
+@app.route("/toggle_img_save")
+def toggle_img_save():
+    global SAVE_IMGS
+    SAVE_IMGS = not SAVE_IMGS
+
+    return {
+        "SAVE_IMGS": SAVE_IMGS
+    }
+
+
 
 if __name__ == '__main__':
 
@@ -560,5 +578,8 @@ if __name__ == '__main__':
         # scalar values to Python the dictionary format
         config = yaml.safe_load(f)
         print(config)
+
+    global SAVE_IMGS
+    SAVE_IMGS = False
 
     app.run(host='0.0.0.0', debug=True)
