@@ -399,9 +399,6 @@ def update_pepper_velocities():
         life_srv.setState("solitary")
         life_srv.setAutonomousAbilityEnabled("All", False)
 
-        stiffness = 0.1
-        motion_srv.setStiffnesses("Body", stiffness)
-
         # get current robot velocity
         x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity();
         x_vel = round(x_vel, 3)
@@ -413,6 +410,9 @@ def update_pepper_velocities():
             x_vel += val
         elif axis == "theta":
             theta_vel += val
+
+        stiffness = 0.1
+        motion_srv.setStiffnesses("Body", stiffness)
 
         # set velocity
         motion_srv.move(x_vel, y_vel, theta_vel)
@@ -452,8 +452,8 @@ def resting_position():
         "status": "entering resting position move"
     }
 
-@app.route("/move_head")
-def move_head():
+@app.route("/move_joint")
+def move_joint():
     axis = request.args.get("axis", type=str)
     val = request.args.get("val", type=float)
 
@@ -474,8 +474,13 @@ def move_head():
         False  # in absolute angles
         )
 
+    if "Head" in axis:
+        status = "moving head"
+    elif "Hip" in axis:
+        status = "moving hip"
+
     return {
-        "status": "moving head",
+        "status": status,
         "axis": axis,
         "val": val,
         "time": time,

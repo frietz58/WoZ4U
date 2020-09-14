@@ -371,29 +371,31 @@
 
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
+    console.log(event.key)
+
     // DRIVING
-    if (event.altKey && event.key === "ArrowUp") {
+    if (event.altKey && event.key === "ArrowUp" && !event.shiftKey ) {
       $.getJSON(
         "/update_pepper_velocities?axis=x&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.altKey && event.key === "ArrowDown") {
+      } else if (event.altKey && event.key === "ArrowDown" && !event.shiftKey ) {
       $.getJSON(
         "/update_pepper_velocities?axis=x&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.altKey && event.key === "ArrowLeft") {
+      } else if (event.altKey && event.key === "ArrowLeft" && !event.shiftKey ) {
       $.getJSON(
         "/update_pepper_velocities?axis=theta&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
-    } else if (event.altKey && event.key === "ArrowRight") {
+    } else if (event.altKey && event.key === "ArrowRight" && !event.shiftKey ) {
       $.getJSON(
         "/update_pepper_velocities?axis=theta&val=-0.2",
         function(data){
@@ -408,30 +410,60 @@
           console.log(data)
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-    } if (event.key === "ArrowUp") {
+    // HEAD MOVEMENT
+    } if (event.key === "ArrowUp" && !event.altKey && !event.shiftKey ) {
       $.getJSON(
-        "/move_head?axis=HeadPitch&val=+0.2",
+        "/move_joint?axis=HeadPitch&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowDown") {
+      } else if (event.key === "ArrowDown" && !event.altKey && !event.shiftKey ) {
       $.getJSON(
-        "/move_head?axis=HeadPitch&val=-0.2",
+        "/move_joint?axis=HeadPitch&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowLeft") {
+      } else if (event.key === "ArrowLeft" && !event.altKey && !event.shiftKey ) {
       $.getJSON(
-        "/move_head?axis=HeadYaw&val=+0.2",
+        "/move_joint?axis=HeadYaw&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
-    } else if (event.key === "ArrowRight") {
+    } else if (event.key === "ArrowRight" && !event.altKey && !event.shiftKey ) {
       $.getJSON(
-        "/move_head?axis=HeadYaw&val=-0.2",
+        "/move_joint?axis=HeadYaw&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
+    } // HIP MOVEMENT
+      else if (event.key === "ArrowUp" && !event.altKey && event.shiftKey) {
+      $.getJSON(
+        "/move_joint?axis=HipPitch&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+      } else if (event.key === "ArrowDown" && !event.altKey && event.shiftKey ) {
+      $.getJSON(
+        "/move_joint?axis=HipPitch&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+      } else if (event.key === "ArrowLeft" && !event.altKey && event.shiftKey ) {
+      $.getJSON(
+        "/move_joint?axis=HipRoll&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
+    } else if (event.key === "ArrowRight" && !event.altKey && event.shiftKey) {
+      $.getJSON(
+        "/move_joint?axis=HipRoll&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
