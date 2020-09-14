@@ -452,6 +452,16 @@ def resting_position():
         "status": "entering resting position move"
     }
 
+@app.route("/netural_stand_position")
+def netural_stand_position():
+    posture_srv = qi_session.service("ALRobotPosture")
+    posture_srv.goToPosture("Stand", 0.5)
+
+    return {
+        "status": "entering 'Stand' posture"
+    }
+
+
 @app.route("/move_joint")
 def move_joint():
     axis = request.args.get("axis", type=str)

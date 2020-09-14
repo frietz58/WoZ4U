@@ -363,6 +363,15 @@
     )
   }
 
+  function netural_stand_position() {
+    $.getJSON(
+      "/netural_stand_position",
+      function(data){
+        console.log(data);
+      }
+    )
+  }
+
   // for reconnecting upon reload of site
   {% if reconnect %}
     console.log("reconnecting")
@@ -900,12 +909,19 @@
         </tr>
       </table>
       <button 
-            title="Put pepper in resting position"
-            class="example_c" 
-            id="resting_pos_btn" 
-            onclick="enter_resting_pos()">
-            Resting position
-          </button>
+        title="Put pepper in resting position"
+        class="example_c" 
+        id="resting_pos_btn" 
+        onclick="enter_resting_pos()">
+        Resting position
+      </button>
+      <button 
+        title="Put pepper in resting position"
+        class="example_c" 
+        id="resting_pos_btn" 
+        onclick="netural_stand_position()">
+       Neutral stand position
+      </button>
       <p>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></p>
     </div>
     <br>
