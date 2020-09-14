@@ -34,10 +34,7 @@
         $("#tangential_collision").val(data["tangential_collision"])
         $("#orthogonal_collision").val(data["orthogonal_collision"])
 
-        $("#autonomous_states option[value=" + data["autonomous_state"]).attr("selected", "selected");
-        // TODO: Not working?
-        $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
-
+        $("#autonomous_states").val(data["autonomous_state"]);
         $("#volume_slider").val(data["volume_lvl"] * 100)
         $("#voice_pitch_input").val(data["voice_pitch"] * 100)
 
