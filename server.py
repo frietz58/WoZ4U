@@ -5,9 +5,12 @@ import time
 import threading
 
 from utils import is_url
+from utils import alImage_to_PIL
+from utils import PIL_to_JPEG_BYTEARRAY
 
 import qi
 from naoqi import ALProxy
+import vision_definitions
 
 from urlparse import unquote
 
@@ -70,7 +73,7 @@ def connect_robot():
     arms_breathing = motion_srv.getBreathEnabled("Arms")
     head_breathing = motion_srv.getBreathEnabled("Head")
 
-    vel_vec = motion_srv.getRobotVelocity();
+    vel_vec = motion_srv.getRobotVelocity()
     vel_vec = [round(vel, 3) for vel in vel_vec]
 
     return {
@@ -400,7 +403,7 @@ def update_pepper_velocities():
         life_srv.setAutonomousAbilityEnabled("All", False)
 
         # get current robot velocity
-        x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity();
+        x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
         x_vel = round(x_vel, 3)
         y_vel = round(y_vel, 3)
         theta_vel = round(theta_vel, 3)
@@ -430,7 +433,7 @@ def stop_motion():
     motion_srv = qi_session.service("ALMotion")
     motion_srv.stopMove()
 
-    x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity();
+    x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
     x_vel = round(x_vel, 3)
     y_vel = round(y_vel, 3)
     theta_vel = round(theta_vel, 3)
@@ -496,7 +499,58 @@ def move_joint():
         "time": time,
         "stiffness": stiffness
     }
-    
+
+@app.route("/camera_view")    
+def camera_view():
+    video_srv = qi_session.service("ALVideoDevice")
+
+    # see if there are any old subscribers...
+    if video_srv.getSubscribers():
+        for subscriber in video_srv.getSubscribers():
+            video_srv.unsubscribe(subscriber)
+
+
+    resolution = vision_definitions.kQVGA  # 320 * 240
+    colorSpace = vision_definitions.kRGBColorSpace
+    global imgClient
+    imgClient = video_srv.subscribe("_client", resolution, colorSpace, 5)
+
+    return render_template("camera.html")
+
+
+@app.route("/video_feed")
+def video_feed():
+    return Response(
+        stream_generator(),
+        mimetype='multipart/x-mixed-replace; boundary=frame')
+
+def stream_generator():
+    video_srv = qi_session.service("ALVideoDevice")
+    counter = 0
+    try: 
+        while True:
+            # frame = camera.get_frame()
+            global imgClient
+            alImage = video_srv.getImageRemote(imgClient)
+            if alImage is not None:
+                pil_img = alImage_to_PIL(alImage)
+
+                jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
+
+                counter += 1
+
+                yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
+
+            time.sleep(0.01)
+    except IOError:  # ideally this would catch the error when tab is closed, but it doesnt :/ TODO
+        print("removing listener...")
+        video_srv = qi_session.service("ALVideoDevice")
+        # see if there are any old subscribers...
+        if video_srv.getSubscribers():
+            for subscriber in video_srv.getSubscribers():
+                video_srv.unsubscribe(subscriber)
+
 
 if __name__ == '__main__':
 
