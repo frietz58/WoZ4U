@@ -357,6 +357,14 @@
     });
   }
 
+  function enter_resting_pos() {
+    $.getJSON(
+      "/resting_position",
+      function(data){
+        console.log(data);
+      }
+    )
+  }
 
   // for reconnecting upon reload of site
   {% if reconnect %}
@@ -831,9 +839,16 @@
         </tr>
         <tr>
           <td style="text-align: right;">Drive</td>
-          <td style="text-align: left;">: FN + Arrow keys</td>
+          <td style="text-align: left;">: ALT + Arrow keys</td>
         </tr>
       </table>
+      <button 
+            title="Put pepper in resting position"
+            class="example_c" 
+            id="resting_pos_btn" 
+            onclick="enter_resting_pos()">
+            Resting position
+          </button>
       <p>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></p>
     </div>
     <br>
