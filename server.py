@@ -115,40 +115,65 @@ def toggle_setting():
 
     motion_srv = qi_session.service("ALMotion")
     ab_srv = qi_session.service("ALAutonomousBlinking")
+    ba_srv = qi_session.service("ALBasicAwareness")
 
+
+    new_state = None
     if setting == "blinking":
         if curr_state == "ON":
             ab_srv.setEnabled(False)
         else:
             ab_srv.setEnabled(True)
+        
+        new_state = ab_srv.isEnabled()
+
     elif setting == "head_breathing":
         if curr_state == "ON":
             motion_srv.setBreathEnabled("Head", False)
         else:
             motion_srv.setBreathEnabled("Head", True)
+        
+        new_state = motion_srv.getBreathEnabled("Head")
+
     elif setting == "arms_breathing":
         if curr_state == "ON":
             motion_srv.setBreathEnabled("Arms", False)
         else:
             motion_srv.setBreathEnabled("Arms", True)
+        
+        new_state = motion_srv.getBreathEnabled("Arms")
+
     elif setting == "body_breathing":
         if curr_state == "ON":
             motion_srv.setBreathEnabled("Body", False)
         else:
             motion_srv.setBreathEnabled("Body", True)
+        
+        new_state = motion_srv.getBreathEnabled("Body")
+
     elif setting == "legs_breathing":
-            if curr_state == "ON":
-                motion_srv.setBreathEnabled("Legs", False)
-            else:
-                motion_srv.setBreathEnabled("Legs", True)
+        if curr_state == "ON":
+            motion_srv.setBreathEnabled("Legs", False)
+        else:
+            motion_srv.setBreathEnabled("Legs", True)
+
+        new_state = motion_srv.getBreathEnabled("Legs")
+
+    elif setting == "basic_awareness":
+        if curr_state == "ON":
+            ba_srv.setEnabled(False)
+        else:
+            ba_srv.setEnabled(True)
+    
+        new_state = ba_srv.isEnabled()
 
     # TODO: toggle setting
     time.sleep(2)
 
     return {
-       "status": "ok",
-       "setting": setting,
-        # TODO: return state
+        "status": "ok",
+        "setting": setting,
+        "new_state": new_state
     }
 
 @app.route("/say_text")
