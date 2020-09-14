@@ -70,6 +70,9 @@ def connect_robot():
     arms_breathing = motion_srv.getBreathEnabled("Arms")
     head_breathing = motion_srv.getBreathEnabled("Head")
 
+    vel_vec = motion_srv.getRobotVelocity();
+    vel_vec = [round(vel, 3) for vel in vel_vec]
+
     return {
         "status": "ok",
         "ip": ip,
@@ -84,7 +87,8 @@ def connect_robot():
         "body_breathing": body_breathing,
         "legs_breathing": legs_breathing,
         "volume_lvl": volume_lvl,
-        "voice_pitch": voice_pitch
+        "voice_pitch": voice_pitch,
+        "velocity_vector": vel_vec
     }
 
 @app.route("/set_autonomous_state")
@@ -354,7 +358,64 @@ def set_collision_radius():
     return {
         "param": param,
         "value": value
-    }  
+    }
+@app.route("/update_pepper_velocities")
+def update_pepper_velocities():
+        axis = request.args.get("axis", type=str)
+        val = request.args.get("val", type=float)
+
+        print(axis)
+        print(val)
+
+        motion_srv = qi_session.service("ALMotion")
+        life_srv = qi_session.service("ALAutonomousLife")
+
+        # Disable all autonomous life features, they can interfere with our commands...
+        life_srv.setState("solitary")
+        life_srv.setAutonomousAbilityEnabled("All", False)
+
+        stiffness = 0.1
+        motion_srv.setStiffnesses("Body", stiffness)
+
+        # get current robot velocity
+        x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity();
+        x_vel = round(x_vel, 3)
+        y_vel = round(y_vel, 3)
+        theta_vel = round(theta_vel, 3)
+
+        # update velocity
+        if axis == "x":
+            x_vel += val
+        elif axis == "theta":
+            theta_vel += val
+
+        # set velocity
+        motion_srv.move(x_vel, y_vel, theta_vel)
+
+        return {
+            "x_vel": x_vel,
+            "y_vel": y_vel,
+            "theta_vel": theta_vel,
+            "target_axis": axis,
+            "value": val
+        }
+
+@app.route("/stop_motion")
+def stop_motion():
+    motion_srv = qi_session.service("ALMotion")
+    motion_srv.stopMove()
+
+    x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity();
+    x_vel = round(x_vel, 3)
+    y_vel = round(y_vel, 3)
+    theta_vel = round(theta_vel, 3)
+
+    return {
+        "status": "stopped move",
+        "x_vel": x_vel,
+        "y_vel": y_vel,
+        "theta_vel": theta_vel
+    }
     
 
 if __name__ == '__main__':

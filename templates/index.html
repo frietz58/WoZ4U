@@ -48,6 +48,8 @@
         toggle_btn_handle("#toggle_btn_body_breathing", data["body_breathing"])
         toggle_btn_handle("#toggle_btn_legs_breathing", data["legs_breathing"])
 
+        $("#motion_vector").text("[" + data["velocity_vector"].toString() + "]")
+
       }).done(function() {
       $("#connect_btn").html("Connected"); // set btn text to ...
       $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
@@ -356,10 +358,53 @@
   }
 
 
+  // for reconnecting upon reload of site
   {% if reconnect %}
     console.log("reconnecting")
     connect_robot(ip='{{reconnect_ip}}')
   {% endif %}
+
+  //keyboard listener for keyboard control of pepper motors
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === "ArrowUp") {
+      $.getJSON(
+        "/update_pepper_velocities?axis=x&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+
+        })
+      } else if (event.key === "ArrowDown") {
+      $.getJSON(
+        "/update_pepper_velocities?axis=x&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+      } else if (event.key === "ArrowLeft") {
+      $.getJSON(
+        "/update_pepper_velocities?axis=theta&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
+    } else if (event.key === "ArrowRight") {
+      $.getJSON(
+        "/update_pepper_velocities?axis=theta&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
+    } else if (event.ctrlKey && event.key === "Backspace") { // ctrl + backspace
+      $.getJSON(
+        "/stop_motion",
+        function(data) { 
+          console.log(data)
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+    }
+  });
 
 </script>
 </head>
@@ -789,6 +834,7 @@
           <td style="text-align: left;">: FN + Arrow keys</td>
         </tr>
       </table>
+      <p>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></p>
     </div>
     <br>
 
