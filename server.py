@@ -416,6 +416,46 @@ def stop_motion():
         "y_vel": y_vel,
         "theta_vel": theta_vel
     }
+
+@app.route("/resting_position")
+def resting_position():
+    motion_srv = qi_session.service("ALMotion")
+    motion_srv.stopMove()
+    motion_srv.rest()
+
+    return {
+        "status": "entering resting position move"
+    }
+
+@app.route("/move_head")
+def move_head():
+    axis = request.args.get("axis", type=str)
+    val = request.args.get("val", type=float)
+
+    stiffness=0.5
+    time=1
+
+    motion_srv = qi_session.service("ALMotion")
+
+    if not motion_srv.robotIsWakeUp():
+            motion_srv.wakeUp()
+    
+    motion_srv.setStiffnesses("Head", stiffness)
+
+    motion_srv.angleInterpolation(
+        [str(axis)],  # which axis
+        [float(val)],  # amount of  movement
+        [int(time)],  # time for movement
+        False  # in absolute angles
+        )
+
+    return {
+        "status": "moving head",
+        "axis": axis,
+        "val": val,
+        "time": time,
+        "stiffness": stiffness
+    }
     
 
 if __name__ == '__main__':

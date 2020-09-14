@@ -35,7 +35,7 @@
         $("#orthogonal_collision").val(data["orthogonal_collision"])
 
         $("#autonomous_states option[value=" + data["autonomous_state"]).attr("selected", "selected");
-
+        // TODO: Not working?
         $("#engagement_states option[value=" + data["engagement_state"]).attr("selected", "selected");
 
         $("#volume_slider").val(data["volume_lvl"] * 100)
@@ -373,37 +373,37 @@
   {% endif %}
 
   //keyboard listener for keyboard control of pepper motors
-
   document.addEventListener('keydown', function(event) {
-    if (event.key === "ArrowUp") {
+    // DRIVING
+    if (event.altKey && event.key === "ArrowUp") {
       $.getJSON(
         "/update_pepper_velocities?axis=x&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-
         })
-      } else if (event.key === "ArrowDown") {
+      } else if (event.altKey && event.key === "ArrowDown") {
       $.getJSON(
         "/update_pepper_velocities?axis=x&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowLeft") {
+      } else if (event.altKey && event.key === "ArrowLeft") {
       $.getJSON(
         "/update_pepper_velocities?axis=theta&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
-    } else if (event.key === "ArrowRight") {
+    } else if (event.altKey && event.key === "ArrowRight") {
       $.getJSON(
         "/update_pepper_velocities?axis=theta&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
+    // STOP DRIVING
     } else if (event.ctrlKey && event.key === "Backspace") { // ctrl + backspace
       $.getJSON(
         "/stop_motion",
@@ -411,6 +411,34 @@
           console.log(data)
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
+    } if (event.key === "ArrowUp") {
+      $.getJSON(
+        "/move_head?axis=HeadPitch&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+      } else if (event.key === "ArrowDown") {
+      $.getJSON(
+        "/move_head?axis=HeadPitch&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+      } else if (event.key === "ArrowLeft") {
+      $.getJSON(
+        "/move_head?axis=HeadYaw&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
+    } else if (event.key === "ArrowRight") {
+      $.getJSON(
+        "/move_head?axis=HeadYaw&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      })
     }
   });
 
