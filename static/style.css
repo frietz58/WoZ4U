@@ -67,7 +67,7 @@ a {
   */
 }
 
-.toggle_btw:hover {
+.toggle_btw:hover:enabled {
   filter: brightness(90%);
 }
 
@@ -86,7 +86,7 @@ a {
   text-align: left;
 }
 
-.speech_btn:hover {
+.speech_btn:hover:enabled {
   filter: brightness(90%);
 
 }
@@ -139,7 +139,7 @@ a {
 }
 
 
-.example_c:hover {
+.example_c:hover:enabled {
   color: #ffffff;
   background: #264653;
   border-color: #264653;
@@ -168,4 +168,26 @@ a {
   background-color: rgba(255, 255, 255, 0.8);
   width: 100%;
   text-align: center;
+}
+
+.overlay{
+  z-index: 2; 
+  position: absolute; 
+  top: 0px; 
+  left: 0px; 
+  height:250px; width:500px;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+input:disabled,
+input[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
 }
