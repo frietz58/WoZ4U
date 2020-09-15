@@ -46,25 +46,22 @@ def connect_robot():
     except RuntimeError as msg:
         print("qi session connect error!:")
         print(msg)
+
+    get_all_services(qi_session)
     
-    tts_srv = qi_session.service("ALTextToSpeech")
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
     volume_lvl = tts_srv.getVolume()
     voice_pitch = tts_srv.getParameter("pitchShift")
     voice_pitch = round(voice_pitch, 3)
 
-    al_srv = qi_session.service("ALAutonomousLife")
     autonomous_state = al_srv.getState()
 
-    ba_srv = qi_session.service("ALBasicAwareness")
     engagement_state = ba_srv.getEngagementMode()
     ba_runnning = ba_srv.isRunning()
 
-    ab_srv = qi_session.service("ALAutonomousBlinking")
     blinking_enabled = ab_srv.isEnabled()
 
-    motion_srv = qi_session.service("ALMotion")
     orthogonal_collision = motion_srv.getOrthogonalSecurityDistance()
     orthogonal_collision = round(orthogonal_collision, 3)
 
@@ -80,7 +77,6 @@ def connect_robot():
     vel_vec = [round(vel, 3) for vel in vel_vec]
 
     # see if there are any old subscribers...
-    video_srv = qi_session.service("ALVideoDevice")
     if video_srv.getSubscribers():
         for subscriber in video_srv.getSubscribers():
             print("removing old video subscriber...")
@@ -104,12 +100,56 @@ def connect_robot():
         "velocity_vector": vel_vec
     }
 
+def get_all_services(sess):
+    global tts_srv 
+    tts_srv  = qi_session.service("ALTextToSpeech")
+
+    global al_srv
+    al_srv = qi_session.service("ALAutonomousLife")
+
+    global ba_srv
+    ba_srv = qi_session.service("ALBasicAwareness")
+
+    global ab_srv
+    ab_srv = qi_session.service("ALAutonomousBlinking")
+
+    global motion_srv
+    motion_srv = qi_session.service("ALMotion")
+
+    global video_srv
+    video_srv = qi_session.service("ALVideoDevice")
+
+    global tablet_srv
+    tablet_srv = qi_session.service("ALTabletService")
+
+    global as_srv
+    as_srv = qi_session.service("ALAnimatedSpeech")
+
+    global ap_srv
+    ap_srv = qi_session.service("ALAnimationPlayer")
+
+    global posture_srv
+    posture_srv = qi_session.service("ALRobotPosture")
+
+    global ar_srv
+    ar_srv = qi_session.service("ALAudioRecorder")
+
+    global ad_srv
+    ad_srv = qi_session.service("ALAudioDevice")
+
+    global fd_srv
+    fd_srv = qi_session.service("ALFaceDetection")
+
+    global mem_srv
+    mem_srv = qi_session.service("ALMemory")
+
+
+
 @app.route("/set_autonomous_state")
 def set_autonomous_state():
     state = request.args.get('state', type=str)
     print(state)
 
-    al_srv = qi_session.service("ALAutonomousLife")
     al_srv.setState(state)
     time.sleep(2)
 
@@ -125,11 +165,6 @@ def toggle_setting():
 
     print(setting)
     print(curr_state)
-
-    motion_srv = qi_session.service("ALMotion")
-    ab_srv = qi_session.service("ALAutonomousBlinking")
-    ba_srv = qi_session.service("ALBasicAwareness")
-
 
     new_state = None
     if setting == "blinking":
@@ -194,8 +229,7 @@ def say_text():
     msg = request.args.get('msg', type=str)
     print(msg)
 
-    tts = qi_session.service("ALTextToSpeech")
-    tts.say(msg)
+    tts_srv.say(msg)
 
     return {
        "status": "ok",
@@ -217,7 +251,6 @@ def play_audio():
     index = request.args.get('index', type=int)
     print(index)
 
-    tablet_srv = qi_session.service("ALTabletService")
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
 
     time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
@@ -229,7 +262,6 @@ def play_audio():
         print(location)
 
 
-    tts_srv = qi_session.service("ALTextToSpeech")
     volume = tts_srv.getVolume()
 
     js_code = """
@@ -248,7 +280,6 @@ def play_audio():
 
 @app.route("/show_img/<img_name>")
 def show_img(img_name):
-    tablet_srv = qi_session.service("ALTabletService")
     # very hacky, but this is the only way I got this to work... 
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
     # TODO: get IP dynamicaly
@@ -276,7 +307,6 @@ def show_img_page(img_name):
 
 @app.route("/clear_tablet")
 def clear_tablet():
-        tablet_srv = qi_session.service("ALTabletService")
         tablet_srv.hideWebview()
 
         return {
@@ -288,7 +318,6 @@ def set_engagement_state():
     state = request.args.get('state', type=str)
     print(state)
 
-    ba_srv = qi_session.service("ALBasicAwareness")
     ba_srv.setEngagementMode(state)
 
     return {
@@ -301,7 +330,6 @@ def adjust_volume():
     target = request.args.get('volume', type=float)
     target = target / 100.0  # slider range is 1 - 100, api wants 0 - 1 
 
-    tts_srv = qi_session.service("ALTextToSpeech")
     tts_srv.setVolume(target)
 
     return {
@@ -316,8 +344,6 @@ def exec_anim_speech():
 
     annotated_text = config["animated_speech"][index]["string"]
 
-
-    as_srv = qi_session.service("ALAnimatedSpeech")
     as_srv.say(annotated_text)
 
     return {
@@ -332,7 +358,6 @@ def exec_gesture():
 
     gesture = config["gestures"][index]["string"]
 
-    ap_srv = qi_session.service("ALAnimationPlayer")
     ap_srv.run(gesture)
 
     return {
@@ -348,7 +373,6 @@ def exec_custom_gesture():
     gesture = unquote(string)
     print(gesture)
 
-    ap_srv = qi_session.service("ALAnimationPlayer")
     ap_srv.run(gesture)
 
     return {
@@ -362,8 +386,6 @@ def set_tts_param():
     value = request.args.get("value", type=float)
 
     print(value)
-
-    tts_srv = qi_session.service("ALTextToSpeech")
 
     if param == "pitchShift":
         value = value // 100.0  # for pitch shift we need to adjust the range... nice consistency in the naoqi api >.<
@@ -387,8 +409,6 @@ def set_collision_radius():
 
     time.sleep(1)
 
-    motion_srv = qi_session.service("ALMotion")
-
     # get function dynamically from service object
     call = motion_srv.__getattribute__("set" + param + "SecurityDistance")
     call(value)
@@ -405,12 +425,9 @@ def update_pepper_velocities():
         print(axis)
         print(val)
 
-        motion_srv = qi_session.service("ALMotion")
-        life_srv = qi_session.service("ALAutonomousLife")
-
         # Disable all autonomous life features, they can interfere with our commands...
-        life_srv.setState("solitary")
-        life_srv.setAutonomousAbilityEnabled("All", False)
+        al_srv.setState("solitary")
+        al_srv.setAutonomousAbilityEnabled("All", False)
 
         # get current robot velocity
         x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
@@ -440,7 +457,6 @@ def update_pepper_velocities():
 
 @app.route("/stop_motion")
 def stop_motion():
-    motion_srv = qi_session.service("ALMotion")
     motion_srv.stopMove()
 
     x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
@@ -457,7 +473,6 @@ def stop_motion():
 
 @app.route("/resting_position")
 def resting_position():
-    motion_srv = qi_session.service("ALMotion")
     motion_srv.stopMove()
     motion_srv.rest()
 
@@ -467,7 +482,6 @@ def resting_position():
 
 @app.route("/netural_stand_position")
 def netural_stand_position():
-    posture_srv = qi_session.service("ALRobotPosture")
     posture_srv.goToPosture("Stand", 0.5)
 
     return {
@@ -482,8 +496,6 @@ def move_joint():
 
     stiffness=0.5
     time=1
-
-    motion_srv = qi_session.service("ALMotion")
 
     if not motion_srv.robotIsWakeUp():
             motion_srv.wakeUp()
@@ -512,8 +524,6 @@ def move_joint():
 
 @app.route("/camera_view")    
 def camera_view():
-    video_srv = qi_session.service("ALVideoDevice")
-
     # see if there are any old subscribers...
     if video_srv.getSubscribers():
         for subscriber in video_srv.getSubscribers():
@@ -535,7 +545,6 @@ def video_feed():
         mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def stream_generator():
-    video_srv = qi_session.service("ALVideoDevice")
     counter = 0
     try: 
         while True:
@@ -561,7 +570,6 @@ def stream_generator():
             time.sleep(0.01)
     except IOError:  # ideally this would catch the error when tab is closed, but it doesnt :/ TODO
         print("removing listener...")
-        video_srv = qi_session.service("ALVideoDevice")
         # see if there are any old subscribers...
         if video_srv.getSubscribers():
             for subscriber in video_srv.getSubscribers():
@@ -580,11 +588,7 @@ def toggle_img_save():
 def start_audio_recording():
 
     global RECORD_AUDIO
-    RECORD_AUDIO = not RECORD_AUDIO
-
-    ar_srv = qi_session.service("ALAudioRecorder")
-    ad_srv = qi_session.service("ALAudioDevice")
-    
+    RECORD_AUDIO = not RECORD_AUDIO    
 
     timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
     filename = timestamp + ".wav"
@@ -614,9 +618,6 @@ def face():
     return face_detect_stream()
 
 def face_detect_stream():
-    fd_srv = qi_session.service("ALFaceDetection")
-    mem_srv = qi_session.service("ALMemory")
-
     memValue = "FaceDetected"
 
     val = mem_srv.getData(memValue, 0)
