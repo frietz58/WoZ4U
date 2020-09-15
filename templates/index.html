@@ -51,6 +51,10 @@
       $("#connect_btn").html("Connected"); // set btn text to ...
       $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#connect_btn").addClass("example_c_green"); // give class for succes
+
+      $(":button").prop('disabled', false); // enable all btns on successful connect
+      $(":input").prop('disabled', false); // enable all the inputs
+
     }).fail(function() {
       $("#connect_btn").html("FAILURE"); // set btn text to ...
       $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
@@ -378,12 +382,6 @@
     )
   }
 
-  // for reconnecting upon reload of site
-  {% if reconnect %}
-    console.log("reconnecting")
-    connect_robot(ip='{{reconnect_ip}}')
-  {% endif %}
-
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
     console.log(event.key)
@@ -485,6 +483,24 @@
       })
     }
   });
+
+
+
+  // for reconnecting upon reload of site
+  {% if reconnect %}
+    console.log("reconnecting")
+    connect_robot(ip='{{reconnect_ip}}')
+  {% endif %}
+
+  function disable_all() {
+    $(":button").prop('disabled', true); // Disable all the buttons
+    $(":input").prop('disabled', true); // Disable all the inputs
+    $("#connect_btn").prop("disabled", false) // enable connect btn
+    $("#pepper_select_ips").prop("disabled", false) // enable pepper dropdown
+
+  }
+
+  window.onload = disable_all;
 
 </script>
 </head>
