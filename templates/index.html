@@ -496,9 +496,9 @@
     <h2>Select robot</h2>
     <div class="row">
       <select name="pepper_ips" id="pepper_select_ips">
-        <option value="130.239.182.11">130.239.182.11</option>
-        <option value="192.168.10.2">192.168.10.2</option>
-        <option value="192.168.10.3">192.168.10.3</option>
+        {%for ip in config["pepper_ips"]%}
+          <option value="{{ip}}">{{ip}}</option>
+        {%endfor%} 
       </select>
       <br>
       <br>
@@ -514,21 +514,7 @@
 
       <div class="row">
         <a href="/camera_view" target="_blank">
-          <button class="example_c" id="view_camera_stream">Show camera stream</button>
-        </a>
-      </div>
-      <br>
-
-      <div class="row">
-        <a href="#" target="_blank">
-          <button class="example_c" id="listen_microphone">Play microphone stream</button>
-        </a>
-      </div>
-      <br>
-
-      <div class="row">
-        <a href="#" target="_blank">
-          <button class="example_c" id="listen_microphone">Show tablet view</button>
+          <button class="example_c" id="view_camera_stream">Camera & Microphone recording</button>
         </a>
       </div>
       <br>

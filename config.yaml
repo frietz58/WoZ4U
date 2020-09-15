@@ -1,3 +1,9 @@
+pepper_ips:
+  - 130.239.182.11
+  - 192.168.10.2
+  - 192.168.10.3
+  - 192.168.10.4
+
 messages: 
   # Avoid special characters in messages, this can break the backend.
   # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
