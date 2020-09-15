@@ -79,6 +79,13 @@ def connect_robot():
     vel_vec = motion_srv.getRobotVelocity()
     vel_vec = [round(vel, 3) for vel in vel_vec]
 
+    # see if there are any old subscribers...
+    video_srv = qi_session.service("ALVideoDevice")
+    if video_srv.getSubscribers():
+        for subscriber in video_srv.getSubscribers():
+            print("removing old video subscriber...")
+            video_srv.unsubscribe(subscriber)
+
     return {
         "status": "ok",
         "ip": ip,
