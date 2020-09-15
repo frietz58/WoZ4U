@@ -101,6 +101,9 @@ def connect_robot():
     }
 
 def get_all_services(sess):
+    """
+    Provides global references to all naoqi services used somewhere down the line
+    """
     global tts_srv 
     tts_srv  = qi_session.service("ALTextToSpeech")
 
@@ -143,7 +146,33 @@ def get_all_services(sess):
     global mem_srv
     mem_srv = qi_session.service("ALMemory")
 
-
+@app.route("/querry_states")
+def querry_states():
+    """
+    Querries all states that are easily accessable. EG: What autunomous state are we in or
+    which seting is toggeled?
+    @return: A dict with ids from the frontend, with the value being what that element should represent
+    """
+    print("Querrying")
+    try:
+        return {
+            "#autonomous_states": al_srv.getState(),
+            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3),
+            "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3),
+            "#toggle_btn_blinking": ab_srv.isEnabled(),
+            "#toggle_btn_basic_awareness": ba_srv.isRunning(),
+            "#engagement_states": ba_srv.getEngagementMode(),
+            "#toggle_btn_head_breathing": motion_srv.getBreathEnabled("Head"),
+            "#toggle_btn_body_breathing": motion_srv.getBreathEnabled("Body"),
+            "#toggle_btn_arms_breathing": motion_srv.getBreathEnabled("Arms"),
+            "#toggle_btn_legs_breathing": motion_srv.getBreathEnabled("Legs"),
+            "#volume_slider": tts_srv.getVolume(),
+            "#voice_speed_input": tts_srv.getParameter("speed"),
+            "#voice_pitch_input": tts_srv.getParameter("pitchShift"),
+            "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()]
+        }
+    except NameError:
+        return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
 
 @app.route("/set_autonomous_state")
 def set_autonomous_state():

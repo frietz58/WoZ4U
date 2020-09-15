@@ -9,10 +9,6 @@ def is_url(path):
     else:
         return False
 
-def page_load_callback(value):
-    # callback for tablet webview page loading, maybe usefull to maintain consistency within gui?
-    print("Page load callback: " + str(value))
-
 def alImage_to_PIL(alImg):
     """
     Converts a ALImage from the naoqi API ALVideoDeviceProxy::getImageRemote.

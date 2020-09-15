@@ -9,11 +9,38 @@
   function toggle_btn_handle(identifier, bool, onText="ON", offText="OFF"){
     if (bool) {
       $(identifier).addClass("example_c_green");
+      $(identifier).removeClass("example_c_red");
       $(identifier).html(onText)
     } else {
       $(identifier).addClass("example_c_red");
+      $(identifier).removeClass("example_c_green");
       $(identifier).html(offText)
     }
+  }
+
+  function update_states() {
+    $.getJSON(
+      "/querry_states",
+      function(data) {
+        // console.log(data)
+        Object.keys(data).forEach(key => {
+          // console.log(key, data[key]);
+          console.log($(key).get(0).nodeName)
+          if ($(key).get(0).nodeName == "BUTTON") {
+            toggle_btn_handle(key, data[key])
+          } else  if ($(key).get(0).nodeName == "SPAN"){
+            // TODO
+            console.log(key, data[key]);
+          } else if ($(key).get(0).nodeName == "INPUT") {
+            // TODO
+            console.log(key, data[key]);
+          } else if ($(key).get(0).nodeName == "SELECT") {
+            // TODO
+            console.log(key, data[key]);
+          }
+        });
+      }
+    )
   }
 
   //function connect_robot(robot_ip){
@@ -54,6 +81,9 @@
 
       $(":button").prop('disabled', false); // enable all btns on successful connect
       $(":input").prop('disabled', false); // enable all the inputs
+
+      // periodically querry all states
+      setInterval(update_states, 5000);
 
     }).fail(function() {
       $("#connect_btn").html("FAILURE"); // set btn text to ...
@@ -500,6 +530,7 @@
 
   }
 
+  //disable all elements on load
   window.onload = disable_all;
 
 </script>
