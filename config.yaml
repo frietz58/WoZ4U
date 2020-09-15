@@ -100,3 +100,4 @@ gestures:
     tooltip: blah
 
 camera_save_dir: record_imgs
+audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself

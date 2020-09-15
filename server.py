@@ -568,6 +568,38 @@ def toggle_img_save():
         "SAVE_IMGS": SAVE_IMGS
     }
 
+@app.route("/record_audio_data")
+def start_audio_recording():
+
+    global RECORD_AUDIO
+    RECORD_AUDIO = not RECORD_AUDIO
+
+    ar_srv = qi_session.service("ALAudioRecorder")
+    ad_srv = qi_session.service("ALAudioDevice")
+    
+
+    timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
+    filename = timestamp + ".wav"
+    save_path = os.path.join(config["audio_save_dir"], filename)
+
+    if RECORD_AUDIO:
+        ad_srv.enableEnergyComputation()
+        ar_srv.startMicrophonesRecording(
+            save_path,  
+            "wav",
+            16000,  # samplerate
+            [1, 1, 1, 1]  # binary: which microphones do we want? [1, 1, 1, 1]  => all four... [0, 1, 0, 0] specific one
+        )
+    else:
+        ar_srv.stopMicrophonesRecording()
+        ad_srv.disableEnergyComputation()
+
+    return {
+        "now_recording_audio": RECORD_AUDIO,
+        "pepper_save_dir": config["audio_save_dir"],
+        "filename": filename
+    }   
+
 
 
 if __name__ == '__main__':
@@ -581,5 +613,6 @@ if __name__ == '__main__':
 
     global SAVE_IMGS
     SAVE_IMGS = False
+    RECORD_AUDIO = False
 
     app.run(host='0.0.0.0', debug=True)

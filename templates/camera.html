@@ -4,22 +4,38 @@
 <link rel="stylesheet" type="text/css" href="../static/style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type=text/javascript>
-    function toggle_recording() {
-        console.log("toggling")
+    function toggle_video_recording() {
         $.getJSON(
             "/toggle_img_save",
             function(data){
                 console.log(data)
                 if (data["SAVE_IMGS"]) { // if true means it is recording, so btn says stop recording
-                    $("#recording_btn").html("STOP RECORDING")
-                    $("#recording_btn").addClass("example_c_ongoing");
+                    $("#video_recording_btn").html("STOP RECORDING")
+                    $("#video_recording_btn").addClass("example_c_ongoing");
                 } else {
-                    $("#recording_btn").html("START RECORDING")
-                    $("#recording_btn").removeClass("example_c_ongoing");
+                    $("#video_recording_btn").html("START RECORDING")
+                    $("#video_recording_btn").removeClass("example_c_ongoing");
                 }
             }
         )
     }
+
+    function toggle_audio_recording() {
+        $.getJSON(
+            "/record_audio_data",
+            function(data) {
+                console.log(data)
+                if (data["now_recording_audio"]) { // if true means it is recording, so btn says stop recording
+                    $("#audio_recording_btn").html("STOP RECORDING")
+                    $("#audio_recording_btn").addClass("example_c_ongoing");
+                } else {
+                    $("#audio_recording_btn").html("START RECORDING")
+                    $("#audio_recording_btn").removeClass("example_c_ongoing");
+                }
+            }
+        )
+    }
+
 </script>
 </head>
 <body style="background-color: #264653">
@@ -30,7 +46,9 @@
                 <img id="bg" src="{{ url_for('video_feed') }}">
             </div>
             <div class="row">
-                <button class="example_c" id="recording_btn" onclick="toggle_recording()">START RECORDING</button>
+                <button class="example_c" id="video_recording_btn" onclick="toggle_video_recording()">START VIDEO RECORDING</button>
+                <button class="example_c" id="audio_recording_btn" onclick="toggle_audio_recording()">START AUDIO RECORDING</button>
+
             </div>
             <br>
             
