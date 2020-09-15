@@ -1,10 +1,11 @@
-from flask import Flask, render_template, Response, url_for, request, send_file, abort, send_from_directory
+from flask import Flask, render_template, Response, url_for, request, send_file, abort, send_from_directory, jsonify, json
 
 import yaml
 import time
 import threading
 from datetime import datetime
 import os
+import numpy as np
 
 from utils import is_url
 from utils import alImage_to_PIL
@@ -600,7 +601,52 @@ def start_audio_recording():
         "filename": filename
     }   
 
+# TODO doesn't appear to detect faces even in perfect lighting (?)
+@app.route("/face")
+def face():
+    return face_detect_stream()
 
+def face_detect_stream():
+    fd_srv = qi_session.service("ALFaceDetection")
+    mem_srv = qi_session.service("ALMemory")
+
+    memValue = "FaceDetected"
+
+    val = mem_srv.getData(memValue, 0)
+    counter = 0
+
+    while True:
+        counter += 1
+        time.sleep(0.5)
+
+        result = {
+                    "alpha": None,
+                    "beta": None,
+                    "width": None,
+                    "height": None
+                }
+
+        val = mem_srv.getData(memValue, 0)
+        print(val, counter)
+
+        if(val and isinstance(val, list) and len(val) == 2):
+            timeStamp = val[0]
+            faceInfoArray = val[1]
+
+            for faceInfo in faceInfoArray:
+                faceShapeInfo = faceInfo[0]
+                faceExtraInfo = faceInfo[1]
+
+                result = {
+                    "alpha": faceShapeInfo[1],
+                    "beta": faceShapeInfo[2],
+                    "width": faceShapeInfo[3],
+                    "height": faceShapeInfo[4]
+                }
+
+        print(result)
+
+                
 
 if __name__ == '__main__':
 
