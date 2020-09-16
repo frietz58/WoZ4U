@@ -25,18 +25,28 @@
         // console.log(data)
         Object.keys(data).forEach(key => {
           // console.log(key, data[key]);
-          console.log($(key).get(0).nodeName)
+          // console.log($(key).get(0).nodeName)
           if ($(key).get(0).nodeName == "BUTTON") {
             toggle_btn_handle(key, data[key])
           } else  if ($(key).get(0).nodeName == "SPAN"){
-            // TODO
-            console.log(key, data[key]);
+            // motion vector
+            $(key).text("[" + data[key].toString() + "]")
+
           } else if ($(key).get(0).nodeName == "INPUT") {
-            // TODO
-            console.log(key, data[key]);
+            if ($(key).attr("type") == "range") {
+              if (key != "#voice_speed_input"){
+                // volume and pitch must be multiplied by 100 to so that we get a proper range...
+                data[key] *= 100
+              }
+              $(key).val(data[key])
+            } else if ($(key).attr("type") == "text") {
+              $(key).val(data[key])
+            }
+
           } else if ($(key).get(0).nodeName == "SELECT") {
-            // TODO
-            console.log(key, data[key]);
+            // autonomous state and engagement mode
+            //console.log(key, data[key]);
+            $(key).val(data[key]);
           }
         });
       }
