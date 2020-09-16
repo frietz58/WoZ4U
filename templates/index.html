@@ -131,6 +131,11 @@
           $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
           $("#toggle_btn_" + setting).addClass("example_c_red"); // give class for succes
         } else {
+          if (setting == "blinking") {
+            if (document.getElementById("autonomous_states").value != "interactive") {
+              alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
+            }
+          }
           $("#toggle_btn_" + setting).html("ON")
           $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
           $("#toggle_btn_" + setting).addClass("example_c_green"); // give class for succes
@@ -947,6 +952,8 @@
           <td style="text-align: left;">: ALT + Arrow keys</td>
         </tr>
       </table>
+      <span>CTRL + BACKSPACE: Stop driving</span><br><br>
+
       <button 
         title="Put pepper in resting position"
         class="example_c" 
@@ -961,7 +968,9 @@
         onclick="netural_stand_position()">
        Neutral stand position
       </button>
-      <p>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></p>
+      <br><br>
+      <span>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></span>
+      
     </div>
     <br>
 
