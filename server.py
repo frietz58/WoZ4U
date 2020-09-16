@@ -417,7 +417,7 @@ def set_tts_param():
     print(value)
 
     if param == "pitchShift":
-        value = value // 100.0  # for pitch shift we need to adjust the range... nice consistency in the naoqi api >.<
+        value = value / 100.0  # for pitch shift we need to adjust the range... nice consistency in the naoqi api >.<
         print(value)
         tts_srv.setParameter(param, value)
     else:
