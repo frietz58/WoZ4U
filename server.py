@@ -52,8 +52,8 @@ def connect_robot():
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
     volume_lvl = tts_srv.getVolume()
-    voice_pitch = tts_srv.getParameter("pitchShift")
-    voice_pitch = round(voice_pitch, 3)
+    voice_pitch = round(tts_srv.getParameter("pitchShift"), 3)
+    voice_speed = round(tts_srv.getParameter("speed"), 3)
 
     autonomous_state = al_srv.getState()
 
@@ -97,6 +97,7 @@ def connect_robot():
         "legs_breathing": legs_breathing,
         "volume_lvl": volume_lvl,
         "voice_pitch": voice_pitch,
+        "voice_speed": voice_speed,
         "velocity_vector": vel_vec
     }
 

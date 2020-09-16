@@ -74,6 +74,7 @@
         $("#autonomous_states").val(data["autonomous_state"]);
         $("#volume_slider").val(data["volume_lvl"] * 100)
         $("#voice_pitch_input").val(data["voice_pitch"] * 100)
+        $("#voice_speed_input").val(data["voice_speed"])
 
         toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
         toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
@@ -349,7 +350,6 @@
         $("#voice_speed_input").val(100);
       } else {
         target_val = $("#voice_speed_input").val();
-
       }
     } else {
       if (reset) {
