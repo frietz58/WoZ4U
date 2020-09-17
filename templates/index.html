@@ -31,7 +31,6 @@
           } else  if ($(key).get(0).nodeName == "SPAN"){
             // motion vector
             $(key).text("[" + data[key].toString() + "]")
-
           } else if ($(key).get(0).nodeName == "INPUT") {
             if ($(key).attr("type") == "range") {
               if (key != "#voice_speed_input"){
@@ -45,7 +44,6 @@
                 $(key).val(data[key])
               }
             } 
-
           } else if ($(key).get(0).nodeName == "SELECT") {
             // autonomous state and engagement mode
             if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
@@ -70,35 +68,19 @@
     $.getJSON( // async call flask function with arguments
       "/connect_robot?ip=" + robot_ip,
       function(data) {
-        console.log(data);
-
-        $("#tangential_collision").val(data["tangential_collision"])
-        $("#orthogonal_collision").val(data["orthogonal_collision"])
-
-        $("#autonomous_states").val(data["autonomous_state"]);
-        $("#volume_slider").val(data["volume_lvl"] * 100)
-        $("#voice_pitch_input").val(data["voice_pitch"] * 100)
-        $("#voice_speed_input").val(data["voice_speed"])
-
-        toggle_btn_handle("#toggle_btn_blinking", data["blinking_enabled"])
-        toggle_btn_handle("#toggle_btn_basic_awareness", data["ba_is_running"])
-        toggle_btn_handle("#toggle_btn_head_breathing", data["head_breathing"])
-        toggle_btn_handle("#toggle_btn_arms_breathing", data["arms_breathing"])
-        toggle_btn_handle("#toggle_btn_body_breathing", data["body_breathing"])
-        toggle_btn_handle("#toggle_btn_legs_breathing", data["legs_breathing"])
-
-        $("#motion_vector").text("[" + data["velocity_vector"].toString() + "]")
-
+        console.log(data)
       }).done(function() {
-      $("#connect_btn").html("Connected"); // set btn text to ...
-      $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#connect_btn").addClass("example_c_green"); // give class for succes
+        update_states() // set all the dynamic values on the UI
+        
+        $("#connect_btn").html("Connected"); // set btn text
+        $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
+        $("#connect_btn").addClass("example_c_green"); // give class for succes
 
-      $(":button").prop('disabled', false); // enable all btns on successful connect
-      $(":input").prop('disabled', false); // enable all the inputs
+        $(":button").prop('disabled', false); // enable all btns on successful connect
+        $(":input").prop('disabled', false); // enable all the inputs
 
-      // periodically querry all states
-      setInterval(update_states, 5000);
+        // periodically querry all states
+        setInterval(update_states, 5000);
 
     }).fail(function() {
       $("#connect_btn").html("FAILURE"); // set btn text to ...

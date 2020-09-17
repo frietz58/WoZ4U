@@ -51,30 +51,6 @@ def connect_robot():
     
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
-    volume_lvl = tts_srv.getVolume()
-    voice_pitch = round(tts_srv.getParameter("pitchShift"), 3)
-    voice_speed = round(tts_srv.getParameter("speed"), 3)
-
-    autonomous_state = al_srv.getState()
-
-    engagement_state = ba_srv.getEngagementMode()
-    ba_runnning = ba_srv.isRunning()
-
-    blinking_enabled = ab_srv.isEnabled()
-
-    orthogonal_collision = motion_srv.getOrthogonalSecurityDistance()
-    orthogonal_collision = round(orthogonal_collision, 3)
-
-    tangential_collision = motion_srv.getTangentialSecurityDistance()
-    tangential_collision = round(tangential_collision, 3)
-
-    body_breathing = motion_srv.getBreathEnabled("Body")
-    legs_breathing = motion_srv.getBreathEnabled("Legs")
-    arms_breathing = motion_srv.getBreathEnabled("Arms")
-    head_breathing = motion_srv.getBreathEnabled("Head")
-
-    vel_vec = motion_srv.getRobotVelocity()
-    vel_vec = [round(vel, 3) for vel in vel_vec]
 
     # see if there are any old subscribers...
     if video_srv.getSubscribers():
@@ -85,20 +61,6 @@ def connect_robot():
     return {
         "status": "ok",
         "ip": ip,
-        "autonomous_state": autonomous_state,
-        "engagement_state": engagement_state,
-        "ba_is_running": ba_runnning,
-        "blinking_enabled": blinking_enabled,
-        "orthogonal_collision": orthogonal_collision,
-        "tangential_collision": tangential_collision,
-        "head_breathing": head_breathing,
-        "arms_breathing": arms_breathing,
-        "body_breathing": body_breathing,
-        "legs_breathing": legs_breathing,
-        "volume_lvl": volume_lvl,
-        "voice_pitch": voice_pitch,
-        "voice_speed": voice_speed,
-        "velocity_vector": vel_vec
     }
 
 def get_all_services(sess):
