@@ -40,13 +40,17 @@
               }
               $(key).val(data[key])
             } else if ($(key).attr("type") == "text") {
-              $(key).val(data[key])
-            }
+              // collision ranges...
+              if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+                $(key).val(data[key])
+              }
+            } 
 
           } else if ($(key).get(0).nodeName == "SELECT") {
             // autonomous state and engagement mode
-            //console.log(key, data[key]);
-            $(key).val(data[key]);
+            if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+              $(key).val(data[key]);
+            }
           }
         });
       }
@@ -114,11 +118,12 @@
       $("#auto_state_set").html("Set")
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_green"); // give class for succes
+      $("#auto_state_set").prop("has_uncommited_state", false)
     }).fail(function() {
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_red"); // give class for succes
       $("#auto_state_set").html("FAIL")
-
+      $("#auto_state_set").prop("has_uncommited_state", false)
     })
   }
 
@@ -270,10 +275,12 @@
       $("#engagement_state_set").html("Set")
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_green"); // give class for succes
+      $("#engagement_state_set").prop("has_uncommited_state", false)
     }).fail(function() {
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_red"); // give class for succes
       $("#engagement_state_set").html("FAIL")
+      $("#engagement_state_set").prop("has_uncommited_state", false)
 
     })
   }
@@ -373,6 +380,11 @@
     $(identifier).addClass("example_c_ongoing")
   }
 
+  function add_uncommited_flag(identifier) {
+    console.log("adding uncommited flag", identifier)
+    $(identifier).prop("has_uncommited_state", true)
+  }
+
   function set_collision_avoidance(type) {
     // 
     bt_identifier = ""
@@ -400,6 +412,7 @@
       }).done(function() {
       $(bt_identifier).html("SET")
       $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+      $("#engagement_state").prop("has_uncommited_state", false)
     });
   }
 
@@ -429,8 +442,6 @@
 
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
-    console.log(event.key)
-
     // DRIVING
     if (event.altKey && event.key === "ArrowUp" && !event.shiftKey ) {
       $.getJSON(
@@ -620,7 +631,7 @@
         </div>
         
         <div class="btn_wrapper">
-          <select name="pepper_ips" id="autonomous_states" onchange="add_ongoing('#auto_state_set')">
+          <select name="pepper_ips" id="autonomous_states" oninput="add_ongoing('#auto_state_set'); add_uncommited_flag('#autonomous_states')">
             <option value="interactive">Interactive</option>
             <option value="solitary">Solitary</option>
             <option value="safeguard">Safeguard</option>
@@ -645,7 +656,7 @@
         placeholder="1" 
         id="tangential_collision" 
         style="width: 30%; float: left; margin-left: 10px;"
-        onchange="add_ongoing('#tangential_collision_set')">
+        oninput="add_ongoing('#tangential_collision_set'); add_uncommited_flag('#tangential_collision')">
         <button id="tangential_collision_set" onclick="set_collision_avoidance('tangential')" class="example_c">Set</button>
       </div>
       <br>
@@ -661,7 +672,7 @@
         placeholder="1" 
         id="orthogonal_collision" 
         style="width: 30%; float: left; margin-left: 10px;"
-        onchange="add_ongoing('#orthogonal_collision_set')">
+        oninput="add_ongoing('#orthogonal_collision_set'); add_uncommited_flag('#orthogonal_collision')">
         <button id="orthogonal_collision_set" onclick="set_collision_avoidance('orthogonal')" class="example_c">Set</button>
       </div>
       <br>
@@ -693,7 +704,7 @@
         <div class="btn_wrapper">
           <button 
           id="toggle_btn_basic_awareness" 
-          onclick="toggle_setting('basic_awareness')" 
+          oninput="toggle_setting('basic_awareness')" 
           class="example_c"
           title="Current status">
           On
@@ -713,7 +724,7 @@
           <select 
           name="engagement_state" 
           id="engagement_states"
-          onchange="add_ongoing('#engagement_state_set')">
+          oninput="add_ongoing('#engagement_state_set'); add_uncommited_flag('#engagement_states')">
             <option value="Unengaged">Unengaged</option>
             <option value="SemiEngaged">SemiEngaged</option>
             <option value="FullyEngaged">FullyEngaged</option>
@@ -729,7 +740,7 @@
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Head breathing: 
+            Head breathing: ""
           </a>
         </div>
         <div class="btn_wrapper">
