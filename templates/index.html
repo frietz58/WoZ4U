@@ -71,7 +71,7 @@
         console.log(data)
       }).done(function() {
         update_states() // set all the dynamic values on the UI
-        
+
         $("#connect_btn").html("Connected"); // set btn text
         $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
         $("#connect_btn").addClass("example_c_green"); // give class for succes
@@ -525,8 +525,8 @@
 
 
   // for reconnecting upon reload of site
-  {% if reconnect %}
-    console.log("reconnecting")
+  {% if reconnect_ip != "" %}
+    console.log("reconnecting to", '{{reconnect_ip}}')
     connect_robot(ip='{{reconnect_ip}}')
   {% endif %}
 

@@ -23,16 +23,17 @@ app = Flask(__name__)
 def index():
     try:
         global qi_session
-        if qi_session is not None:
-            print("Reconnect")
+        if qi_session is not None:  # if session already exists, fronted was just reloaded...
             global ip
-            print(ip)
-            return render_template("index.html", config=config, reconnect=True, reconnect_ip=ip)
+            return render_template("index.html", config=config, reconnect_ip=ip)
     except NameError:
-        return render_template('index.html', config=config, reconnect=False)
+        return render_template('index.html', config=config, reconnect_ip="")
 
 @app.route("/connect_robot")
 def connect_robot():
+    """
+    Connects to robot with given IP.
+    """
     global ip
     ip = request.args.get('ip', type=str)
     port = 9559
