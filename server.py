@@ -49,6 +49,15 @@ def connect_robot():
         print(msg)
 
     get_all_services(qi_session)
+
+    # almemory event subscribers
+    global tts_sub
+    tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
+    tts_sub.signal.connect(tts_callback)
+    
+    global s
+    s = tablet_srv.onPageStarted
+    s.connect(onSignal)
     
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
@@ -95,6 +104,13 @@ def connect_robot():
         "status": "ok",
         "ip": ip,
     }
+
+def tts_callback(value):
+    print("in tts callback")
+    print(value)
+
+def onSignal():
+  print("signal value")
 
 def get_all_services(sess):
     """
