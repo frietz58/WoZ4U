@@ -53,11 +53,43 @@ def connect_robot():
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
 
+    print(config["autonomous_life_config"])
+
+
+    # iterate over autonomous life configuration and set values...
+    for key in config["autonomous_life_config"].keys():
+        if config["autonomous_life_config"][key] == "":
+            continue
+        else:
+            if key == "autonomous_state":
+                al_srv.setState(config["autonomous_life_config"][key])
+            elif key == "tangential_collision":
+                motion_srv.setTangentialSecurityDistance(config["autonomous_life_config"][key])
+            elif key == "orthogonal_collision":
+                motion_srv.setOrthogonalSecurityDistance(config["autonomous_life_config"][key])
+            elif key == "blinking":
+                ab_srv.setEnabled(config["autonomous_life_config"][key])
+            elif key == "engagement_mode":
+                ba_srv.setEngagementMode(config["autonomous_life_config"][key])
+            elif key == "head_breathing":
+                motion_srv.setBreathEnabled("Head", config["autonomous_life_config"][key])
+            elif key == "arms_breathing":
+                motion_srv.setBreathEnabled("Arms", config["autonomous_life_config"][key])
+            elif key == "body_breathing":
+                motion_srv.setBreathEnabled("Body", config["autonomous_life_config"][key])
+            elif key == "legs_breathing":
+                motion_srv.setBreathEnabled("Legs", config["autonomous_life_config"][key])
+            elif key == "basic_awareness":
+                ba_srv.setEnabled(config["autonomous_life_config"][key])
+    # 
+    # for key, value in config["autonomous_life_config"]:
+    #     print(key, value)
+
     # see if there are any old subscribers...
-    if video_srv.getSubscribers():
-        for subscriber in video_srv.getSubscribers():
-            print("removing old video subscriber...")
-            video_srv.unsubscribe(subscriber)
+    # if video_srv.getSubscribers():
+    #    for subscriber in video_srv.getSubscribers():
+    #        print("removing old video subscriber...")
+    #        video_srv.unsubscribe(subscriber)
 
     return {
         "status": "ok",
@@ -124,7 +156,7 @@ def querry_states():
             "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3),
             "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3),
             "#toggle_btn_blinking": ab_srv.isEnabled(),
-            "#toggle_btn_basic_awareness": ba_srv.isRunning(),
+            "#toggle_btn_basic_awareness": ba_srv.isEnabled(),
             "#engagement_states": ba_srv.getEngagementMode(),
             "#toggle_btn_head_breathing": motion_srv.getBreathEnabled("Head"),
             "#toggle_btn_body_breathing": motion_srv.getBreathEnabled("Body"),
@@ -140,15 +172,32 @@ def querry_states():
 
 @app.route("/set_autonomous_state")
 def set_autonomous_state():
+    """
+    Sets the autunomous state
+    """
     state = request.args.get('state', type=str)
     print(state)
 
     al_srv.setState(state)
-    time.sleep(2)
 
     return {
        "status": "ok",
        "state": state 
+    }
+
+@app.route("/set_engagement_mode")
+def set_engagement_mode():
+    """
+    Sets the engagement mode
+    """
+    mode = request.args.get('mode', type=str)
+    print(mode)
+
+    ba_srv.setEngagementMode(mode)
+
+    return {
+       "status": "ok",
+       "mode": mode 
     }
 
 @app.route("/toggle_setting")
@@ -234,7 +283,6 @@ def serve_audio(filename):
     print(filename)
     return send_from_directory(config["audio_root_location"], filename)
 
-
 @app.route("/play_audio")
 def play_audio():
     # doesn't work :/
@@ -305,18 +353,6 @@ def clear_tablet():
         return {
             "status": "cleaned tablet webview"
         }
-
-@app.route("/set_engagement_state")
-def set_engagement_state():
-    state = request.args.get('state', type=str)
-    print(state)
-
-    ba_srv.setEngagementMode(state)
-
-    return {
-       "status": "ok",
-       "engagement_state": state 
-    }
 
 @app.route("/adjust_volume")
 def adjust_volume():
@@ -410,6 +446,7 @@ def set_collision_radius():
         "param": param,
         "value": value
     }
+
 @app.route("/update_pepper_velocities")
 def update_pepper_velocities():
         axis = request.args.get("axis", type=str)
@@ -529,7 +566,6 @@ def camera_view():
     imgClient = video_srv.subscribe("_client", resolution, colorSpace, 5)
 
     return render_template("camera.html")
-
 
 @app.route("/video_feed")
 def video_feed():

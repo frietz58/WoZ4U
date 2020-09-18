@@ -107,3 +107,18 @@ gestures:
 
 camera_save_dir: record_imgs
 audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+
+# AUTONOMOUS LIFE SETTINGS
+# Leave as empty string to not enforce anything on connection to robot
+# values must be valid for respective set methods in naoqi API...
+autonomous_life_config:
+  autonomous_state: "solitary"
+  tangential_collision: ""
+  orthogonal_collision: ""
+  blinking: True
+  basic_awareness: False  # gets enabled by default if pepper enters solitary or interactive state...
+  engagement_mode: ""
+  head_breathing: False  # I would advise always having this disabled, conflicts with manual head control...
+  arms_breathing: True
+  body_breathing: True
+  legs_breathing: True

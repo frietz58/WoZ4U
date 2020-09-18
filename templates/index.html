@@ -19,6 +19,9 @@
   }
 
   function update_states() {
+    /*
+    Gets states from Pepper and updates UI elements to reflect querried state
+    */
     $.getJSON(
       "/querry_states",
       function(data) {
@@ -55,26 +58,28 @@
     )
   }
 
-  //function connect_robot(robot_ip){
   function connect_robot(ip=""){
-    if (ip=="") {
+    if (ip=="") {  // depends on reconnect or not whether parameter is set...
       robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
     } else {
       robot_ip = ip
     }
 
-    $("#connect_btn").html("..."); // set btn text to ...
-    $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+    identifier = "#connect_btn"
+
+    $(identifier).html("..."); // set btn text to ...
+    $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/connect_robot?ip=" + robot_ip,
       function(data) {
         console.log(data)
+      
       }).done(function() {
         update_states() // set all the dynamic values on the UI
 
-        $("#connect_btn").html("Connected"); // set btn text
-        $("#connect_btn").removeClass("example_c_ongoing"); // remove class for ongoing
-        $("#connect_btn").addClass("example_c_green"); // give class for succes
+        $(identifier).html("Connected"); // set btn text
+        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+        $(identifier).addClass("example_c_green"); // give class for succes
 
         $(":button").prop('disabled', false); // enable all btns on successful connect
         $(":input").prop('disabled', false); // enable all the inputs
@@ -83,8 +88,8 @@
         setInterval(update_states, 5000);
 
     }).fail(function() {
-      $("#connect_btn").html("FAILURE"); // set btn text to ...
-      $("#connect_btn").css("background-color", "#E76F51"); // set color of button to red on fail  });
+      $(identifier).html("FAILURE"); // set btn text to ...
+      $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
     })
   };
 
@@ -175,9 +180,7 @@
   }
 
   function play_audio(name, index) {
-
     // depending on value of btn we either start playing audio or interrupt it
-
     console.log($("#audio_file_"+index).text())
 
     if ($("#audio_file_"+index).text() == "PLAY") {
@@ -245,11 +248,11 @@
   }
 
   function set_engagement_state() {
-    state = document.getElementById("engagement_states").value;
+    mode = document.getElementById("engagement_states").value;
     $("#engagement_state_set").html("...")
     $("#engagement_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
-      "/set_engagement_state?state=" + state,
+      "/set_engagement_mode?mode=" + mode,
       function(data) {
         console.log(data);
       }
@@ -522,8 +525,6 @@
     }
   });
 
-
-
   // for reconnecting upon reload of site
   {% if reconnect_ip != "" %}
     console.log("reconnecting to", '{{reconnect_ip}}')
@@ -686,7 +687,7 @@
         <div class="btn_wrapper">
           <button 
           id="toggle_btn_basic_awareness" 
-          oninput="toggle_setting('basic_awareness')" 
+          onclick="toggle_setting('basic_awareness')" 
           class="example_c"
           title="Current status">
           On
@@ -722,7 +723,7 @@
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Head breathing: ""
+            Head breathing:
           </a>
         </div>
         <div class="btn_wrapper">
