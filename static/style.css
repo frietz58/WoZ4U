@@ -37,7 +37,7 @@ a {
     'pepper_select            tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
     'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
     'autonomous_life_settings tablet tablet pepper_speech pepper_speech pepper_motion pepper_motion'
-    'footer                   footer footer footer        footer        footer        footer';
+    'autonomous_life_settings footer footer footer        footer        pepper_motion pepper_motion';
   grid-gap: 10px;
   background-color: var(--pal_blue);
   padding: 10px;
