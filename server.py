@@ -211,78 +211,42 @@ def set_engagement_mode():
 @app.route("/toggle_setting")
 def toggle_setting():
     setting = request.args.get('setting', type=str)
-    curr_state = request.args.get('curr_state', type=str)
-
     print(setting)
-    print(curr_state)
 
     new_state = None
     if setting == "blinking":
-        if curr_state == "ON":
-            ab_srv.setEnabled(False)
-        else:
-            ab_srv.setEnabled(True)
-        
+        ab_srv.setEnabled(not ab_srv.isEnabled())
         new_state = ab_srv.isEnabled()
 
-    elif setting == "head_breathing":
-        if curr_state == "ON":
-            motion_srv.setBreathEnabled("Head", False)
-        else:
-            motion_srv.setBreathEnabled("Head", True)
-        
+    elif setting == "head_breathing":      
+        motion_srv.setBreathEnabled("Head", not motion_srv.getBreathEnabled("Head"))
         new_state = motion_srv.getBreathEnabled("Head")
 
     elif setting == "arms_breathing":
-        if curr_state == "ON":
-            motion_srv.setBreathEnabled("Arms", False)
-        else:
-            motion_srv.setBreathEnabled("Arms", True)
-        
+        motion_srv.setBreathEnabled("Arms", not motion_srv.getBreathEnabled("Arms"))
         new_state = motion_srv.getBreathEnabled("Arms")
 
     elif setting == "body_breathing":
-        if curr_state == "ON":
-            motion_srv.setBreathEnabled("Body", False)
-        else:
-            motion_srv.setBreathEnabled("Body", True)
-        
+        motion_srv.setBreathEnabled("Body", not motion_srv.getBreathEnabled("Body"))
         new_state = motion_srv.getBreathEnabled("Body")
 
     elif setting == "legs_breathing":
-        if curr_state == "ON":
-            motion_srv.setBreathEnabled("Legs", False)
-        else:
-            motion_srv.setBreathEnabled("Legs", True)
-
+        motion_srv.setBreathEnabled("Legs", not motion_srv.getBreathEnabled("Legs"))
         new_state = motion_srv.getBreathEnabled("Legs")
 
     elif setting == "basic_awareness":
-        if curr_state == "ON":
-            ba_srv.setEnabled(False)
-        else:
-            ba_srv.setEnabled(True)
-    
+        ba_srv.setEnabled(not ba_srv.isEnabled())
         new_state = ba_srv.isEnabled()
 
     elif setting == "listening":
-        if curr_state == "ON":
-            lm_srv.setEnabled(False)
-        else:
-            lm_srv.setEnabled(True)
-
+        lm_srv.setEnabled(not lm_srv.isEnabled())
         new_state = lm_srv.isEnabled()
 
     elif setting == "speaking":
-        if curr_state == "ON":
-            sm_srv.setEnabled(False)
-        else:
-            sm_srv.setEnabled(True)
-        
+        sm_srv.setEnabled(not sm_srv.isEnabled())
         new_state = sm_srv.isEnabled()
 
-    # TODO: toggle setting
-    time.sleep(2)
+    time.sleep(1)
 
     return {
         "status": "ok",

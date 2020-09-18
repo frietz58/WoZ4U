@@ -10,10 +10,12 @@
     if (bool) {
       $(identifier).addClass("example_c_green");
       $(identifier).removeClass("example_c_red");
+      $(identifier).removeClass("example_c_ongoing");
       $(identifier).html(onText)
     } else {
       $(identifier).addClass("example_c_red");
       $(identifier).removeClass("example_c_green");
+      $(identifier).removeClass("example_c_ongoing");
       $(identifier).html(offText)
     }
   }
@@ -115,33 +117,23 @@
   }
 
   function toggle_setting(setting){
-    $("#toggle_btn_" + setting).addClass("example_c_ongoing"); // give it the css class for "processing"
-    $("#toggle_btn_" + setting).removeClass("example_c_green"); // remove class for ongoing
-    $("#toggle_btn_" + setting).removeClass("example_c_red"); // remove class for ongoing
+    identifier = "#toggle_btn_" + setting
+    $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
+    $(identifier).removeClass("example_c_green"); // remove class for ongoing
+    $(identifier).removeClass("example_c_red"); // remove class for ongoing
+    $(identifier).html("...")
 
-    let curr_state =  $("#toggle_btn_" + setting).html()
-
-    $("#toggle_btn_" + setting).html("...")
-
-    let url = "/toggle_setting?setting=" + setting + "&curr_state=" + curr_state
+    let url = "/toggle_setting?setting=" + setting
     console.log(url)
     $.getJSON( // async call flask function with arguments
       url,
       function(data) {
         console.log(data);
-        if (curr_state == "ON") {
-          $("#toggle_btn_" + setting).html("Off")
-          $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
-          $("#toggle_btn_" + setting).addClass("example_c_red"); // give class for succes
-        } else {
-          if (setting == "blinking") {
-            if (document.getElementById("autonomous_states").value != "interactive") {
+        toggle_btn_handle(identifier, data["new_state"])
+        if (setting == "blinking" && data["new_state"]) {
+          if (document.getElementById("autonomous_states").value != "interactive") {
               alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
             }
-          }
-          $("#toggle_btn_" + setting).html("ON")
-          $("#toggle_btn_" + setting).removeClass("example_c_ongoing"); // remove class for ongoing
-          $("#toggle_btn_" + setting).addClass("example_c_green"); // give class for succes
         }
       }
     )
