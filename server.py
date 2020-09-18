@@ -142,6 +142,12 @@ def get_all_services(sess):
     global mem_srv
     mem_srv = qi_session.service("ALMemory")
 
+    global lm_srv
+    lm_srv = qi_session.service("ALListeningMovement")
+
+    global sm_srv
+    sm_srv = qi_session.service("ALSpeakingMovement")
+
 @app.route("/querry_states")
 def querry_states():
     """
@@ -165,7 +171,9 @@ def querry_states():
             "#volume_slider": tts_srv.getVolume(),
             "#voice_speed_input": tts_srv.getParameter("speed"),
             "#voice_pitch_input": tts_srv.getParameter("pitchShift"),
-            "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()]
+            "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()],
+            "#toggle_btn_listening": lm_srv.isEnabled(),
+            "#toggle_btn_speaking": sm_srv.isEnabled()
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -256,6 +264,22 @@ def toggle_setting():
             ba_srv.setEnabled(True)
     
         new_state = ba_srv.isEnabled()
+
+    elif setting == "listening":
+        if curr_state == "ON":
+            lm_srv.setEnabled(False)
+        else:
+            lm_srv.setEnabled(True)
+
+        new_state = lm_srv.isEnabled()
+
+    elif setting == "speaking":
+        if curr_state == "ON":
+            sm_srv.setEnabled(False)
+        else:
+            sm_srv.setEnabled(True)
+        
+        new_state = sm_srv.isEnabled()
 
     # TODO: toggle setting
     time.sleep(2)
