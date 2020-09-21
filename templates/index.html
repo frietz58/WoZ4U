@@ -199,17 +199,8 @@
       $("#audio_file_"+index).html("STOP");
       $("#audio_file_"+index).addClass("example_c_ongoing");
 
-      // this is terrible, but because we have the 1s sleep where we wait for the tablet browser to spawn,
-      // if someone double clicks play, the frontend resets (which would be correct), but the request to stop playing
-      // get lost, because the backend is still int he 1s sleep...
-      // to avoid, disable the btn for 1.5s >.<
-      $("#audio_file_"+index).prop("disabled", true)
-      setTimeout(function() {
-        $("#audio_file_"+index).prop("disabled", false)
-      }, 1500)
-
-      $("[id^=image_btn_]").prop('disabled', true); // disable the image show btns, they destroy the audio context
       $("[id^=audio_file_]").prop('disabled', true); // also disable all the other sounds btns...
+      $("#audio_file_"+index).prop("disabled", false)
 
       console.log(name)
       console.log(index)
@@ -918,29 +909,6 @@
         </td>
       </tr>
     </table>
-
-    <!--
-    <div class="row">
-      <span>Adjust volume</span>
-      <input id="volume_slider" type="range" min="1" max="100" value="50" onchange="setVolume()">
-    </div>
-    <br>
-
-    <div class="row">
-      <span>Voice speed</span>
-      <input id="voice_speed_input" type="range" min="50" max="400" value="100" onchange="set_tts_param('speed')">
-      <button class="example_c" onclick="set_tts_param('speed', reset=true)">RESET</button>
-
-    </div>
-    <br>
-
-    <div class="row">
-      <span>Voice pitch</span>
-      <input id="voice_pitch_input" type="range" min="1" max="400" value="100" onchange="set_tts_param('pitchShift')">
-      <button class="example_c" onclick="set_tts_param('pitchShift', reset=true)">RESET</button>
-    </div>
-    <br>
-    -->
     
     <!-- COLUMN 1: SPEECH-->
     <div style="width: 50%; float: left;">

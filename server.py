@@ -312,9 +312,6 @@ def serve_audio(filename):
 
 @app.route("/play_audio")
 def play_audio():
-    # doesn't work :/
-    # ap_srv = qi_session.service("ALAudioPlayer")
-    # ap_srv.playWebStream("https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav", 0.1, 0.0)
 
     index = request.args.get('index', type=int)
     print(index)
@@ -323,39 +320,11 @@ def play_audio():
 
     location = config["audio_files"][index]["location"]
     
-    if distinguish_path(location) == "is_abs_path":
-        # stored locally on pepper, here we can nicely use the ALAudio_player
-        audio_file = audio_player.loadFile(location)
-        audio_player.setVolume(audio_file, tts_srv.getVolume())
-        audio_player.play(audio_file)
-
-        # TODO I think it would be best to just remove the possability to play remote sound sources...
-        # locally storing the files is just much nicer...
-    else:
-        #  here need something on the tablet to be able to play the sound
-        tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
-        tablet_state["showing"] = "sound_playing.png"
-
-        time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
-
-        if distinguish_path(location) == "is_rel_path": 
-            # if the file is stored on the host machine...
-            location = "http://130.239.183.189:5000/serve_audio/" + location  # TODO dynamic IP
-            print(location)
-
-        volume = tts_srv.getVolume()
-
-        js_code = """
-            var audio = new Audio('{}'); 
-            audio.volume = {};
-            audio.play();""".format(location, volume)
-
-
-        tablet_srv.executeJS(js_code)
-        time.sleep(60)  # TODO: dynamic length 
-        
-        tablet_srv.hideWebview()
-        tablet_state["showing"] = None
+    # stored locally on pepper, here we can nicely use the ALAudio_player
+    audio_file = audio_player.loadFile(location)
+    audio_player.setVolume(audio_file, tts_srv.getVolume())
+    audio_player.play(audio_file)
+    audio_player.unloadAllFiles()
 
     return {
        "status": "ok",
@@ -365,9 +334,11 @@ def play_audio():
 def stop_sound_play():
 
     audio_player.stopAll()
-    ret = show_default_img_or_hide()
+    audio_player.unloadAllFiles()
 
-    return ret
+    return {
+        "status": "stopped all sounds that were playing"
+    }
 
 @app.route("/show_img/<img_name>")
 def show_img(img_name):
@@ -411,10 +382,14 @@ def adjust_volume():
     target = target / 100.0  # slider range is 1 - 100, api wants 0 - 1 
 
     tts_srv.setVolume(target)
+    currently_playing = audio_player.getLoadedFilesIds()
+    for file in currently_playing:
+        audio_player.setVolume(int(file), tts_srv.getVolume())
 
     return {
         "status": "ok",
-        "volume": target
+        "volume": target,
+        "currently playing audio files": currently_playing
     } 
 
 @app.route("/exec_anim_speech")
