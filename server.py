@@ -163,6 +163,9 @@ def get_all_services(sess):
     global audio_player
     audio_player = qi_session.service("ALAudioPlayer")
 
+    global led_srv
+    led_srv = qi_session.service("ALLeds")
+
 @app.route("/querry_states")
 def querry_states():
     """
@@ -708,6 +711,71 @@ def face_detect_stream():
                 }
 
         print(result)
+
+@app.route("/set_led_intensity")
+def set_led_intensity():
+    group = request.args.get('led_group', type=str)
+    intensity = request.args.get('intensity', type=float)
+    intensity = intensity / 100.0
+    print(group)
+    print(intensity)
+    led_srv.setIntensity(group, intensity)
+
+    return {
+        "staus": "updated led intensity",
+        "LED group": group,
+        "intensity": intensity
+    }
+
+@app.route("/set_led_color")
+def set_led_color():
+    group = request.args.get('group', type=str)
+    r = request.args.get('r', type=int)
+    g = request.args.get('g', type=int)
+    b = request.args.get('b', type=int)
+
+    r = r / 250.0
+    g = g / 250.0
+    b = b / 250.0
+
+    print(r, g, b)
+    print(group)
+
+    led_srv.fadeRGB(group, r, g, b, 0.5)
+
+    return {
+        "staus": "updated led color",
+        "LED group": group,
+        "r": r,
+        "g": g,
+        "b": b
+    }
+
+@app.route("/exec_eye_anim")
+def exec_eye_anim():
+    anim = request.args.get('anim', type=str)
+    duration = request.args.get('secs', type=str)
+    duration = float(duration)
+    if anim == "randomEyes":
+        led_srv.randomEyes(duration)
+    elif anim == "rasta":
+        led_srv.rasta(duration)
+    elif anim == "rotateEyes":
+        hex_val = request.args.get('hex_val', type=str)
+
+        # transform hex string to porper hex int, as required for api call
+        hex_int = int(hex_val, 16)
+        final_hex_int = hex_int + 0x200
+
+        round_time = 1.0
+        led_srv.rotateEyes(final_hex_int, round_time, float(duration))
+
+    # TODO restore default eye state (or the state that we had before playign the anim) otherwise it stays in last configuration
+
+    return {
+        "status": "eye anim",
+        "animation": anim
+    }
 
                 
 

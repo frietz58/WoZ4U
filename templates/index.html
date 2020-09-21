@@ -453,6 +453,81 @@
     )
   }
 
+  function setLedIntensity() {
+    group = document.getElementById("pepper_select_led_group").value
+    intensity = $("#intensity_slider").val()
+    url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity
+
+    if ($("#toggle_btn_blinking").html() == "ON") {
+              alert("Blinking resets intensity, consider disabling the setting!")
+    }
+
+    $.getJSON(
+      url,
+      function(data) {
+        console.log(data)
+      }
+    )
+  }
+
+
+function hexToRGB (hex){
+    if(hex.length != 6){
+        throw "Only six-digit hex colors are allowed.";
+    }
+
+    var aRgbHex = hex.match(/.{1,2}/g);
+    var aRgb = [
+        parseInt(aRgbHex[0], 16),
+        parseInt(aRgbHex[1], 16),
+        parseInt(aRgbHex[2], 16)
+    ];
+    return aRgb;
+}
+
+  function set_eye_led_color() {
+    hex_val = document.getElementById("eye_led_colorpicker").value;
+    hex_val = hex_val.replace("#", "")
+    rgb_components = hexToRGB(hex_val)
+    r = rgb_components[0]
+    g = rgb_components[1]
+    b = rgb_components[2]
+
+    group = document.getElementById("pepper_select_led_group").value
+
+    url = "/set_led_color?r=" + r + "&g=" + g + "&b=" + b + "&group=" + group
+    $.getJSON(
+      url,
+      function(data) {
+        console.log(data)
+      }
+    ).done(function() {
+      $("#eye_led_color_btn").removeClass("example_c_ongoing")
+    })
+  } 
+
+  function exec_eye_anim() {
+    anim = document.getElementById("eye_anim_select").value;
+    hex_val = document.getElementById("eye_led_colorpicker").value;
+    hex_val = hex_val.replace("#", "0x")
+    duration = document.getElementById("eye_anim_duration").value;
+
+    $("#eye_anim_btn").addClass("example_c_ongoing")
+    $("#eye_anim_btn").html("...")
+
+    url = "/exec_eye_anim?anim=" + anim + "&hex_val=" + hex_val + "&secs=" + duration
+    console.log(url)
+    $.getJSON(
+      url,
+      function(data) {
+        console.log(data)
+      }
+    ).done(function() {
+      $("#eye_anim_btn").removeClass("example_c_ongoing")
+      $("#eye_anim_btn").html("EXECUTE")
+    })
+  }
+
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
     // DRIVING
@@ -1087,27 +1162,48 @@
 
   <!-- Footer -->
   <div class="footer">
-    <h2>Other</h2>
+    <h2>Eye control</h2>
 
     <div class="col_one_of_three">
 
       <div class="row">
         <div class="btn_label_wrapper">
-          <span>Toggle eye light</span>
+          <span>LED Group</span>
         </div>
-        <div class="btn_wrapper">
-          <button onclick="myFunction()" class="example_c">On</button>
-        </div>
+        <select name="led_groups" id="pepper_select_led_group">
+            <option value="LeftFaceLeds">Left</option>
+            <option value="RightFaceLeds">Right</option>
+            <option value="FaceLeds">Both</option>
+        </select>
       </div>
       <br>
 
       <div class="row">
         <div class="btn_label_wrapper">
-          <span>Toggle ear light</span>
+          Intensity
         </div>
-        <div class="btn_wrapper">
-          <button onclick="myFunction()" class="example_c">On</button>
+        <div class="btn_label_wrapper">
+          <input 
+            id="intensity_slider" 
+            type="range" 
+            min="1" max="100" value="50" 
+            onchange="setLedIntensity()"
+            style="width: 100%;">
         </div>
+      </div>
+    </div>
+
+    <div class="col_one_of_three">
+      <div class="row">
+        <div class="btn_label_wrapper">
+          RGB
+        </div>
+        <input type="color" id="eye_led_colorpicker" name="head" value="#e66465" oninput="add_ongoing('#eye_led_color_btn'); add_uncommited_flag('#eye_led_color_btn')">
+      </div>
+      <br>
+
+      <div class="row">
+        <button id="eye_led_color_btn" class="example_c" onclick="set_eye_led_color()">Set</button>
       </div>
       <br>
 
@@ -1115,25 +1211,34 @@
 
     <div class="col_one_of_three">
       <div class="row">
-        <button class="example_c">Arbitrary action 0</button>
+        <div class="btn_label_wrapper">
+          <span>Animation</span>
+        </div>
+        <select id="eye_anim_select">
+            <option value="rotateEyes">Rotate Eyes</option>
+            <option value="rasta">Rasta</option>
+            <option value="randomEyes">Random</option>
+        </select>
       </div>
       <br>
 
       <div class="row">
-        <button class="example_c">Arbitrary action 1</button>
+        <div class="btn_label_wrapper">
+          <span>Duration</span>
+        </div>
+        <input 
+          type="text" 
+          value="5"
+          placeholder="5 seconds"
+          id="eye_anim_duration" 
+          style="width: 30%; float: left; margin-left: 10px;"
+        >
       </div>
       <br>
-
-    </div>
-
-    <div class="col_one_of_three">
-      <div class="row">
-        <button class="example_c">Arbitrary action 2</button>
-      </div>
       <br>
 
       <div class="row">
-        <button class="example_c">Arbitrary action 3</button>
+        <button id="eye_anim_btn" class="example_c" onclick="exec_eye_anim()">Execute</button>
       </div>
       <br>
 
