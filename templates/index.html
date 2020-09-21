@@ -124,6 +124,7 @@
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_green"); // give class for succes
       $("#auto_state_set").prop("has_uncommited_state", false)
+      update_states()
     }).fail(function() {
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_red"); // give class for succes
@@ -151,8 +152,9 @@
               alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
             }
         }
-      }
-    )
+      }).done(function() {
+        update_states()
+      })
   }
 
   function say_custom_text() {
@@ -169,6 +171,7 @@
     ).done(function() {
       $("#custom_text_btn").html("Say it")
       $("#custom_text_btn").removeClass("example_c_ongoing")
+      update_states()
     })
   }
 
@@ -184,6 +187,7 @@
     ).done(function() {
       $("#voice_cmd_"+index).html("Say it")
       $("#voice_cmd_"+index).removeClass("example_c_ongoing")
+      update_states()
     })
   }
 
@@ -208,6 +212,9 @@
     ).done(function() {
       $("#audio_file_"+index).html("PLAY")
       $("#audio_file_"+index).removeClass("example_c_ongoing")
+      $("[id^=image_btn_]").prop('disabled', false);
+      $("[id^=audio_file_]").prop('disabled', false);
+      update_states()
     })
 
     } else {
@@ -220,6 +227,8 @@
           $("#audio_file_"+index).html("PLAY");
           $("#audio_file_"+index).removeClass("example_c_ongoing")
           $("[id^=image_btn_]").prop('disabled', false);
+          $("[id^=audio_file_]").prop('disabled', false);
+          update_states()
       })
     }
   }
@@ -235,6 +244,7 @@
       }).done(function() {
         $("#image_btn_"+index).html("HIDE"); // set btn text
         $("#image_btn_"+index).addClass("example_c_ongoing")
+        update_states()
       })
     } else {
       // clear the image from the tablet
@@ -245,6 +255,7 @@
         }).done(function() {
           $("#image_btn_"+index).html("SHOW"); // set btn text
           $("#image_btn_"+index).removeClass("example_c_ongoing")
+          update_states()
       })
     }
     
@@ -272,6 +283,7 @@
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_green"); // give class for succes
       $("#engagement_state_set").prop("has_uncommited_state", false)
+      update_states()
     }).fail(function() {
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_red"); // give class for succes
@@ -307,6 +319,7 @@
     ).done(function() {
       $("#anim_speech_btn_" + index).html("EXECUTE")
       $("#anim_speech_btn_" + index).removeClass("example_c_ongoing"); // remove class for ongoing
+      update_states()
     });
   }
 
@@ -321,6 +334,7 @@
     ).done(function() {
       $("#gesture_btn_" + index).html("EXECUTE")
       $("#gesture_btn_" + index).removeClass("example_c_ongoing"); // remove class for ongoing
+      update_states()
     });
   }
 
@@ -343,6 +357,7 @@
     ).done(function() {
       $("#custom_gesture_btn").html("EXECUTE")
       $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
+      update_states()
     });
   }
 
@@ -409,6 +424,7 @@
       $(bt_identifier).html("SET")
       $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state").prop("has_uncommited_state", false)
+      update_states()
     });
   }
 
