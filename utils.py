@@ -2,12 +2,13 @@ from PIL import Image
 import io
 
 
-def is_url(path):
-    # determines whether a path is a url or not
+def distinguish_path(path):
     if "http" in path:
-        return True
+        return "is_url"
+    elif path[0] == '/':
+        return "is_abs_path"
     else:
-        return False
+        return "is_rel_path"
 
 def alImage_to_PIL(alImg):
     """

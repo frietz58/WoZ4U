@@ -44,22 +44,27 @@ images:
     file_name: sound_playing.png
 
 
-audio_root_location: static/audio  # place audio files here
+audio_root_location: static/audio  # place audio files here to host on your machine
 audio_files:
+  # how you provide the location for every file is important!
+  # if you provide an absolute path, the file is assumed to be stored on the Pepper directly
+  # a relative path is assumed to be stored in audio_root_location
+  # an url is assumed to be stored remotely
+  # (see distinguish_path() methods in utils and how it is used in server.py)
   -
-    title: Imperial March
-    location: ImperialMarch60.wav  # locally saved .wav file
+    title: Imperial March HOST
+    location: ImperialMarch60.wav  # .wav file stored on host machine
   - 
-    title: Cantina band
-    location: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav  # remote url also possible
+    title: Cantina band LOCAL
+    location: /home/nao/sound_files/CantinaBand60.wav  # .wav stored on pepper directly, RECOMMENDED FOR MOST CONTROL
+  -
+    title: Star Wars LOCAL
+    location: /home/nao/sound_files/StarWars60.wav
   - 
-    title: Pink Panther
-    location: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav
+    title: Pink Panther REMOTE
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav  # remote resoucres also possible
   -
-    title: Star Wars
-    location: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
-  -
-    title: Elephant walking
+    title: Elephant walking REMOTE
     location: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
 
 animated_speech:

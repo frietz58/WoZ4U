@@ -7,7 +7,7 @@ from datetime import datetime
 import os
 import numpy as np
 
-from utils import is_url
+from utils import distinguish_path
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
 
@@ -159,6 +159,9 @@ def get_all_services(sess):
 
     global sm_srv
     sm_srv = qi_session.service("ALSpeakingMovement")
+
+    global audio_player
+    audio_player = qi_session.service("ALAudioPlayer")
 
 @app.route("/querry_states")
 def querry_states():
@@ -318,34 +321,53 @@ def play_audio():
 
     print("playing sound")
 
-    tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
-    tablet_state["showing"] = "sound_playing.png"
-
-    time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
-
     location = config["audio_files"][index]["location"]
-
-    if not is_url(location):
-        location = "http://130.239.183.189:5000/serve_audio/" + location
-        print(location)
-
-    volume = tts_srv.getVolume()
-
-    js_code = """
-        var audio = new Audio('{}'); 
-        audio.volume = {};
-        audio.play();""".format(location, volume)
-
-
-    tablet_srv.executeJS(js_code)
-    time.sleep(60)  # TODO: dynamic length 
     
-    tablet_srv.hideWebview()
-    tablet_state["showing"] = None
+    if distinguish_path(location) == "is_abs_path":
+        # stored locally on pepper, here we can nicely use the ALAudio_player
+        audio_file = audio_player.loadFile(location)
+        audio_player.setVolume(audio_file, tts_srv.getVolume())
+        audio_player.play(audio_file)
+
+        # TODO I think it would be best to just remove the possability to play remote sound sources...
+        # locally storing the files is just much nicer...
+    else:
+        #  here need something on the tablet to be able to play the sound
+        tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
+        tablet_state["showing"] = "sound_playing.png"
+
+        time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
+
+        if distinguish_path(location) == "is_rel_path": 
+            # if the file is stored on the host machine...
+            location = "http://130.239.183.189:5000/serve_audio/" + location  # TODO dynamic IP
+            print(location)
+
+        volume = tts_srv.getVolume()
+
+        js_code = """
+            var audio = new Audio('{}'); 
+            audio.volume = {};
+            audio.play();""".format(location, volume)
+
+
+        tablet_srv.executeJS(js_code)
+        time.sleep(60)  # TODO: dynamic length 
+        
+        tablet_srv.hideWebview()
+        tablet_state["showing"] = None
 
     return {
        "status": "ok",
     }
+
+@app.route("/stop_sound_play")
+def stop_sound_play():
+
+    audio_player.stopAll()
+    ret = show_default_img_or_hide()
+
+    return ret
 
 @app.route("/show_img/<img_name>")
 def show_img(img_name):

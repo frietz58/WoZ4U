@@ -230,7 +230,7 @@
     } else {
       // clearing the tablet removes the browser context though which the js audio signal is being played...
       $.getJSON(
-        "/clear_tablet",
+        "/stop_sound_play",
         function(data) {
           console.log(data)
         }).done(function() {
