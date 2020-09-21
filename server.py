@@ -19,6 +19,11 @@ from urlparse import unquote
 
 app = Flask(__name__)
 
+global tablet_state
+tablet_state = {
+    "showing": None
+}
+
 @app.route('/')
 def index():
     try:
@@ -61,8 +66,6 @@ def connect_robot():
     
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
-
-    print(config["autonomous_life_config"])
 
 
     # iterate over autonomous life configuration and set values...
@@ -189,7 +192,8 @@ def querry_states():
             "#voice_pitch_input": tts_srv.getParameter("pitchShift"),
             "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()],
             "#toggle_btn_listening": lm_srv.isEnabled(),
-            "#toggle_btn_speaking": sm_srv.isEnabled()
+            "#toggle_btn_speaking": sm_srv.isEnabled(),
+            "tablet_state": tablet_state
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -296,7 +300,10 @@ def play_audio():
     index = request.args.get('index', type=int)
     print(index)
 
+    print("playing sound")
+
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/sound_playing.png")
+    tablet_state["showing"] = "sound_playing.png"
 
     time.sleep(1)  # to ensure that tablet is ready, otherwise audio might not play...
 
@@ -305,7 +312,6 @@ def play_audio():
     if not is_url(location):
         location = "http://130.239.183.189:5000/serve_audio/" + location
         print(location)
-
 
     volume = tts_srv.getVolume()
 
@@ -318,6 +324,7 @@ def play_audio():
     tablet_srv.executeJS(js_code)
     time.sleep(60)  # TODO: dynamic length 
     tablet_srv.hideWebview()
+    tablet_state["showing"] = None
 
     return {
        "status": "ok",
@@ -329,14 +336,13 @@ def show_img(img_name):
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
     # TODO: get IP dynamicaly
     tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + img_name)
+    tablet_state["showing"] = img_name
 
     # this works as well...:
     # js_code = """
     #    var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
     #    audio.volume = 0.1;
     #    audio.play();"""
-
-    # tablet_srv.executeJS(js_code)
 
     return {
        "status": "ok",
@@ -353,6 +359,7 @@ def show_img_page(img_name):
 @app.route("/clear_tablet")
 def clear_tablet():
         tablet_srv.hideWebview()
+        tablet_state["showing"] = None
 
         return {
             "status": "cleaned tablet webview"

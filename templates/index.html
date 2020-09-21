@@ -31,28 +31,44 @@
         Object.keys(data).forEach(key => {
           // console.log(key, data[key]);
           // console.log($(key).get(0).nodeName)
-          if ($(key).get(0).nodeName == "BUTTON") {
-            toggle_btn_handle(key, data[key])
-          } else  if ($(key).get(0).nodeName == "SPAN"){
-            // motion vector
-            $(key).text("[" + data[key].toString() + "]")
-          } else if ($(key).get(0).nodeName == "INPUT") {
-            if ($(key).attr("type") == "range") {
-              if (key != "#voice_speed_input"){
-                // volume and pitch must be multiplied by 100 to so that we get a proper range...
-                data[key] *= 100
+          if (key == "tablet_state") { // handling this is different from the actual html elements
+            console.log(key, data[key]);
+            // iterate over image btns
+            $("[id^=image_btn_]").each(function(index){
+              id = "#image_btn_" + index;
+              if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
+                $(id).html("HIDE");
+                $(id).addClass("example_c_ongoing")
+              } else {
+                // if another btn in front still indicates being active, reset that
+                $(id).html("SHOW"); // set btn text
+                $(id).removeClass("example_c_ongoing")
               }
-              $(key).val(data[key])
-            } else if ($(key).attr("type") == "text") {
-              // collision ranges...
-              if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+            })
+          } else {
+            if ($(key).get(0).nodeName == "BUTTON") {
+              toggle_btn_handle(key, data[key])
+            } else  if ($(key).get(0).nodeName == "SPAN"){
+              // motion vector
+              $(key).text("[" + data[key].toString() + "]")
+            } else if ($(key).get(0).nodeName == "INPUT") {
+              if ($(key).attr("type") == "range") {
+                if (key != "#voice_speed_input"){
+                  // volume and pitch must be multiplied by 100 to so that we get a proper range...
+                  data[key] *= 100
+                }
                 $(key).val(data[key])
+              } else if ($(key).attr("type") == "text") {
+                // collision ranges...
+                if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+                  $(key).val(data[key])
+                }
+              } 
+            } else if ($(key).get(0).nodeName == "SELECT") {
+              // autonomous state and engagement mode
+              if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+                $(key).val(data[key]);
               }
-            } 
-          } else if ($(key).get(0).nodeName == "SELECT") {
-            // autonomous state and engagement mode
-            if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
-              $(key).val(data[key]);
             }
           }
         });
@@ -179,6 +195,8 @@
       $("#audio_file_"+index).html("STOP");
       $("#audio_file_"+index).addClass("example_c_ongoing");
 
+      $("[id^=image_btn_]").prop('disabled', true); // disable the image show btns, they destroy the audio context
+
       console.log(name)
       console.log(index)
 
@@ -199,8 +217,9 @@
         function(data) {
           console.log(data)
         }).done(function() {
-          $("#image_btn_"+index).html("SHOW");
-          $("#image_btn_"+index).removeClass("example_c_ongoing")
+          $("#audio_file_"+index).html("PLAY");
+          $("#audio_file_"+index).removeClass("example_c_ongoing")
+          $("[id^=image_btn_]").prop('disabled', false);
       })
     }
   }
@@ -581,6 +600,7 @@
         <div class="speech_btn_wrapper">
           <button class="example_c" 
           id="image_btn_{{loop.index0}}" 
+          file="{{img['file_name']}}"
           onclick="show_img('{{img["file_name"]}}', {{loop.index0}})">SHOW</button>
         </div>
       </div>
