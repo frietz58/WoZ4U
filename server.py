@@ -94,23 +94,7 @@ def connect_robot():
             elif key == "basic_awareness":
                 ba_srv.setEnabled(config["autonomous_life_config"][key])
 
-    for image in config["images"]:
-        print(image)
-        if "is_default_img" in image.keys():
-            url = "http://130.239.183.189:5000/show_img_page/" + image["file_name"]
-            print("URL:", url)
-            tablet_srv.showWebview(url)
-            tablet_state["showing"] = image["file_name"]
-    
-    # 
-    # for key, value in config["autonomous_life_config"]:
-    #     print(key, value)
-
-    # see if there are any old subscribers...
-    # if video_srv.getSubscribers():
-    #    for subscriber in video_srv.getSubscribers():
-    #        print("removing old video subscriber...")
-    #        video_srv.unsubscribe(subscriber)
+    show_default_img_or_hide()
 
     return {
         "status": "ok",
@@ -283,6 +267,29 @@ def toggle_setting():
         "new_state": new_state
     }
 
+def show_default_img_or_hide():
+    """
+    Depending on whether a default image is given in the config, either shows that or resets the tablet to the default
+    animation gif.
+    """
+    for image in config["images"]:
+            if "is_default_img" in image.keys():
+                url = "http://130.239.183.189:5000/show_img_page/" + image["file_name"]
+                print("URL:", url)
+                tablet_srv.showWebview(url)
+                tablet_state["showing"] = image["file_name"]
+
+                return {
+                    "showing": "default image"
+                }
+    
+    tablet_srv.hideWebview()
+    tablet_state["showing"] = None
+
+    return {
+       "showing": "Pepper default gif, no default image found in config",
+    }
+
 @app.route("/say_text")
 def say_text():
     msg = request.args.get('msg', type=str)
@@ -332,6 +339,7 @@ def play_audio():
 
     tablet_srv.executeJS(js_code)
     time.sleep(60)  # TODO: dynamic length 
+    
     tablet_srv.hideWebview()
     tablet_state["showing"] = None
 
@@ -369,10 +377,11 @@ def show_img_page(img_name):
 def clear_tablet():
         tablet_srv.hideWebview()
         tablet_state["showing"] = None
+        
+        status = show_default_img_or_hide()
+        status["msg"] =  "cleaned tablet webview"
 
-        return {
-            "status": "cleaned tablet webview"
-        }
+        return status
 
 @app.route("/adjust_volume")
 def adjust_volume():
