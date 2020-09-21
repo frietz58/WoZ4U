@@ -26,6 +26,10 @@ messages:
 image_root_location: /static/imgs/  # place image files here
 
 images:
+  -
+    title: Default img
+    file_name: climate_change.jpg
+    is_default_img: True  # image with this flag will be displayed on connect
   - 
     title: Landscape
     file_name: landscape.jpg
@@ -35,22 +39,25 @@ images:
   -
     title: Arrow keys
     file_name: arrow_keys.png
+  - 
+    title: Sound playing
+    file_name: sound_playing.png
+
 
 audio_root_location: static/audio  # place audio files here
-
 audio_files:
+  -
+    title: Imperial March
+    location: ImperialMarch60.wav  # locally saved .wav file
   - 
     title: Cantina band
-    location: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav
+    location: https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav  # remote url also possible
   - 
     title: Pink Panther
     location: https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav
   -
     title: Star Wars
     location: https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav
-  -
-    title: Imperial March
-    location: ImperialMarch60.wav  # locally saved .wav file
   -
     title: Elephant walking
     location: https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav
