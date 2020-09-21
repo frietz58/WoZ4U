@@ -93,6 +93,15 @@ def connect_robot():
                 motion_srv.setBreathEnabled("Legs", config["autonomous_life_config"][key])
             elif key == "basic_awareness":
                 ba_srv.setEnabled(config["autonomous_life_config"][key])
+
+    for image in config["images"]:
+        print(image)
+        if "is_default_img" in image.keys():
+            url = "http://130.239.183.189:5000/show_img_page/" + image["file_name"]
+            print("URL:", url)
+            tablet_srv.showWebview(url)
+            tablet_state["showing"] = image["file_name"]
+    
     # 
     # for key, value in config["autonomous_life_config"]:
     #     print(key, value)
