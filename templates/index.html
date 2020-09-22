@@ -30,9 +30,9 @@
         // console.log(data)
         Object.keys(data).forEach(key => {
           // console.log(key, data[key]);
-          // console.log($(key).get(0).nodeName)
+          //console.log(key)
+          //console.log($(key).get(0).nodeName)
           if (key == "tablet_state") { // handling this is different from the actual html elements
-            console.log(key, data[key]);
             // iterate over image btns
             $("[id^=image_btn_]").each(function(index){
               id = "#image_btn_" + index;
@@ -63,7 +63,11 @@
                 if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
                   $(key).val(data[key])
                 }
-              } 
+              } else if ($(key).attr("type") == "color") {
+                if (!$(key).prop("has_uncommited_state")) {
+                  $(key).val(rgbToHex(data[key][0], data[key][1], data[key][2]))
+                }
+              }
             } else if ($(key).get(0).nodeName == "SELECT") {
               // autonomous state and engagement mode
               if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
@@ -453,9 +457,15 @@
     )
   }
 
-  function setLedIntensity() {
-    group = document.getElementById("pepper_select_led_group").value
-    intensity = $("#intensity_slider").val()
+  function setLedIntensity(reset=false) {
+    group = "FaceLeds"
+    
+    if (reset) {
+      intensity = 100
+    } else {
+      intensity = $("#intensity_slider").val()
+    }
+
     url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity
 
     if ($("#toggle_btn_blinking").html() == "ON") {
@@ -467,9 +477,22 @@
       function(data) {
         console.log(data)
       }
-    )
+    ).done(function(){
+      update_states()
+    })
   }
 
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  function rgbToHex(r, g, b) {
+    r = r * 255
+    g = g * 255
+    b = b * 255
+    return "#" + componentToHex(Math.round(r)) + componentToHex(Math.round(g)) + componentToHex(Math.round(b));
+  }
 
 function hexToRGB (hex){
     if(hex.length != 6){
@@ -493,7 +516,7 @@ function hexToRGB (hex){
     g = rgb_components[1]
     b = rgb_components[2]
 
-    group = document.getElementById("pepper_select_led_group").value
+    group = "FaceLeds"
 
     url = "/set_led_color?r=" + r + "&g=" + g + "&b=" + b + "&group=" + group
     $.getJSON(
@@ -503,12 +526,22 @@ function hexToRGB (hex){
       }
     ).done(function() {
       $("#eye_led_color_btn").removeClass("example_c_ongoing")
+      $("#eye_led_colorpicker").prop("has_uncommited_state", false)
+      update_states()
+
     })
   } 
 
   function exec_eye_anim() {
     anim = document.getElementById("eye_anim_select").value;
     hex_val = document.getElementById("eye_led_colorpicker").value;
+    console.log(anim)
+    console.log(hex_val)
+    if (anim == "rotateEyes" && hex_val == "#ffffff") {
+      alert("Please select a color other than white for the eye rotation")
+      return ""
+    } 
+
     hex_val = hex_val.replace("#", "0x")
     duration = document.getElementById("eye_anim_duration").value;
 
@@ -516,7 +549,6 @@ function hexToRGB (hex){
     $("#eye_anim_btn").html("...")
 
     url = "/exec_eye_anim?anim=" + anim + "&hex_val=" + hex_val + "&secs=" + duration
-    console.log(url)
     $.getJSON(
       url,
       function(data) {
@@ -525,6 +557,8 @@ function hexToRGB (hex){
     ).done(function() {
       $("#eye_anim_btn").removeClass("example_c_ongoing")
       $("#eye_anim_btn").html("EXECUTE")
+      update_states()
+
     })
   }
 
@@ -718,7 +752,12 @@ function hexToRGB (hex){
         </div>
         
         <div class="btn_wrapper">
-          <select name="pepper_ips" id="autonomous_states" oninput="add_ongoing('#auto_state_set'); add_uncommited_flag('#autonomous_states')">
+          <select 
+            name="pepper_ips" 
+            id="autonomous_states" 
+            oninput="add_ongoing('#auto_state_set'); 
+            add_uncommited_flag('#autonomous_states')"
+            style="margin-left: 10px;">
             <option value="interactive">Interactive</option>
             <option value="solitary">Solitary</option>
             <option value="safeguard">Safeguard</option>
@@ -847,7 +886,8 @@ function hexToRGB (hex){
           <select 
           name="engagement_state" 
           id="engagement_states"
-          oninput="add_ongoing('#engagement_state_set'); add_uncommited_flag('#engagement_states')">
+          oninput="add_ongoing('#engagement_state_set'); add_uncommited_flag('#engagement_states')"
+          style="margin-left: 10px;">
             <option value="Unengaged">Unengaged</option>
             <option value="SemiEngaged">SemiEngaged</option>
             <option value="FullyEngaged">FullyEngaged</option>
@@ -1164,85 +1204,57 @@ function hexToRGB (hex){
   <div class="footer">
     <h2>Eye control</h2>
 
-    <div class="col_one_of_three">
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>LED Group</span>
-        </div>
-        <select name="led_groups" id="pepper_select_led_group">
-            <option value="LeftFaceLeds">Left</option>
-            <option value="RightFaceLeds">Right</option>
-            <option value="FaceLeds">Both</option>
-        </select>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          Intensity
-        </div>
-        <div class="btn_label_wrapper">
+    <table style="width:100%">
+      <tr>
+        <td style="text-align: right;">Intensity</td>
+        <td style="text-align: left;">
           <input 
             id="intensity_slider" 
             type="range" 
             min="1" max="100" value="50" 
             onchange="setLedIntensity()"
             style="width: 100%;">
-        </div>
-      </div>
-    </div>
-
-    <div class="col_one_of_three">
-      <div class="row">
-        <div class="btn_label_wrapper">
-          RGB
-        </div>
-        <input type="color" id="eye_led_colorpicker" name="head" value="#e66465" oninput="add_ongoing('#eye_led_color_btn'); add_uncommited_flag('#eye_led_color_btn')">
-      </div>
-      <br>
-
-      <div class="row">
-        <button id="eye_led_color_btn" class="example_c" onclick="set_eye_led_color()">Set</button>
-      </div>
-      <br>
-
-    </div>
-
-    <div class="col_one_of_three">
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Animation</span>
-        </div>
-        <select id="eye_anim_select">
+        </td>
+        <td style="text-align: left;">
+          <button class="example_c" onclick="setLedIntensity(reset=true)">RESET</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">Color</td>
+        <td style="text-align: left;">
+          <input 
+          type="color" 
+          id="eye_led_colorpicker" 
+          value="#FFFFFF" 
+          oninput="add_ongoing('#eye_led_color_btn'); add_uncommited_flag('#eye_led_colorpicker')"
+          style="width: 100%;">
+        </td>
+        <td style="text-align: left;">
+          <button id="eye_led_color_btn" class="example_c" onclick="set_eye_led_color()">Set</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">Animation</td>
+        <td style="text-align: left;">
+          <select id="eye_anim_select" style="width: 30%">
             <option value="rotateEyes">Rotate Eyes</option>
             <option value="rasta">Rasta</option>
             <option value="randomEyes">Random</option>
         </select>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <span>Duration</span>
-        </div>
+        <span style="margin-left: 10px;">Seconds: </span>
         <input 
           type="text" 
           value="5"
           placeholder="5 seconds"
           id="eye_anim_duration" 
-          style="width: 30%; float: left; margin-left: 10px;"
+          style="width: 30%; margin-left: 10px;"
         >
-      </div>
-      <br>
-      <br>
-
-      <div class="row">
-        <button id="eye_anim_btn" class="example_c" onclick="exec_eye_anim()">Execute</button>
-      </div>
-      <br>
-
-    </div>
+        </td>
+        <td style="text-align: left;">
+          <button id="eye_anim_btn" class="example_c" onclick="exec_eye_anim()">Execute</button>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
 
