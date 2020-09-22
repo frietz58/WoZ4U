@@ -67,7 +67,6 @@ def connect_robot():
     tts_srv.setVolume(0.1)
     tts_srv.say("Connected")
 
-
     # iterate over autonomous life configuration and set values...
     for key in config["autonomous_life_config"].keys():
         if config["autonomous_life_config"][key] == "":
@@ -95,6 +94,17 @@ def connect_robot():
                 ba_srv.setEnabled(config["autonomous_life_config"][key])
 
     show_default_img_or_hide()
+
+    # because stupid API reasons, settings the intensity resets the LED colors...
+    # so that has to happen first...
+    led_srv.setIntensity("FaceLeds", config["led_settings"]["intensity"])
+
+    # now we can set the color...
+    r = config["led_settings"]["color"]["red"]
+    g = config["led_settings"]["color"]["green"]
+    b = config["led_settings"]["color"]["blue"]
+    
+    led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
 
     return {
         "status": "ok",
@@ -192,7 +202,8 @@ def querry_states():
             "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()],
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
-            "tablet_state": tablet_state
+            "tablet_state": tablet_state,
+            "#eye_led_colorpicker": get_eye_colors()
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -776,6 +787,13 @@ def exec_eye_anim():
         "status": "eye anim",
         "animation": anim
     }
+
+def get_eye_colors():
+    # just return the value of one of the Leds in one of the eyes...
+    # this is BGR -.- the inconsistency in this API is unreal...
+    bgr = led_srv.getIntensity("RightFaceLed1")
+    rgb = [bgr[2], bgr[1], bgr[0]]
+    return rgb
 
                 
 
