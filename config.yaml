@@ -23,7 +23,7 @@ messages:
     short: Blah
     full_text: blah blah blah blah blah, blah blah blah, blah.
 
-image_root_location: /static/imgs/  # place image files here
+image_root_location: /static/imgs/  # place image files here, on host machine
 
 images:
   -
@@ -45,9 +45,10 @@ images:
 
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
+  # Button will be created for every item in the list
   -
     title: Imperial March
-    location: /home/nao/sound_files/ImperialMarch60.wav
+    location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
   - 
     title: Cantina band
     location: /home/nao/sound_files/CantinaBand60.wav
@@ -62,6 +63,7 @@ audio_files:
     location: /home/nao/sound_files/BabyElephantWalk60.wav
 
 animated_speech:
+    # Button will be created for every item in the list
   -
     title: Over here
     string: "Hello! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
@@ -72,7 +74,7 @@ animated_speech:
     tooltip: blah
   -
     title: Point far
-    string: "^start(animations/Stand/Gestures/Far_3) Theyre taking the hobbits to Isengard! ^wait(animations/Stand/Gestures/Far_3)"
+    string: "^start(animations/Stand/Gestures/Far_3) Theyre taking the hobbits to Isengard! ^wait(animations/Stand/Gestures/Far_3) "
     tooltip: blah
   -
     title: Show tablet
@@ -80,6 +82,7 @@ animated_speech:
     tooltip: blah
 
 gestures:
+    # Button will be created for every item in the list
   -
     title: "Yes"
     string: "animations/Stand/Gestures/Yes_1"
@@ -88,12 +91,10 @@ gestures:
     title: No
     string: "animations/Stand/Gestures/No_1"
     tooltip: blah
-
   -
     title: Wave
     string: "animations/Stand/Gestures/Hey_3"
     tooltip: blah
-
   -
     title: Me
     string: "animations/Stand/Gestures/Me_1"
@@ -111,20 +112,29 @@ gestures:
     string: "animations/Stand/Emotions/Positive/Happy_4"
     tooltip: blah
 
-camera_save_dir: record_imgs
+camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
 audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
 
 # AUTONOMOUS LIFE SETTINGS
-# Leave as empty string to not enforce anything on connection to robot
+# Leave as empty string to not leave value as is on connection to robot
 # values must be valid for respective set methods in naoqi API...
 autonomous_life_config:
   autonomous_state: "solitary"
   tangential_collision: ""
   orthogonal_collision: ""
-  blinking: True
+  blinking: False  # can interfere with manual eye control...
   basic_awareness: False  # gets enabled by default if pepper enters solitary or interactive state...
   engagement_mode: ""
   head_breathing: False  # I would advise always having this disabled, conflicts with manual head control...
   arms_breathing: True
   body_breathing: True
   legs_breathing: True
+
+# LED SETTINGS
+# Putting empty strings as values leave the settings as is on connect
+led_settings:
+  intensity: 0.1
+  color: # color for eye leds. API requires rgb values in range [0-1]
+    red: 0
+    green: 1.0
+    blue: 0
