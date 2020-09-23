@@ -5,6 +5,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type=text/javascript>
 
+  var keyboard_shortcuts = {}
+  var session_is_connected = false
+
   //applies styling to a toggle button, depending on the value it should take
   function toggle_btn_handle(identifier, bool, onText="ON", offText="OFF"){
     if (bool) {
@@ -108,6 +111,8 @@
 
         // periodically querry all states
         setInterval(update_states, 5000);
+
+        window.session_is_connected = true;
 
     }).fail(function() {
       $(identifier).html("FAILURE"); // set btn text to ...
@@ -562,8 +567,58 @@ function hexToRGB (hex){
     })
   }
 
+  function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+  function add_keyboard_shortcut(key_list, id) {
+    /*
+    Binds a specific UI buttons to keyboard shortcuts
+    @param key_list: List containing all the KeyboardEvent.key values for the shortcut
+    */
+    /*
+    for (var id in window.keyboard_shortcuts) {
+      // TODO: FIGURE OUT WHY THIS BREAKS IT!!
+      if (arraysEqual(key_list, window.keyboard_shortcuts[id])) {
+        console.log("ARRAY EQ")
+        return
+        console.log("PAST RETURN?")
+      }
+    }
+    */
+    if ( // check whether one of the keys is an arrow key, which is preoccupied with driving the Pepper etc
+      key_list.indexOf("ArrowDown") !== -1 ||
+      key_list.indexOf("ArrowUp") !== -1 ||
+      key_list.indexOf("ArrowLeft") !== -1 ||
+      key_list.indexOf("ArrowRight") !== -1
+    ) {
+      msg = "Arrow keys are not allowed in keyboard shortcuts for buttons, as they are preoccupied with driving Pepper!"
+      msg += "\nChange this shortcut: [" + key_list + "] = " + id+ "!"
+      alert(msg)
+    } else {
+      // access global object that stores the combinations and targets
+      // console.log("Adding", key_list, id)
+      window.keyboard_shortcuts[id] = key_list
+      // console.log(window.keyboard_shortcuts)
+    }
+  }
+
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
+
+    if (!window.session_is_connected) {
+      console.log("Session isn't connected")
+      return
+    }
+
+    // console.log(event)
     // DRIVING
     if (event.altKey && event.key === "ArrowUp" && !event.shiftKey ) {
       $.getJSON(
@@ -659,6 +714,43 @@ function hexToRGB (hex){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
+    } else {
+      let alt_down = event.altKey;
+      let shift_down = event.shiftKey;
+      let ctrl_down = event.ctrlKey;
+      matches = []
+      console.log(event)
+
+      for (var id in window.keyboard_shortcuts) {
+        //console.log("Keyboard shortcut: " + window.keyboard_shortcuts[id] + " for " + id)
+        all_match = true;
+        for (var i = 0; i < window.keyboard_shortcuts[id].length; i++) {
+          key = window.keyboard_shortcuts[id][i]
+          //console.log(key)
+          if (key == "Control") {
+            if (!ctrl_down) {
+              all_match = false;
+            }
+          } else if (key == "Alt") {
+            if (!alt_down) {
+              all_match = false;
+            }
+          } else if (key == "Shift") {
+            if (!shift_down) {
+              all_match = false;
+            }
+          } else {
+            if (key != event.key) {
+              all_match = false;
+            }
+          }        
+        }
+        if (all_match) {
+            console.log(window.keyboard_shortcuts[id], id)
+            $("#" + id).click()
+          }
+      }
+      
     }
   });
 
@@ -1031,23 +1123,32 @@ function hexToRGB (hex){
       <h3>Text messages</h3>
 
       {%for msg in config["messages"]%}
-      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{msg["short"]}}</span>
+        <!-- Here, we iterate over all the messages and create labels and buttons for each-->
+        <div class="row">
+          <div class="speech_lbl_wrapper">
+            <span>{{msg["short"]}}</span>
+          </div>
+          <div class="speech_btn_wrapper">
+            <button 
+              title='{{msg["full_text"]}}'
+              class="example_c" 
+              id="voice_cmd_{{loop.index0}}" 
+              onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">
+              SAY IT
+            </button>
+          </div>
         </div>
-        <div class="speech_btn_wrapper">
-          <button 
-            title='{{msg["full_text"]}}'
-            class="example_c" 
-            id="voice_cmd_{{loop.index0}}" 
-            onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">
-            SAY IT
-          </button>
-        </div>
-      </div>
-      <br>
+        <br>
 
+        <!-- add the keyboard shortcut to the button, if the flag has been given-->
+        {% if (msg["key_comb"] is defined) and  msg["key_comb"] %}  
+          <script>
+            // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
+            // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
+            // console.log("{{ msg["key_comb"]|safe }}")
+            add_keyboard_shortcut({{ msg["key_comb"]|safe }}, "voice_cmd_{{loop.index0}}" )
+          </script>
+        {% endif %}
       {%endfor%} 
 
       <div class="row">
@@ -1078,6 +1179,13 @@ function hexToRGB (hex){
         </div>
       </div>
       <br>
+
+      <!-- add the keyboard shortcut to the button, if the flag has been given -->
+        {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}  
+          <script>
+            add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}" )
+          </script>
+        {% endif %}
 
       {%endfor%}
 

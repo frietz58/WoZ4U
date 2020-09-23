@@ -1,8 +1,15 @@
-pepper_ips:
-  - 130.239.182.11
+pepper_ips:  # Entry in dropdown menu will be create for every list item
+  - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
   - 192.168.10.2
   - 192.168.10.3
   - 192.168.10.4
+
+# ALL CONCRETE ACTIONS (BUTTONS IN THE UI) CAN GET THE "key_comb" FIELD.
+# PROVIDING A LIST WILL BIND THE KEYS IN THAT LAST TO THE CONCRETE ACTION TO EXECUTE
+# VALID COMBINATIONS ARE CONTROL + ANY VALID JS KEY_VALUE
+# full list here: https://developer.mozilla.org/de/docs/Web/API/KeyboardEvent/key/Key_Values
+# example flag: key_comb: ["Control", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
+# ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
 
 messages: 
   # Avoid special characters in messages, this can break the backend.
@@ -10,18 +17,23 @@ messages:
   -
     short: Title # This will be shown in the GUI
     full_text: This is the complete message that we want the pepper robot to say. # This will be the spoken message
+    key_comb: ["Control", "1"]  # keyboard shortcut for this action
   -
     short: Hello
     full_text: Hello, Im pepper.
+    key_comb: ["Control", "2"]
   -
     short: Insult
     full_text: Here are the test results; you are a horrible person.
+    key_comb: ["Control", "3"]
   -
     short: Compliment
     full_text: Ive always thought you are virtually perfect.
+    key_comb: ["Control", "4"]
   -
     short: Blah
     full_text: blah blah blah blah blah, blah blah blah, blah.
+    key_comb: ["Control", "5"]
 
 image_root_location: /static/imgs/  # place image files here, on host machine
 
@@ -49,18 +61,23 @@ audio_files:
   -
     title: Imperial March
     location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
+    key_comb: ["Control", "q"]
   - 
     title: Cantina band
     location: /home/nao/sound_files/CantinaBand60.wav
+    key_comb: ["Control", "w"]
   -
     title: Star Wars
     location: /home/nao/sound_files/StarWars60.wav
+    key_comb: ["Control", "e"]
   - 
     title: Pink Panther
     location: /home/nao/sound_files/PinkPanther60.wav
+    key_comb: ["Control", "r"]
   -
     title: Elephant walking
     location: /home/nao/sound_files/BabyElephantWalk60.wav
+    key_comb: ["Control", "t"]
 
 animated_speech:
     # Button will be created for every item in the list
@@ -128,6 +145,7 @@ autonomous_life_config:
   arms_breathing: True
   body_breathing: True
   legs_breathing: True
+  # TODO: ADD listening/speaking movements
 
 # LED SETTINGS
 # Putting empty strings as values leave the settings as is on connect
