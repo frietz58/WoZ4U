@@ -425,7 +425,7 @@ def exec_gesture():
     index = request.args.get('index', type=int)
     print(index)
 
-    gesture = config["gestures"][index]["string"]
+    gesture = config["gestures"][index]["gesture"]
 
     ap_srv.run(gesture)
 

@@ -81,35 +81,34 @@ animated_speech:
     string: "^start(ShowTablet_3) Look at my tablet. ^wait(ShowTablet_3)"
     tooltip: blah
 
-gestures:
-    # Button will be created for every item in the list
+gestures: # Buttons will be created for every item in the list
   -
-    title: "Yes"
-    string: "animations/Stand/Gestures/Yes_1"
+    title: "Yes"  # Label for button
+    gesture: "animations/Stand/Gestures/Yes_1"  # Gesture to execute
+    tooltip: "Yes_1 gesture"  # Tooltip for buton
+  -
+    title: "No"
+    gesture: "animations/Stand/Gestures/No_1"
+    tooltip: "No_1 gesture"
+  -
+    title: "Wave"
+    gesture: "animations/Stand/Gestures/Hey_3"
     tooltip: blah
   -
-    title: No
-    string: "animations/Stand/Gestures/No_1"
+    title: "Me"
+    gesture: "animations/Stand/Gestures/Me_1"
     tooltip: blah
   -
-    title: Wave
-    string: "animations/Stand/Gestures/Hey_3"
+    title: "You"
+    gesture: "animations/Stand/Gestures/You_1"
     tooltip: blah
   -
-    title: Me
-    string: "animations/Stand/Gestures/Me_1"
+    title: "Embarrassed"
+    gesture: "animations/Stand/Emotions/Neutral/Embarrassed_1"
     tooltip: blah
   -
-    title: You
-    string: "animations/Stand/Gestures/You_1"
-    tooltip: blah
-  -
-    title: Embarrassed
-    string: "animations/Stand/Emotions/Neutral/Embarrassed_1"
-    tooltip: blah
-  -
-    title: Happy
-    string: "animations/Stand/Emotions/Positive/Happy_4"
+    title: "Happy"
+    gesture: "animations/Stand/Emotions/Positive/Happy_4"
     tooltip: blah
 
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
