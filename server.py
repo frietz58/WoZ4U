@@ -199,7 +199,7 @@ def querry_states():
             "#volume_slider": tts_srv.getVolume(),
             "#voice_speed_input": tts_srv.getParameter("speed"),
             "#voice_pitch_input": tts_srv.getParameter("pitchShift"),
-            "#motion_vector": [round(vel, 3) for vel in motion_srv.getRobotVelocity()],
+            "#motion_vector": [round(vel, 1) for vel in motion_srv.getRobotVelocity()],
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
             "tablet_state": tablet_state,
@@ -501,9 +501,12 @@ def update_pepper_velocities():
 
         # get current robot velocity
         x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
-        x_vel = round(x_vel, 3)
-        y_vel = round(y_vel, 3)
-        theta_vel = round(theta_vel, 3)
+        
+        x_vel = round(x_vel, 1)
+        y_vel = round(y_vel, 1)
+        theta_vel = round(theta_vel, 1)
+
+        print(x_vel, y_vel, theta_vel)
 
         # update velocity
         if axis == "x":
@@ -513,6 +516,10 @@ def update_pepper_velocities():
 
         stiffness = 0.1
         motion_srv.setStiffnesses("Body", stiffness)
+
+        x_vel = round(x_vel, 1)
+        y_vel = round(y_vel, 1)
+        theta_vel = round(theta_vel, 1)
 
         # set velocity
         motion_srv.move(x_vel, y_vel, theta_vel)
@@ -809,5 +816,8 @@ if __name__ == '__main__':
     global SAVE_IMGS
     SAVE_IMGS = False
     RECORD_AUDIO = False
+
+    global motion_vector
+    motion_vector = [0, 0, 0]
 
     app.run(host='0.0.0.0', debug=True)
