@@ -4,11 +4,53 @@ pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 192.168.10.3
   - 192.168.10.4
 
+camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
+audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+
+# AUTONOMOUS LIFE SETTINGS
+# Leave as empty string to not leave value as is on connection to robot
+# values must be valid for respective set methods in naoqi API...
+autonomous_life_config:
+  autonomous_state: "solitary"
+  tangential_collision: ""
+  orthogonal_collision: ""
+  blinking: False  # can interfere with manual eye control...
+  basic_awareness: False  # gets enabled by default if pepper enters solitary or interactive state...
+  engagement_mode: ""
+  head_breathing: False  # I would advise always having this disabled, conflicts with manual head control...
+  arms_breathing: True
+  body_breathing: True
+  legs_breathing: True
+  # TODO: ADD listening/speaking movements
+
 # ALL CONCRETE ACTIONS (BUTTONS IN THE UI) CAN GET THE "key_comb" FIELD.
 # PROVIDING A LIST WILL BIND THE KEYS IN THAT LAST TO THE CONCRETE ACTION TO EXECUTE
 # SPECIAL KEYS CAN BE: "ctrl", "shift", "alt" etc, full list here: https://craig.is/killing/mice#keys
 # example flag: key_comb: ["ctrl", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
 # ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
+
+images:
+  -
+    title: Default img
+    file_name: climate_change.jpg
+    is_default_img: True  # image with this flag will be displayed on connect
+    key_comb: ["ctrl", "shift", 1]  # example for more complex shortcut
+  - 
+    title: Landscape
+    file_name: landscape.jpg
+    key_comb: ["ctrl", "shift", 2]
+  -
+    title: Umea logo
+    file_name: umea_logo.png
+    key_comb: ["ctrl", "shift", 3]
+  -
+    title: Arrow keys
+    file_name: arrow_keys.png
+    key_comb: ["ctrl", "shift", 4]
+  - 
+    title: Sound playing
+    file_name: sound_playing.png
+    key_comb: ["ctrl", "shift", 5]
 
 messages: 
   # Avoid special characters in messages, this can break the backend.
@@ -32,27 +74,9 @@ messages:
   -
     short: Blah
     full_text: blah blah blah blah blah, blah blah blah, blah.
-    key_comb: ["ctrl", "4"]
+    key_comb: ["ctrl", "5"]
 
 image_root_location: /static/imgs/  # place image files here, on host machine
-
-images:
-  -
-    title: Default img
-    file_name: climate_change.jpg
-    is_default_img: True  # image with this flag will be displayed on connect
-  - 
-    title: Landscape
-    file_name: landscape.jpg
-  -
-    title: Umea logo
-    file_name: umea_logo.png
-  -
-    title: Arrow keys
-    file_name: arrow_keys.png
-  - 
-    title: Sound playing
-    file_name: sound_playing.png
 
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
@@ -102,49 +126,42 @@ gestures: # Buttons will be created for every item in the list
     title: "Yes"  # Label for button
     gesture: "animations/Stand/Gestures/Yes_1"  # Gesture to execute
     tooltip: "Yes_1 gesture"  # Tooltip for buton
+    key_comb: ["shift", "1"]
   -
     title: "No"
     gesture: "animations/Stand/Gestures/No_1"
     tooltip: "No_1 gesture"
+    key_comb: ["shift", "2"]
+
   -
     title: "Wave"
     gesture: "animations/Stand/Gestures/Hey_3"
     tooltip: blah
+    key_comb: ["shift", "3"]
+
   -
     title: "Me"
     gesture: "animations/Stand/Gestures/Me_1"
     tooltip: blah
+    key_comb: ["shift", "4"]
+
   -
     title: "You"
     gesture: "animations/Stand/Gestures/You_1"
     tooltip: blah
+    key_comb: ["shift", "5"]
+
   -
     title: "Embarrassed"
     gesture: "animations/Stand/Emotions/Neutral/Embarrassed_1"
     tooltip: blah
+    key_comb: ["shift", "6"]
+
   -
     title: "Happy"
     gesture: "animations/Stand/Emotions/Positive/Happy_4"
     tooltip: blah
-
-camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
-audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
-
-# AUTONOMOUS LIFE SETTINGS
-# Leave as empty string to not leave value as is on connection to robot
-# values must be valid for respective set methods in naoqi API...
-autonomous_life_config:
-  autonomous_state: "solitary"
-  tangential_collision: ""
-  orthogonal_collision: ""
-  blinking: False  # can interfere with manual eye control...
-  basic_awareness: False  # gets enabled by default if pepper enters solitary or interactive state...
-  engagement_mode: ""
-  head_breathing: False  # I would advise always having this disabled, conflicts with manual head control...
-  arms_breathing: True
-  body_breathing: True
-  legs_breathing: True
-  # TODO: ADD listening/speaking movements
+    key_comb: ["shift", "7"]
 
 # LED SETTINGS
 # Putting empty strings as values leave the settings as is on connect

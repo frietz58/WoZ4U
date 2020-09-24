@@ -793,8 +793,14 @@ function hexToRGB (hex){
       </div>
       <br>
 
-      {%endfor%} 
+      <!-- add the keyboard shortcut to the button, if the flag has been given -->
+      {% if (img["key_comb"] is defined) and img["key_comb"] %}  
+        <script>
+          add_keyboard_shortcut({{ img["key_comb"]|safe }}, "image_btn_{{loop.index0}}" )
+        </script>
+      {% endif %}
 
+      {%endfor%} 
     
   </div>
 
@@ -1150,11 +1156,11 @@ function hexToRGB (hex){
       <br>
 
       <!-- add the keyboard shortcut to the button, if the flag has been given -->
-        {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}  
-          <script>
-            add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}" )
-          </script>
-        {% endif %}
+      {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}  
+        <script>
+          add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}" )
+        </script>
+      {% endif %}
 
       {%endfor%}
 
@@ -1261,6 +1267,12 @@ function hexToRGB (hex){
           </div>
         </div>
         <br>
+        <!-- add the keyboard shortcut to the button, if the flag has been given -->
+        {% if (gesture["key_comb"] is defined) and gesture["key_comb"] %}  
+          <script>
+            add_keyboard_shortcut({{ gesture["key_comb"]|safe }}, "gesture_btn_{{loop.index0}}" )
+          </script>
+        {% endif %}
         {%endfor%}
 
         <div class="row">
