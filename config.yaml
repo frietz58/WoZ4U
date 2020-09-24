@@ -92,6 +92,7 @@ animated_speech:
     string: "^start(animations/Stand/Gestures/Hey_1) Look over here. ^wait(animations/Stand/Gestures/Hey_1) I think ^start(animations/Stand/Waiting/ShowSky_1) there is a plane in the sky! ^wait(animations/Stand/Waiting/ShowSky_1)"
     tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look over here. ^wait(animations/Stand/Gestures/ShowTablet_3)"
     # key_comb: ["ctrl", "7"]  # this is an example where we don't assign a keyboard shortcut
+
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
   # Button will be created for every item in the list
@@ -157,6 +158,49 @@ gestures: # Buttons will be created for every item in the list
     gesture: "animations/Stand/Emotions/Positive/Happy_4"
     tooltip: blah
     key_comb: ["shift", "7"]
+
+colors:
+  -
+    title: Red
+    red: 1.0
+    green: 0
+    blue: 0
+  -
+    title: Yellow
+    red: 1.0
+    green: 1.0
+    blue: 0
+  -
+    title: Orange
+    red: 1.0
+    green: 0.7
+    blue: 0
+  -
+    title: Green
+    red: 0
+    green: 1.0
+    blue: 0
+  -
+    title: Aqua
+    red: 0
+    green: 1.0
+    blue: 1.0
+  -
+    title: Blue
+    red: 0
+    green: 0
+    blue: 1.0
+  -
+    title: Magenta
+    red: 1.0
+    green: 0
+    blue: 1.0
+  -
+    title: White
+    red: 1.0
+    green: 1.0
+    blue: 1.0
+
 
 # LED SETTINGS
 # Putting empty strings as values leave the settings as is on connect

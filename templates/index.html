@@ -33,7 +33,7 @@
       function(data) {
         // console.log(data)
         Object.keys(data).forEach(key => {
-          // console.log(key, data[key]);
+          //console.log(key, data[key]);
           //console.log(key)
           //console.log($(key).get(0).nodeName)
           if (key == "tablet_state") { // handling this is different from the actual html elements
@@ -67,12 +67,14 @@
                 if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
                   $(key).val(data[key])
                 }
-              } else if ($(key).attr("type") == "color") {
+              } 
+              else if ($(key).attr("type") == "color") {
                 if (!$(key).prop("has_uncommited_state")) {
                   $(key).val(rgbToHex(data[key][0], data[key][1], data[key][2]))
                 }
               }
-            } else if ($(key).get(0).nodeName == "SELECT") {
+              } 
+            else if ($(key).get(0).nodeName == "SELECT") {
               // autonomous state and engagement mode
               if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
                 $(key).val(data[key]);
@@ -501,17 +503,20 @@ function hexToRGB (hex){
     return aRgb;
 }
 
-  function set_eye_led_color() {
-    hex_val = document.getElementById("eye_led_colorpicker").value;
-    hex_val = hex_val.replace("#", "")
-    rgb_components = hexToRGB(hex_val)
-    r = rgb_components[0]
-    g = rgb_components[1]
-    b = rgb_components[2]
+  function set_eye_led_color(color) {
+    //hex_val = document.getElementById("eye_led_colorpicker").value;
+    //hex_val = hex_val.replace("#", "")
+    //rgb_components = hexToRGB(hex_val)
+    //r = rgb_components[0]
+    //g = rgb_components[1]
+    //b = rgb_components[2]
+
+    // color = $("#colors_select").val()
 
     group = "FaceLeds"
 
-    url = "/set_led_color?r=" + r + "&g=" + g + "&b=" + b + "&group=" + group
+    // url = "/set_led_color?r=" + r + "&g=" + g + "&b=" + b + "&group=" + group
+    url = "/set_led_color?color=" + color
     $.getJSON(
       url,
       function(data) {
@@ -525,23 +530,24 @@ function hexToRGB (hex){
     })
   } 
 
-  function exec_eye_anim() {
-    anim = document.getElementById("eye_anim_select").value;
-    hex_val = document.getElementById("eye_led_colorpicker").value;
+  function exec_eye_anim(anim) {
+    duration = document.getElementById(anim + "_anim_duration").value;
+    color = document.getElementById("colors_select").value;
+    console.log(color)
     console.log(anim)
-    console.log(hex_val)
-    if (anim == "rotateEyes" && hex_val == "#ffffff") {
+    if (anim == "rotateEyes" && color == "White") {
       alert("Please select a color other than white for the eye rotation")
       return ""
     } 
 
-    hex_val = hex_val.replace("#", "0x")
-    duration = document.getElementById("eye_anim_duration").value;
+    // hex_val = document.getElementById("eye_led_colorpicker").value;
+    //console.log(hex_val)
+    // hex_val = hex_val.replace("#", "0x")
 
     $("#eye_anim_btn").addClass("example_c_ongoing")
     $("#eye_anim_btn").html("...")
 
-    url = "/exec_eye_anim?anim=" + anim + "&hex_val=" + hex_val + "&secs=" + duration
+    url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration
     $.getJSON(
       url,
       function(data) {
@@ -1227,7 +1233,25 @@ function hexToRGB (hex){
 
     <!-- COLUMN 1: EYE LEDS-->
     <div style="width: 50%; float: left;">
-      
+      <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
+        <h3>Eye Colors</h3>
+      </a>
+      {%for color in config["colors"]%}
+        <div class="row">
+          <div class="speech_lbl_wrapper">
+            <span>{{color["title"]}}</span>
+          </div>
+          <div class="small-color-box" id="color_box_{{loop.index0}}"></div>
+            <script>
+              // console.log(rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}))
+              $("#color_box_{{loop.index0}}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
+            </script>
+          <button class="example_c" onclick="set_eye_led_color('{{color["title"]}}')">
+            SET
+          </button>
+        </div>
+        <br>
+      {% endfor %}
     </div>
 
     <!-- COLUMN 2: GESTURES-->
@@ -1288,57 +1312,53 @@ function hexToRGB (hex){
   <div class="footer">
     <h2>Eye control</h2>
 
-    <table style="width:100%">
-      <tr>
-        <td style="text-align: right;">Intensity</td>
-        <td style="text-align: left;">
-          <input 
-            id="intensity_slider" 
-            type="range" 
-            min="1" max="100" value="50" 
-            onchange="setLedIntensity()"
-            style="width: 100%;">
-        </td>
-        <td style="text-align: left;">
-          <button class="example_c" onclick="setLedIntensity(reset=true)">RESET</button>
-        </td>
-      </tr>
-      <tr>
-        <td style="text-align: right;">Color</td>
-        <td style="text-align: left;">
-          <input 
-          type="color" 
-          id="eye_led_colorpicker" 
-          value="#FFFFFF" 
-          oninput="add_ongoing('#eye_led_color_btn'); add_uncommited_flag('#eye_led_colorpicker')"
-          style="width: 100%;">
-        </td>
-        <td style="text-align: left;">
-          <button id="eye_led_color_btn" class="example_c" onclick="set_eye_led_color()">Set</button>
-        </td>
-      </tr>
-      <tr>
-        <td style="text-align: right;">Animation</td>
-        <td style="text-align: left;">
-          <select id="eye_anim_select" style="width: 30%">
-            <option value="rotateEyes">Rotate Eyes</option>
-            <option value="rasta">Rasta</option>
-            <option value="randomEyes">Random</option>
-        </select>
-        <span style="margin-left: 10px;">Seconds: </span>
-        <input 
-          type="text" 
-          value="5"
-          placeholder="5 seconds"
-          id="eye_anim_duration" 
-          style="width: 30%; margin-left: 10px;"
-        >
-        </td>
-        <td style="text-align: left;">
-          <button id="eye_anim_btn" class="example_c" onclick="exec_eye_anim()">Execute</button>
-        </td>
-      </tr>
-    </table>
+    <div class="row">
+    <span>Rasta animation:</span>
+    <input 
+      type="text" 
+      value="5"
+      placeholder="5 seconds"
+      id="rasta_anim_duration" 
+      style="width: 50px; margin-left: 10px;">
+      <span>Duraction (s)</span>
+
+    <button id="rasta_anim_btn" class="example_c" onclick="exec_eye_anim('rasta')">EXECUTE</button>
+    </div>
+    <br>
+
+    <div class="row">
+    <span>Random animation:</span>
+    <input 
+      type="text" 
+      value="5"
+      placeholder="5 seconds"
+      id="randomEyes_anim_duration" 
+      style="width: 50px; margin-left: 10px;">
+    <span>Duraction (s)</span>
+    <button id="randomEyes_anim_btn" class="example_c" onclick="exec_eye_anim('randomEyes')">EXECUTE</button>
+    </div>
+    <br>
+
+    <div class="row">
+    <span>Rotate Eyes:</span>
+    <input 
+      type="text" 
+      value="5"
+      placeholder="5 seconds"
+      id="rotateEyes_anim_duration" 
+      style="width: 50px; margin-left: 10px;">
+    <span>Duraction (s), </span>
+
+    <select id="colors_select">
+        {%for color in config["colors"]%}
+          <option value="{{color.title}}">{{color.title}}</option>
+        {%endfor%} 
+    </select>
+    <span>Color</span>
+
+    <button id="rotateEyes_anim_btn" class="example_c" onclick="exec_eye_anim('rotateEyes'); add_uncommited_flag('#eye_led_colorpicker')">Execute</button>
+
+    </div>
   </div>
 </div>
 

@@ -6,6 +6,7 @@ import threading
 from datetime import datetime
 import os
 import numpy as np
+import matplotlib
 
 from utils import distinguish_path
 from utils import alImage_to_PIL
@@ -203,7 +204,7 @@ def querry_states():
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
             "tablet_state": tablet_state,
-            "#eye_led_colorpicker": get_eye_colors()
+            # "#eye_led_colorpicker": get_eye_colors()
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -236,6 +237,17 @@ def set_engagement_mode():
     return {
        "status": "ok",
        "mode": mode 
+    }
+
+@app.route("/say_text")
+def say_text():
+    msg = request.args.get('msg', type=str)
+
+    tts_srv.say(msg)
+
+    return {
+       "status": "ok",
+       "msg": msg 
     }
 
 @app.route("/toggle_setting")
@@ -735,48 +747,57 @@ def set_led_intensity():
 
 @app.route("/set_led_color")
 def set_led_color():
-    group = request.args.get('group', type=str)
-    r = request.args.get('r', type=int)
-    g = request.args.get('g', type=int)
-    b = request.args.get('b', type=int)
+    group = "FaceLeds"
 
-    r = r / 250.0
-    g = g / 250.0
-    b = b / 250.0
+    color = request.args.get('color', type=str)
 
-    print(r, g, b)
-    print(group)
+    for color_enum in config["colors"]:
+        if color_enum["title"] == color:
+            r = color_enum["red"]
+            g = color_enum["green"]
+            b = color_enum["blue"]
 
-    led_srv.fadeRGB(group, r, g, b, 0.5)
+            print(r, g, b)
+            print(group)
 
-    return {
-        "staus": "updated led color",
-        "LED group": group,
-        "r": r,
-        "g": g,
-        "b": b
-    }
+            led_srv.fadeRGB(group, r, g, b, 0.5)
+
+            return {
+                "staus": "updated led color",
+                "color": color
+            }
+
+    
 
 @app.route("/exec_eye_anim")
 def exec_eye_anim():
     anim = request.args.get('anim', type=str)
     duration = request.args.get('secs', type=str)
     duration = float(duration)
+
+    # prev_color = get_eye_colors()
+    # print(prev_color)
+
     if anim == "randomEyes":
         led_srv.randomEyes(duration)
     elif anim == "rasta":
         led_srv.rasta(duration)
     elif anim == "rotateEyes":
-        hex_val = request.args.get('hex_val', type=str)
+        color = request.args.get('color', type=str)
 
-        # transform hex string to porper hex int, as required for api call
-        hex_int = int(hex_val, 16)
-        final_hex_int = hex_int + 0x200
+        for color_enum in config["colors"]:
+            if color_enum["title"] == color:
+                final_hex_int = matplotlib.colors.to_hex([color_enum["red"], color_enum["green"] , color_enum["blue"]])
+                # print(final_hex_int)
+                final_hex_int = final_hex_int.replace("#", "0x")
+                # print(final_hex_int)
+                final_hex_int = int(final_hex_int, 16)
+                # print(final_hex_int)
 
-        round_time = 1.0
-        led_srv.rotateEyes(final_hex_int, round_time, float(duration))
+                round_time = 1.0
+                led_srv.rotateEyes(final_hex_int, round_time, float(duration))
 
-    # TODO restore default eye state (or the state that we had before playign the anim) otherwise it stays in last configuration
+    led_srv.fadeRGB("FaceLeds", 1.0, 1.0, 1.0, 0.5)
 
     return {
         "status": "eye anim",
