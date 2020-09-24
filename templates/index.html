@@ -3,6 +3,7 @@
 <head>
 <link rel="stylesheet" type="text/css" href="../static/style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
 <script type=text/javascript>
 
   var keyboard_shortcuts = {}
@@ -581,177 +582,146 @@ function hexToRGB (hex){
   function add_keyboard_shortcut(key_list, id) {
     /*
     Binds a specific UI buttons to keyboard shortcuts
-    @param key_list: List containing all the KeyboardEvent.key values for the shortcut
+    @param key_list: List containing all the Mousetrap key values for the shortcut
     */
-    /*
-    for (var id in window.keyboard_shortcuts) {
-      // TODO: FIGURE OUT WHY THIS BREAKS IT!!
-      if (arraysEqual(key_list, window.keyboard_shortcuts[id])) {
-        console.log("ARRAY EQ")
-        return
-        console.log("PAST RETURN?")
+    for (const [key, value] of Object.entries(keyboard_shortcuts)) {
+      //console.log(`${key}: ${value}`);
+      if (arraysEqual(value, key_list)) {
+        console.log("EQ:", value, key_list)
+        msg = "Dublicate shortcut detected!\n"
+        msg += "1) #" + key + ": " + value.join("+") + "\n"
+        msg += "2) #" + id + ": " + key_list.join("+") + " (is now bound)\n\n"
+        msg += "Change this in the YAML config file."
+        alert(msg)
       }
     }
-    */
-    if ( // check whether one of the keys is an arrow key, which is preoccupied with driving the Pepper etc
-      key_list.indexOf("ArrowDown") !== -1 ||
-      key_list.indexOf("ArrowUp") !== -1 ||
-      key_list.indexOf("ArrowLeft") !== -1 ||
-      key_list.indexOf("ArrowRight") !== -1
-    ) {
-      msg = "Arrow keys are not allowed in keyboard shortcuts for buttons, as they are preoccupied with driving Pepper!"
-      msg += "\nChange this shortcut: [" + key_list + "] = " + id+ "!"
-      alert(msg)
-    } else {
-      // access global object that stores the combinations and targets
-      // console.log("Adding", key_list, id)
-      window.keyboard_shortcuts[id] = key_list
-      // console.log(window.keyboard_shortcuts)
-    }
+    Mousetrap.bind(
+      key_list.join("+"), function() {
+        $("#"+id).click();
+      }
+    )
+    keyboard_shortcuts[id] = key_list
   }
+
 
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
-
     if (!window.session_is_connected) {
       console.log("Session isn't connected")
       return
     }
 
-    // console.log(event)
-    // DRIVING
-    if (event.altKey && event.key === "ArrowUp" && !event.shiftKey ) {
-      $.getJSON(
-        "/update_pepper_velocities?axis=x&val=+0.2",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        })
-      } else if (event.altKey && event.key === "ArrowDown" && !event.shiftKey ) {
-      $.getJSON(
-        "/update_pepper_velocities?axis=x&val=-0.2",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        })
-      } else if (event.altKey && event.key === "ArrowLeft" && !event.shiftKey ) {
-      $.getJSON(
-        "/update_pepper_velocities?axis=theta&val=+0.2",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-      })
-    } else if (event.altKey && event.key === "ArrowRight" && !event.shiftKey ) {
-      $.getJSON(
-        "/update_pepper_velocities?axis=theta&val=-0.2",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-      })
-    // STOP DRIVING
-    } else if (event.ctrlKey && event.key === "Backspace") { // ctrl + backspace
-      $.getJSON(
-        "/stop_motion",
-        function(data) { 
-          console.log(data)
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        })
-    // HEAD MOVEMENT
-    } if (event.key === "ArrowUp" && !event.altKey && !event.shiftKey ) {
-      $.getJSON(
+    // MOVE HEAD:
+    Mousetrap.bind("down", function() {
+        $.getJSON(
         "/move_joint?axis=HeadPitch&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowDown" && !event.altKey && !event.shiftKey ) {
+    });
+    Mousetrap.bind("up", function() {
       $.getJSON(
         "/move_joint?axis=HeadPitch&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowLeft" && !event.altKey && !event.shiftKey ) {
+    });
+    Mousetrap.bind("left", function() {
       $.getJSON(
         "/move_joint?axis=HeadYaw&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-      })
-    } else if (event.key === "ArrowRight" && !event.altKey && !event.shiftKey ) {
+        })
+    });
+    Mousetrap.bind("right", function() {
       $.getJSON(
         "/move_joint?axis=HeadYaw&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-      })
-    } // HIP MOVEMENT
-      else if (event.key === "ArrowUp" && !event.altKey && event.shiftKey) {
+        })
+    });
+
+    // DRIVING
+    Mousetrap.bind("alt+up", function() {
       $.getJSON(
-        "/move_joint?axis=HipPitch&val=-0.2",
+        "/update_pepper_velocities?axis=x&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowDown" && !event.altKey && event.shiftKey ) {
+    });
+    Mousetrap.bind("alt+down", function() {
+      $.getJSON(
+        "/update_pepper_velocities?axis=x&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+    });
+    Mousetrap.bind("alt+left", function() {
+      $.getJSON(
+        "/update_pepper_velocities?axis=theta&val=+0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+    });
+    Mousetrap.bind("alt+right", function() {
+      $.getJSON(
+        "/update_pepper_velocities?axis=theta&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        });
+    })
+    // PANIC STOP BTN
+    Mousetrap.bind("ctrl+escape", function() {
+      $.getJSON(
+        "/stop_motion",
+        function(data) { 
+          console.log(data)
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+    })
+
+    // HIP MOVEMENT
+    Mousetrap.bind("shift+down", function() {
       $.getJSON(
         "/move_joint?axis=HipPitch&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-      } else if (event.key === "ArrowLeft" && !event.altKey && event.shiftKey ) {
+    });
+    Mousetrap.bind("shift+up", function() {
+      $.getJSON(
+        "/move_joint?axis=HipPitch&val=-0.2",
+        function(data){
+          console.log(data);
+          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        })
+    });
+    Mousetrap.bind("shift+left", function() {
       $.getJSON(
         "/move_joint?axis=HipRoll&val=+0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-      })
-    } else if (event.key === "ArrowRight" && !event.altKey && event.shiftKey) {
+        })
+    });
+    Mousetrap.bind("shift+right", function() {
       $.getJSON(
         "/move_joint?axis=HipRoll&val=-0.2",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
-    } else {
-      let alt_down = event.altKey;
-      let shift_down = event.shiftKey;
-      let ctrl_down = event.ctrlKey;
-      matches = []
-      console.log(event)
-
-      for (var id in window.keyboard_shortcuts) {
-        //console.log("Keyboard shortcut: " + window.keyboard_shortcuts[id] + " for " + id)
-        all_match = true;
-        for (var i = 0; i < window.keyboard_shortcuts[id].length; i++) {
-          key = window.keyboard_shortcuts[id][i]
-          //console.log(key)
-          if (key == "Control") {
-            if (!ctrl_down) {
-              all_match = false;
-            }
-          } else if (key == "Alt") {
-            if (!alt_down) {
-              all_match = false;
-            }
-          } else if (key == "Shift") {
-            if (!shift_down) {
-              all_match = false;
-            }
-          } else {
-            if (key != event.key) {
-              all_match = false;
-            }
-          }        
-        }
-        if (all_match) {
-            console.log(window.keyboard_shortcuts[id], id)
-            $("#" + id).click()
-          }
-      }
-    }
-  });
+    });
+  })
 
   // for reconnecting upon reload of site
   {% if reconnect_ip != "" %}
