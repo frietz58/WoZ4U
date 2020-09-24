@@ -307,18 +307,6 @@ def show_default_img_or_hide():
        "showing": "Pepper default gif, no default image found in config",
     }
 
-@app.route("/say_text")
-def say_text():
-    msg = request.args.get('msg', type=str)
-    print(msg)
-
-    tts_srv.say(msg)
-
-    return {
-       "status": "ok",
-       "text": msg,
-    }
-
 @app.route("/serve_audio/<path:filename>")
 def serve_audio(filename):
     print(filename)

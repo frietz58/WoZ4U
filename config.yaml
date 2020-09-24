@@ -52,29 +52,44 @@ images:
     file_name: sound_playing.png
     key_comb: ["ctrl", "shift", 5]
 
-messages: 
-  # Avoid special characters in messages, this can break the backend.
-  # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
+animated_speech:
+    # Avoid special characters in messages, this can break the backend.
+    # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
-    short: Title # This will be shown in the GUI
-    full_text: This is the complete message that we want the pepper robot to say. # This will be the spoken message
+    title: Plain  # This will be shown in the GUI
+    string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
+    tooltip: "This is just a simple message, no animations, no tags or annotations added."  # tooltip for the button in UI
     key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
-  -
-    short: Hello
-    full_text: Hello, Im pepper.
+  - 
+    title: Pitch annotation
+    string: "This is a message where we \\vct=150\\ change the pitch halfway through."
+    tooltip: "This is a message where we \\vct=150\\ change the pitch halfway through."
     key_comb: ["ctrl", "2"]
   -
-    short: Insult
-    full_text: Here are the test results; you are a horrible person.
+    title: Speed annotation
+    string: "This is a message where we \\rspd=50\\ change the speed halfway through."
+    tooltip: "This is a message where we \\rspd=50\\ change the speed halfway through."
     key_comb: ["ctrl", "3"]
   -
-    short: Compliment
-    full_text: Ive always thought you are virtually perfect.
+    title: Speech and animation
+    string: "Hello there! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
+    tooltip: "Hello there! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
     key_comb: ["ctrl", "4"]
   -
-    short: Blah
-    full_text: blah blah blah blah blah, blah blah blah, blah.
+    title: Suspended speech
+    string: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
+    tooltip: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
     key_comb: ["ctrl", "5"]
+  -
+    title: Show tablet
+    string: "^start(animations/Stand/Gestures/ShowTablet_3) Look at my tablet. ^wait(animations/Stand/Gestures/ShowTablet_3)"
+    tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look at my tablet. ^wait(animations/Stand/Gestures/ShowTablet_3)"
+    key_comb: ["ctrl", "6"]
+  -
+    title: Long sequence
+    string: "^start(animations/Stand/Gestures/Hey_1) Look over here. ^wait(animations/Stand/Gestures/Hey_1) I think ^start(animations/Stand/Waiting/ShowSky_1) there is a plane in the sky! ^wait(animations/Stand/Waiting/ShowSky_1)"
+    tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look over here. ^wait(animations/Stand/Gestures/ShowTablet_3)"
+    key_comb: ["ctrl", "7"]
 
 image_root_location: /static/imgs/  # place image files here, on host machine
 
@@ -101,25 +116,6 @@ audio_files:
     title: Elephant walking
     location: /home/nao/sound_files/BabyElephantWalk60.wav
     key_comb: ["alt", "5"]
-
-animated_speech:
-    # Button will be created for every item in the list
-  -
-    title: Over here
-    string: "Hello! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
-    tooltip: blah
-  -
-    title: I am this tall
-    string: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
-    tooltip: blah
-  -
-    title: Point far
-    string: "^start(animations/Stand/Gestures/Far_3) Theyre taking the hobbits to Isengard! ^wait(animations/Stand/Gestures/Far_3) "
-    tooltip: blah
-  -
-    title: Show tablet
-    string: "^start(ShowTablet_3) Look at my tablet. ^wait(ShowTablet_3) ^start(animations/Stand/Gestures/ShowSky_8) Now look up ^wait(animations/Stand/Gestures/ShowSky_8)"
-    tooltip: blah
 
 gestures: # Buttons will be created for every item in the list
   -

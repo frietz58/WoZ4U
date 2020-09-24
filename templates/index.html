@@ -185,22 +185,6 @@
     })
   }
 
-  function say_predefined_text(text, index) {
-    $("#voice_cmd_"+index).html("..."); // set btn text to ...
-    $("#voice_cmd_"+index).addClass("example_c_ongoing"); // give it the css class for "processing"
-    
-    $.getJSON(
-      "/say_text?msg=" + text,
-      function(data) {
-        console.log(data);
-      }
-    ).done(function() {
-      $("#voice_cmd_"+index).html("Say it")
-      $("#voice_cmd_"+index).removeClass("example_c_ongoing")
-      update_states()
-    })
-  }
-
   function play_audio(name, index) {
     // depending on value of btn we either start playing audio or interrupt it
     console.log($("#audio_file_"+index).text())
@@ -1086,37 +1070,38 @@ function hexToRGB (hex){
     
     <!-- COLUMN 1: SPEECH-->
     <div style="width: 50%; float: left;">
-    
-      <h3>Text messages</h3>
 
-      {%for msg in config["messages"]%}
-        <!-- Here, we iterate over all the messages and create labels and buttons for each-->
-        <div class="row">
-          <div class="speech_lbl_wrapper">
-            <span>{{msg["short"]}}</span>
-          </div>
-          <div class="speech_btn_wrapper">
-            <button 
-              title='{{msg["full_text"]}}'
-              class="example_c" 
-              id="voice_cmd_{{loop.index0}}" 
-              onclick="say_predefined_text('{{msg["full_text"]}}', {{loop.index0}})">
-              SAY IT
-            </button>
-          </div>
+      <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
+        <h3>Animated speech</h3>
+      </a>
+
+      {%for anim_speech in config["animated_speech"]%}
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>{{anim_speech["title"]}}</span>
         </div>
-        <br>
+        <div class="speech_btn_wrapper">
+          <button 
+            title="{{anim_speech['tooltip']}}"
+            class="example_c" 
+            id="anim_speech_btn_{{loop.index0}}" 
+            onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
+            EXECUTE
+          </button>
+        </div>
+      </div>
+      <br>
 
         <!-- add the keyboard shortcut to the button, if the flag has been given-->
-        {% if (msg["key_comb"] is defined) and  msg["key_comb"] %}  
+        {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}  
           <script>
             // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
             // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-            // console.log("{{ msg["key_comb"]|safe }}")
-            add_keyboard_shortcut({{ msg["key_comb"]|safe }}, "voice_cmd_{{loop.index0}}" )
+            // console.log("{{ anim_speech["key_comb"]|safe }}")
+            add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}" )
           </script>
         {% endif %}
-      {%endfor%} 
+      {%endfor%}
 
       <div class="row">
         <span>Direct message:</span>
