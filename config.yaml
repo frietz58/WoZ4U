@@ -52,6 +52,8 @@ images:
     file_name: sound_playing.png
     key_comb: ["ctrl", "shift", 5]
 
+image_root_location: /static/imgs/  # place image files here, on host machine
+
 animated_speech:
     # Avoid special characters in messages, this can break the backend.
     # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
@@ -89,15 +91,12 @@ animated_speech:
     title: Long sequence
     string: "^start(animations/Stand/Gestures/Hey_1) Look over here. ^wait(animations/Stand/Gestures/Hey_1) I think ^start(animations/Stand/Waiting/ShowSky_1) there is a plane in the sky! ^wait(animations/Stand/Waiting/ShowSky_1)"
     tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look over here. ^wait(animations/Stand/Gestures/ShowTablet_3)"
-    key_comb: ["ctrl", "7"]
-
-image_root_location: /static/imgs/  # place image files here, on host machine
-
+    # key_comb: ["ctrl", "7"]  # this is an example where we don't assign a keyboard shortcut
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
   # Button will be created for every item in the list
   -
-    title: Imperial March
+    title: Imperial March  # This will be shown in the GUI
     location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
     key_comb: ["alt", "1"]
   - 
@@ -119,7 +118,7 @@ audio_files:
 
 gestures: # Buttons will be created for every item in the list
   -
-    title: "Yes"  # Label for button
+    title: "Yes"  # This will be shown in the GUI
     gesture: "animations/Stand/Gestures/Yes_1"  # Gesture to execute
     tooltip: "Yes_1 gesture"  # Tooltip for buton
     key_comb: ["shift", "1"]

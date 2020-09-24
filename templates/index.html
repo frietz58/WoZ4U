@@ -45,7 +45,7 @@
                 $(id).addClass("example_c_ongoing")
               } else {
                 // if another btn in front still indicates being active, reset that
-                $(id).html("SHOW"); // set btn text
+                $(id).html($(id).attr("default_text")); // set btn text
                 $(id).removeClass("example_c_ongoing")
               }
             })
@@ -188,69 +188,68 @@
   function play_audio(name, index) {
     // depending on value of btn we either start playing audio or interrupt it
     console.log($("#audio_file_"+index).text())
-
-    if ($("#audio_file_"+index).text() == "PLAY") {
-      $("#audio_file_"+index).html("STOP");
-      $("#audio_file_"+index).addClass("example_c_ongoing");
+    id = "#audio_file_"+index
+    if ($(id).text() == "STOP") {
+            // clearing the tablet removes the browser context though which the js audio signal is being played...
+      $.getJSON(
+        "/stop_sound_play",
+        function(data) {
+          console.log(data)
+        }
+      ).done(function() {
+        console.log($(id).attr("default_text"))
+        $(id).html($(id).attr("default_text"));
+        $(id).removeClass("example_c_ongoing")
+        $("[id^=image_btn_]").prop('disabled', false);
+        $("[id^=audio_file_]").prop('disabled', false);
+        update_states()
+      })
+    } else {
+      // play audio
+      $(id).html("STOP");
+      $(id).addClass("example_c_ongoing");
 
       $("[id^=audio_file_]").prop('disabled', true); // also disable all the other sounds btns...
-      $("#audio_file_"+index).prop("disabled", false)
-
-      console.log(name)
-      console.log(index)
+      $(id).prop("disabled", false)
 
       $.getJSON(
       "/play_audio?index=" + index,
       function(data) {
         console.log(data);
-      }
-    ).done(function() {
-      $("#audio_file_"+index).html("PLAY")
-      $("#audio_file_"+index).removeClass("example_c_ongoing")
+      }).done(function() {
+      $(id).html($(id).attr("default_text"));
+      $(id).removeClass("example_c_ongoing")
       $("[id^=image_btn_]").prop('disabled', false);
       $("[id^=audio_file_]").prop('disabled', false);
       update_states()
-    })
-
-    } else {
-      // clearing the tablet removes the browser context though which the js audio signal is being played...
-      $.getJSON(
-        "/stop_sound_play",
-        function(data) {
-          console.log(data)
-        }).done(function() {
-          $("#audio_file_"+index).html("PLAY");
-          $("#audio_file_"+index).removeClass("example_c_ongoing")
-          $("[id^=image_btn_]").prop('disabled', false);
-          $("[id^=audio_file_]").prop('disabled', false);
-          update_states()
       })
     }
   }
 
   function show_img(img_name, index) {
+    id = "#image_btn_"+index
     //depending on the state of the button, we either want to show or hide an image...
-    if ($("#image_btn_"+index).text() == "SHOW") {
-      // show the image on the tablet
-      $.getJSON(
-      "/show_img/" + img_name,
-      function(data) {
-        console.log(data);
-      }).done(function() {
-        $("#image_btn_"+index).html("HIDE"); // set btn text
-        $("#image_btn_"+index).addClass("example_c_ongoing")
-        update_states()
-      })
-    } else {
+    if ($(id).text() == "HIDE") {
       // clear the image from the tablet
       $.getJSON(
         "/clear_tablet",
         function(data) {
           console.log(data)
         }).done(function() {
-          $("#image_btn_"+index).html("SHOW"); // set btn text
-          $("#image_btn_"+index).removeClass("example_c_ongoing")
+          $(id).html($(id).prop("default_text")); // set btn text
+          $(id).removeClass("example_c_ongoing")
           update_states()
+      })
+    } else {
+          // show the image on the tablet
+      $.getJSON(
+      "/show_img/" + img_name,
+      function(data) {
+        console.log(data);
+      }).done(function() {
+        $(id).html("HIDE"); // set btn text
+        $(id).addClass("example_c_ongoing")
+        update_states()
       })
     }
     
@@ -258,8 +257,8 @@
     // https://stackoverflow.com/questions/5376431/wildcards-in-jquery-selectors
     $("[id^=image_btn_]").each(function( iter_ind ) {
       if (iter_ind != index) {
-        $("#image_btn_" + iter_ind).html("SHOW")
-        $("#image_btn_" + iter_ind).removeClass("example_c_ongoing")
+        $(id).html($(id).prop("default_text"));
+        $(id).removeClass("example_c_ongoing")
       }
   });
   }
@@ -319,16 +318,20 @@
   }
 
   function exec_gesture(name, index) {
-    $("#gesture_btn_" + index).html("...")
-    $("#gesture_btn_" + index).addClass("example_c_ongoing"); // give it the css class for "processing"
+    id = "#gesture_btn_" + index
+    $(id).html("...")
+    $(id).addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON(
       "exec_gesture?index=" + index,
       function(data){
         console.log(data)
       }
     ).done(function() {
-      $("#gesture_btn_" + index).html("EXECUTE")
-      $("#gesture_btn_" + index).removeClass("example_c_ongoing"); // remove class for ongoing
+      console.log("resetting")
+      $(id).html($(id).attr("default_text"));
+      $(id).removeClass("example_c_ongoing");
+      // ^this sometimes just doesn't do anything??
+      // TODO FIX
       update_states()
     });
   }
@@ -752,7 +755,7 @@ function hexToRGB (hex){
   </div>
 
   <div class="tablet">
-    <h2>Pepper Tablet</h2>
+    <h2>Pepper tablet</h2>
 
     {%for img in config["images"]%}
       <!-- Here, we iterate over all the messages and create labels and buttons for each-->
@@ -764,7 +767,19 @@ function hexToRGB (hex){
           <button class="example_c" 
           id="image_btn_{{loop.index0}}" 
           file="{{img['file_name']}}"
-          onclick="show_img('{{img["file_name"]}}', {{loop.index0}})">SHOW</button>
+          onclick="show_img('{{img["file_name"]}}', {{loop.index0}})"
+          default_text="
+          {% if (img["key_comb"] is defined) and  img["key_comb"] %}
+            {{ img["key_comb"]|safe }}
+          {% else %}
+            SHOW
+          {% endif %}">
+          {% if (img["key_comb"] is defined) and  img["key_comb"] %}
+            {{ img["key_comb"]|safe }}
+          {% else %}
+            SHOW
+          {% endif %}
+          </button>
         </div>
       </div>
       <br>
@@ -1086,7 +1101,11 @@ function hexToRGB (hex){
             class="example_c" 
             id="anim_speech_btn_{{loop.index0}}" 
             onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
-            EXECUTE
+            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+              {{ anim_speech["key_comb"]|safe }}
+            {% else %}
+              EXECUTE
+            {% endif %}
           </button>
         </div>
       </div>
@@ -1097,7 +1116,6 @@ function hexToRGB (hex){
           <script>
             // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
             // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-            // console.log("{{ anim_speech["key_comb"]|safe }}")
             add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}" )
           </script>
         {% endif %}
@@ -1126,8 +1144,20 @@ function hexToRGB (hex){
           <button 
             title="{{audio['location']}}"
             class="example_c" 
-            id="audio_file_{{loop.index0}}" 
-            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})">PLAY</button>
+            id="audio_file_{{loop.index0}}"
+            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})"
+            default_text="
+            {% if (audio["key_comb"] is defined) and audio["key_comb"] %}
+              {{ audio["key_comb"]|safe }}
+            {% else %}
+              SHOW
+            {% endif %}">
+            {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
+              {{ audio["key_comb"]|safe }}
+            {% else %}
+              PLAY
+            {% endif %}
+            </button>
         </div>
       </div>
       <br>
@@ -1183,7 +1213,7 @@ function hexToRGB (hex){
         Resting position
       </button>
       <button 
-        title="Put pepper in resting position"
+        title="Put pepper in netral stand position"
         class="example_c" 
         id="resting_pos_btn" 
         onclick="netural_stand_position()">
@@ -1195,34 +1225,12 @@ function hexToRGB (hex){
     </div>
     <br>
 
-    <!-- COLUMN 1: Animated speech-->
+    <!-- COLUMN 1: EYE LEDS-->
     <div style="width: 50%; float: left;">
-
-      <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-        <h3>Animated Speech</h3>
-      </a>
-
-      {%for anim_speech in config["animated_speech"]%}
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{anim_speech["title"]}}</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button 
-            title="{{anim_speech['tooltip']}}"
-            class="example_c" 
-            id="anim_speech_btn_{{loop.index0}}" 
-            onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
-            EXECUTE
-          </button>
-        </div>
-      </div>
-      <br>
-      {%endfor%}
-  
+      
     </div>
 
-    <!-- COLUMN 2: Gestures-->
+    <!-- COLUMN 2: GESTURES-->
     <div style="width: 50%; float: left;">
       <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
         <h3>Gestures</h3>
@@ -1238,8 +1246,18 @@ function hexToRGB (hex){
               title="{{gesture['tooltip']}}"
               class="example_c" 
               id="gesture_btn_{{loop.index0}}" 
+              default_text="
+              {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
+                {{ gesture["key_comb"]|safe }}
+              {% else %}
+                EXECUTE
+              {% endif %}"
               onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
+              {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
+                {{ gesture["key_comb"]|safe }}
+              {% else %}
               EXECUTE
+              {% endif %}
             </button>
           </div>
         </div>
