@@ -617,7 +617,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HeadPitch&val=+0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("up", function() {
@@ -625,7 +624,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HeadPitch&val=-0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("left", function() {
@@ -633,7 +631,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HeadYaw&val=+0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("right", function() {
@@ -641,7 +638,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HeadYaw&val=-0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
 
@@ -694,7 +690,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HipPitch&val=+0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("shift+up", function() {
@@ -702,7 +697,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HipPitch&val=-0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("shift+left", function() {
@@ -710,7 +704,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HipRoll&val=+0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("shift+right", function() {
@@ -718,7 +711,6 @@ function hexToRGB (hex){
         "/move_joint?axis=HipRoll&val=-0.2",
         function(data){
           console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
       })
     });
   })
