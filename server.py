@@ -204,7 +204,7 @@ def querry_states():
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
             "tablet_state": tablet_state,
-            # "#eye_led_colorpicker": get_eye_colors()
+            "#querried_color": get_eye_colors()
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -753,7 +753,7 @@ def exec_eye_anim():
     duration = request.args.get('secs', type=str)
     duration = float(duration)
 
-    # prev_color = get_eye_colors()
+    prev_color = get_eye_colors()
     # print(prev_color)
 
     if anim == "randomEyes":
@@ -775,7 +775,8 @@ def exec_eye_anim():
                 round_time = 1.0
                 led_srv.rotateEyes(final_hex_int, round_time, float(duration))
 
-    led_srv.fadeRGB("FaceLeds", 1.0, 1.0, 1.0, 0.5)
+    # led_srv.fadeRGB("FaceLeds", 1.0, 1.0, 1.0, 0.5)
+    led_srv.fadeRGB("FaceLeds", prev_color[0], prev_color[1], prev_color[2], 0.5)
 
     return {
         "status": "eye anim",

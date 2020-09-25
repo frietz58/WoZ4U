@@ -81,7 +81,26 @@
             else if ($(key).get(0).nodeName == "DIV") {
               // querried color div
               // console.log(key, data[key]);
+              // set color of "querried" block to querried val
               $(key).css("background", "rgba(" + data[key][0] * 255 + ", " + data[key][1] * 255 + ", " + data[key][2] * 255 + ")")
+
+              // see if the querried color matches one of the defined colors
+              {% for color in config["colors"] %}
+                identifier = "#eye_colo_btn_{{ color["title"] }}"
+                color_array = [{{ color["red"] }}, {{ color["green"] }}, {{ color["blue"] }}]
+
+                // if it matches, set that btn to ON, to indicate the eye color begin shown
+                if (arraysEqual(data[key], color_array)) {
+                  $(identifier).addClass("example_c_green");
+                  $(identifier).removeClass("example_c_ongoing");
+                  $(identifier).html("ON")
+                } 
+                else {
+                  $(identifier).removeClass("example_c_green");
+                  $(identifier).removeClass("example_c_ongoing");
+                  $(identifier).html("OFF")
+                }
+              {% endfor%}
             }
           }
         });
@@ -1345,17 +1364,32 @@ function degrees_to_radians(degrees)
       <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
         <h3>Eye Colors</h3>
       </a>
+
+      
+      <div class="row">
+        <div class="speech_lbl_wrapper">
+          <span>Querried color: </span>
+        </div>
+        <div class="small-color-box" id="querried_color"></div>
+      </div>
+      <br>
+      <br>
+    
+
       {%for color in config["colors"]%}
         <div class="row">
           <div class="speech_lbl_wrapper">
             <span>{{color["title"]}}</span>
           </div>
-          <div class="small-color-box" id="color_box_{{loop.index0}}"></div>
+          <div class="small-color-box" id="color_box_{{ color["title"] }}"></div>
             <script>
               // console.log(rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}))
-              $("#color_box_{{loop.index0}}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
+              $("#color_box_{{ color["title"] }}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
             </script>
-          <button class="example_c" onclick="set_eye_led_color('{{color["title"]}}')">
+          <button 
+          class="example_c" 
+          onclick="set_eye_led_color('{{color["title"]}}')"
+          id="eye_colo_btn_{{color["title"]}}">
             SET
           </button>
         </div>
