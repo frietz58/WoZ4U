@@ -747,7 +747,7 @@ function degrees_to_radians(degrees)
     });
 
     // PANIC STOP BTN
-    Mousetrap.bind("ctrl+escape", function() {
+    Mousetrap.bind("escape", function() {
       $.getJSON(
         "/stop_motion",
         function(data) { 
@@ -1314,7 +1314,7 @@ function degrees_to_radians(degrees)
           </td>
         </tr>
         <tr>
-          <td style="text-align: right;">CTRL + ESCAPE</td>
+          <td style="text-align: right;">ESCAPE</td>
           <td style="text-align: left;">: Stop driving</td>
           <td></td>
         </tr>
