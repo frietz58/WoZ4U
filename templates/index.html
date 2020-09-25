@@ -434,6 +434,8 @@
       payload = "?param=Orthogonal&value=" + value
     }
 
+    value = value / 100.0  // values is given in CM, expects m 
+
     // set corresponding btn 
     $(bt_identifier).html("...")
     $(bt_identifier).addClass("example_c_ongoing");
@@ -941,13 +943,14 @@ function degrees_to_radians(degrees)
             Tangential collision avoidance:
           </a>
         </div>
-        <span>TODO LABEL</span>
+        <!-- <span>TODO LABEL</span> -->
         <input 
         type="text" 
-        placeholder="1" 
+        placeholder="10"
         id="tangential_collision" 
-        style="width: 30%; float: left; margin-left: 10px;"
+        style="width: 10%; float: left; margin-left: 10px;"
         oninput="add_ongoing('#tangential_collision_set'); add_uncommited_flag('#tangential_collision')">
+        <span style="float:left; margin-left: 10px">cm</span>
         <button id="tangential_collision_set" onclick="set_collision_avoidance('tangential')" class="example_c">Set</button>
       </div>
       <br>
@@ -959,11 +962,12 @@ function degrees_to_radians(degrees)
           </a>
         </div>
         <input 
-        type="text" 
-        placeholder="1" 
+        type="text"
+        placeholder="10"
         id="orthogonal_collision" 
-        style="width: 30%; float: left; margin-left: 10px;"
+        style="width: 10%; float: left; margin-left: 10px;"
         oninput="add_ongoing('#orthogonal_collision_set'); add_uncommited_flag('#orthogonal_collision')">
+        <span style="float:left; margin-left: 10px">cm</span>
         <button id="orthogonal_collision_set" onclick="set_collision_avoidance('orthogonal')" class="example_c">Set</button>
       </div>
       <br>

@@ -192,8 +192,8 @@ def querry_states():
     try:
         return {
             "#autonomous_states": al_srv.getState(),
-            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3),
-            "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3),
+            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3) * 100,  # convert form m to cm for frontend
+            "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3) * 100,
             "#toggle_btn_blinking": ab_srv.isEnabled(),
             "#toggle_btn_basic_awareness": ba_srv.isEnabled(),
             "#engagement_states": ba_srv.getEngagementMode(),
