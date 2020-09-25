@@ -487,50 +487,28 @@ def set_collision_radius():
         "value": value
     }
 
-@app.route("/update_pepper_velocities")
-def update_pepper_velocities():
-        axis = request.args.get("axis", type=str)
-        val = request.args.get("val", type=float)
+@app.route("/move_to")
+def move_to():
+    x = request.args.get("x", type=float)
+    y = request.args.get("y", type=float)
+    theta = request.args.get("theta", type=float)
 
-        print(axis)
-        print(val)
+    # Wake up robot
+    # motion_service.wakeUp()
 
-        # Disable all autonomous life features, they can interfere with our commands...
-        al_srv.setState("solitary")
-        al_srv.setAutonomousAbilityEnabled("All", False)
+    # Send robot to Pose Init
+    posture_srv.goToPosture("StandInit", 0.5)
 
-        # get current robot velocity
-        x_vel, y_vel, theta_vel = motion_srv.getRobotVelocity()
-        
-        x_vel = round(x_vel, 1)
-        y_vel = round(y_vel, 1)
-        theta_vel = round(theta_vel, 1)
+    # set velocity
+    motion_srv.moveo(x, y, theta)
 
-        print(x_vel, y_vel, theta_vel)
+    return {
+        "call": "move_to",
+        "x": x,
+        "y": y,
+        "theta": theta
+    }
 
-        # update velocity
-        if axis == "x":
-            x_vel += val
-        elif axis == "theta":
-            theta_vel += val
-
-        stiffness = 0.1
-        motion_srv.setStiffnesses("Body", stiffness)
-
-        x_vel = round(x_vel, 1)
-        y_vel = round(y_vel, 1)
-        theta_vel = round(theta_vel, 1)
-
-        # set velocity
-        motion_srv.move(x_vel, y_vel, theta_vel)
-
-        return {
-            "x_vel": x_vel,
-            "y_vel": y_vel,
-            "theta_vel": theta_vel,
-            "target_axis": axis,
-            "value": val
-        }
 
 @app.route("/stop_motion")
 def stop_motion():

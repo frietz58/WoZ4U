@@ -572,6 +572,12 @@ function hexToRGB (hex){
   return true;
 }
 
+function degrees_to_radians(degrees)
+{
+  var pi = Math.PI;
+  return degrees * (pi/180);
+}
+
   function add_keyboard_shortcut(key_list, id) {
     /*
     Binds a specific UI buttons to keyboard shortcuts
@@ -636,32 +642,48 @@ function hexToRGB (hex){
 
     // DRIVING
     Mousetrap.bind("alt+up", function() {
+      x = $("#drive_distance_input").val()
+      x = x / 100
+      console.log(x)
       $.getJSON(
-        "/update_pepper_velocities?axis=x&val=+0.2",
+       
+        "/move_to?x=" + x + "&y=0&theta=0",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("alt+down", function() {
+      x = $("#drive_distance_input").val()
+      x = x *-1
+      x = x / 100
+      console.log(x)
+
       $.getJSON(
-        "/update_pepper_velocities?axis=x&val=-0.2",
+        "/move_to?x=" + x + "&y=0&theta=0",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("alt+left", function() {
+      theta = $("#rotation_degree_input").val()
+      theta = (degrees_to_radians(theta))
+      console.log(theta)
       $.getJSON(
-        "/update_pepper_velocities?axis=theta&val=+0.2",
+        "/move_to?x=0&y=0&theta=" + theta,
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
     });
     Mousetrap.bind("alt+right", function() {
+      theta = $("#rotation_degree_input").val()
+      theta = theta *-1
+      theta = (degrees_to_radians(theta))
+      console.log(theta)
       $.getJSON(
-        "/update_pepper_velocities?axis=theta&val=-0.2",
+        "/move_to?x=0&y=0&theta=" + theta,
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
@@ -1195,21 +1217,50 @@ function hexToRGB (hex){
 
     <div class="row">
       <img src="../static/imgs/arrow_keys.png" style="max-height:80px;">
-      <table style="width:100%">
-        <tr>
+      <table style="width:100%; border-collapse: collapse;">
+        <tr class="table_row_line">
           <td style="text-align: right;">Move head</td>
           <td style="text-align: left;">: Arrow keys</td>
+          <td></td>
         </tr>
-        <tr>
-          <td style="text-align: right;">Rotate base</td>
-          <td style="text-align: left;">: SHIFT + Arrow keys</td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Drive</td>
+        <tr class="table_row_line">
+          <td style="text-align: right;">Move / Rotate base</td>
           <td style="text-align: left;">: ALT + Arrow keys</td>
+          <td>
+            <div class="speech_lbl_wrapper">
+              <label for="drive_distance_input">Move (cm)</label>
+            </div>
+            <input 
+              type="text" 
+              id="drive_distance_input" 
+              style="width: 20%; float: left;"
+              placeholder="20"
+              value="20">
+            <br>
+
+            <div class="speech_lbl_wrapper">
+              <label for="rotation_degree_input">Rotate (degree)</label>
+            </div>
+            <input 
+              type="text" 
+              id="rotation_degree_input"  
+              style="width: 20%; float: left;"
+              placeholder="45"
+              value="45">
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">Move Hip</td>
+          <td style="text-align: left;">: SHIFT + Arrow keys</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">CTRL + ESCAPE</td>
+          <td style="text-align: left;">: Stop driving</td>
+          <td></td>
         </tr>
       </table>
-      <span>CTRL + BACKSPACE: Stop driving</span><br><br>
 
       <button 
         title="Put pepper in resting position"
