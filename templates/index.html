@@ -345,9 +345,10 @@
   }
 
   function exec_gesture(name, index) {
-    id = "#gesture_btn_" + index
-    $(id).html("...")
-    $(id).addClass("example_c_ongoing"); // give it the css class for "processing"
+    id_9898234 = "#gesture_btn_" + index
+    console.log(id_9898234)
+    $(id_9898234).html("...")
+    $(id_9898234).addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON(
       "exec_gesture?index=" + index,
       function(data){
@@ -355,10 +356,11 @@
       }
     ).done(function() {
       console.log("resetting")
-      $(id).html($(id).attr("default_text"));
-      $(id).removeClass("example_c_ongoing");
+      $(id_9898234).html($(id_9898234).attr("default_text"));
+      $(id_9898234).removeClass("example_c_ongoing");
+      console.log(id_9898234)
       // ^this sometimes just doesn't do anything??
-      // TODO FIX
+      // something was binding to id from outside, wtf? unique names solves is
       update_states()
     });
   }
@@ -943,7 +945,6 @@ function degrees_to_radians(degrees)
             Tangential collision avoidance:
           </a>
         </div>
-        <!-- <span>TODO LABEL</span> -->
         <input 
         type="text" 
         placeholder="10"
