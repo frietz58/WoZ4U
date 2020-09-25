@@ -65,7 +65,9 @@ def connect_robot():
     s = tablet_srv.onPageStarted
     s.connect(onSignal)
     
-    tts_srv.setVolume(0.1)
+    tts_srv.setVolume(config["volume"])
+    tts_srv.setParameter("pitchShift", config["voice_pitch"])
+    tts_srv.setParameter("speed", config["voice_speed"])
     tts_srv.say("Connected")
 
     # iterate over autonomous life configuration and set values...

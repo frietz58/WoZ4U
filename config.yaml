@@ -93,6 +93,10 @@ animated_speech:
     tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look over here. ^wait(animations/Stand/Gestures/ShowTablet_3)"
     # key_comb: ["ctrl", "7"]  # this is an example where we don't assign a keyboard shortcut
 
+volume: 0.5  # range: [0.0 - 1.0], default = 1
+voice_speed: 100  # range [50 - 400], default = 100
+voice_pitch: 1 # range [1.0 - 4.0], default = 1, 0 disables effect
+
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
   # Button will be created for every item in the list
