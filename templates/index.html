@@ -93,10 +93,12 @@
                 if (arraysEqual(data[key], color_array)) {
                   $(identifier).addClass("example_c_green");
                   $(identifier).removeClass("example_c_ongoing");
+                  $(identifier).removeClass("example_c_red");
                   $(identifier).html("ON")
                 } 
                 else {
                   $(identifier).removeClass("example_c_green");
+                  $(identifier).removeClass("example_c_red");
                   $(identifier).removeClass("example_c_ongoing");
                   $(identifier).html("OFF")
                 }
