@@ -96,18 +96,20 @@ def connect_robot():
             elif key == "basic_awareness":
                 ba_srv.setEnabled(config["autonomous_life_config"][key])
 
+    # show default image if given
     show_default_img_or_hide()
 
-    # because stupid API reasons, settings the intensity resets the LED colors...
-    # so that has to happen first...
-    led_srv.setIntensity("FaceLeds", config["led_settings"]["intensity"])
-
-    # now we can set the color...
-    r = config["led_settings"]["color"]["red"]
-    g = config["led_settings"]["color"]["green"]
-    b = config["led_settings"]["color"]["blue"]
-    
-    led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
+    for color in config["colors"]:
+        try: 
+            if color["is_default"]:
+                r = color["red"]
+                g = color["green"]
+                b = color["blue"]
+                
+                led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
+           
+        except KeyError:  # only one of the elements should have the flag...
+            pass
 
     return {
         "status": "ok",
