@@ -116,7 +116,7 @@
         $(":input").prop('disabled', false); // enable all the inputs
 
         // periodically querry all states
-        setInterval(update_states, 5000);
+        setInterval(update_states, 1000);
 
         window.session_is_connected = true;
 
@@ -638,52 +638,114 @@ function degrees_to_radians(degrees)
     // DRIVING
     Mousetrap.bind("alt+up", function() {
       x = $("#drive_distance_input").val()
+      if (x  == "") {
+        alert("Please enter a valid value for move distance")
+        document.getElementById("drive_distance_input").focus();
+        return
+      }
       x = x / 100
-      console.log(x)
-      $.getJSON(
-       
+      if (!motion_blocking) {
+        motion_blocking = true
+        $("#drive_distance_input").prop('disabled', true);
+        $("#rotation_degree_input").prop('disabled', true);
+        
+        $.getJSON(
         "/move_to?x=" + x + "&y=0&theta=0",
         function(data){
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        }).done(function() {
+          motion_blocking = false
+          $("#drive_distance_input").prop('disabled', false);
+          $("#rotation_degree_input").prop('disabled', false);
         })
+      }
     });
+
     Mousetrap.bind("alt+down", function() {
       x = $("#drive_distance_input").val()
+      if (x  == "") {
+        alert("Please enter a valid value for move distance")
+        document.getElementById("drive_distance_input").focus();
+        return
+      }
       x = x *-1
       x = x / 100
-      console.log(x)
+      if (!motion_blocking) {
+        motion_blocking = true
+        $("#drive_distance_input").prop('disabled', true);
+        $("#rotation_degree_input").prop('disabled', true);
 
-      $.getJSON(
-        "/move_to?x=" + x + "&y=0&theta=0",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+        $.getJSON(
+          "/move_to?x=" + x + "&y=0&theta=0",
+          function(data){
+            console.log(data);
+            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+          }).done(function() {
+          motion_blocking = false
+          $("#drive_distance_input").prop('disabled', false);
+          $("#rotation_degree_input").prop('disabled', false);
         })
+      }
     });
+
     Mousetrap.bind("alt+left", function() {
       theta = $("#rotation_degree_input").val()
+      if (theta  == "") {
+        alert("Please enter a valid value for rotation degrees")
+        document.getElementById("rotation_degree_input").focus();
+        return
+      }
       theta = (degrees_to_radians(theta))
-      console.log(theta)
-      $.getJSON(
-        "/move_to?x=0&y=0&theta=" + theta,
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+      
+
+      if (!motion_blocking) {
+        motion_blocking = true
+        $("#drive_distance_input").prop('disabled', true);
+        $("#rotation_degree_input").prop('disabled', true);
+
+        $.getJSON(
+          "/move_to?x=0&y=0&theta=" + theta,
+          function(data){
+            console.log(data);
+            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+          }).done(function() {
+          motion_blocking = false
+          $("#drive_distance_input").prop('disabled', false);
+          $("#rotation_degree_input").prop('disabled', false);
         })
+      }
     });
+
     Mousetrap.bind("alt+right", function() {
       theta = $("#rotation_degree_input").val()
+      if (theta  == "") {
+        alert("Please enter a valid value for rotation degrees")
+        document.getElementById("rotation_degree_input").focus();
+        return
+      }
       theta = theta *-1
       theta = (degrees_to_radians(theta))
-      console.log(theta)
-      $.getJSON(
-        "/move_to?x=0&y=0&theta=" + theta,
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        });
-    })
+      
+
+      if (!motion_blocking) {
+        motion_blocking = true
+        $("#drive_distance_input").prop('disabled', true);
+        $("#rotation_degree_input").prop('disabled', true);
+
+        $.getJSON(
+          "/move_to?x=0&y=0&theta=" + theta,
+          function(data){
+            console.log(data);
+            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+          }).done(function() {
+          motion_blocking = false
+          $("#drive_distance_input").prop('disabled', false);
+          $("#rotation_degree_input").prop('disabled', false);
+        })
+      }
+    });
+
     // PANIC STOP BTN
     Mousetrap.bind("ctrl+escape", function() {
       $.getJSON(
@@ -1213,7 +1275,7 @@ function degrees_to_radians(degrees)
 
     <div class="row">
       <img src="../static/imgs/arrow_keys.png" style="max-height:80px;">
-      <table style="width:100%; border-collapse: collapse;">
+      <table style="width:100%; border-collapse: collapse;" id="movement_control_table">
         <tr class="table_row_line">
           <td style="text-align: right;">Move head</td>
           <td style="text-align: left;">: Arrow keys</td>
@@ -1229,7 +1291,7 @@ function degrees_to_radians(degrees)
             <input 
               type="text" 
               id="drive_distance_input" 
-              style="width: 20%; float: left;"
+              style="width: 20%; float: left; margin-left: 10px;"
               placeholder="20"
               value="20">
             <br>
@@ -1240,7 +1302,7 @@ function degrees_to_radians(degrees)
             <input 
               type="text" 
               id="rotation_degree_input"  
-              style="width: 20%; float: left;"
+              style="width: 20%; float: left; margin-left: 10px;"
               placeholder="45"
               value="45">
           </td>

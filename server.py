@@ -500,7 +500,7 @@ def move_to():
     posture_srv.goToPosture("StandInit", 0.5)
 
     # set velocity
-    motion_srv.moveo(x, y, theta)
+    motion_srv.moveTo(x, y, theta)
 
     return {
         "call": "move_to",
