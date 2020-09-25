@@ -164,8 +164,10 @@ gestures: # Buttons will be created for every item in the list
     key_comb: ["shift", "7"]
 
 colors:
+  # Color values for eye leds that should be accessable from the interface
+  # one color may have the 'is_default: true' flag, which will then be set as color for the eye leds once interface connects to robot
   -
-    title: Red
+    title: Red  # will be shown in UI, alongside small box that takes given RGB value
     red: 1.0
     green: 0
     blue: 0
@@ -199,18 +201,10 @@ colors:
     red: 1.0
     green: 0
     blue: 1.0
+    is_default: True  # default color will be set on connect
+
   -
     title: White
     red: 1.0
     green: 1.0
     blue: 1.0
-
-
-# LED SETTINGS
-# Putting empty strings as values leave the settings as is on connect
-led_settings:
-  intensity: 0.1
-  color: # color for eye leds. API requires rgb values in range [0-1]
-    red: 0
-    green: 1.0
-    blue: 0
