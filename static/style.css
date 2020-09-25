@@ -199,5 +199,8 @@ input[disabled]{
   width: 1em;
   height: 1em;
   margin-left: 20px;
-  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.table_row_line td{
+  border-bottom: 2px solid black;
 }
