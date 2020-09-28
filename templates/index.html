@@ -87,14 +87,19 @@
               // see if the querried color matches one of the defined colors
               {% for color in config["colors"] %}
                 identifier = "#eye_colo_btn_{{ color["title"] }}"
-                color_array = [{{ color["red"] }}, {{ color["green"] }}, {{ color["blue"] }}]
-
+                color_array = [
+                  Math.round(({{ color["red"] }} + Number.EPSILON) * 100) / 100,
+                  Math.round(({{ color["green"] }} + Number.EPSILON) * 100) / 100,
+                  Math.round(({{ color["blue"] }} + Number.EPSILON) * 100) / 100
+                ]
+                
                 // if it matches, set that btn to ON, to indicate the eye color begin shown
+                console.log(data[key], color_array)
                 if (arraysEqual(data[key], color_array)) {
-                  $(identifier).addClass("example_c_green");
-                  $(identifier).removeClass("example_c_ongoing");
+                  $(identifier).addClass("example_c_ongoing");
+                  $(identifier).removeClass("example_c_green");
                   $(identifier).removeClass("example_c_red");
-                  $(identifier).html("ON")
+                  $(identifier).html("ACTIVE")
                 } 
                 else {
                   $(identifier).removeClass("example_c_green");
@@ -337,7 +342,7 @@
 
   function exec_anim_speech(name, index) {
     const id = "#anim_speech_btn_" + index
-    
+
     if ($(id).prop("disabled")) {
       // make sure nothing else is currently being said
       return
@@ -559,7 +564,7 @@ function hexToRGB (hex){
 
   function set_eye_led_color(color) {
     group = "FaceLeds"
-    $("[id^=eye_colo_btn_]").removeClass("example_c_ongoing")
+    // $("[id^=eye_colo_btn_]").removeClass("example_c_ongoing")
 
     url = "/set_led_color?color=" + color
     $.getJSON(
@@ -570,6 +575,7 @@ function hexToRGB (hex){
     ).done(function() {
       // $("#eye_led_color_btn").removeClass("example_c_ongoing")
       $("#eye_colo_btn_"+color).addClass("example_c_ongoing")
+      $("#eye_colo_btn_"+color).html("ACTIVE")
       update_states()
 
     })

@@ -166,6 +166,7 @@ gestures: # Buttons will be created for every item in the list
 colors:
   # Color values for eye leds that should be accessable from the interface
   # one color may have the 'is_default: true' flag, which will then be set as color for the eye leds once interface connects to robot
+  # Values will be rounded to two decimals places...
   -
     title: Red  # will be shown in UI, alongside small box that takes given RGB value
     red: 1.0
@@ -186,6 +187,7 @@ colors:
     red: 0
     green: 1.0
     blue: 0
+    is_default: True  # default color will be set on connect
   -
     title: Aqua
     red: 0
@@ -201,8 +203,6 @@ colors:
     red: 1.0
     green: 0
     blue: 1.0
-    is_default: True  # default color will be set on connect
-
   -
     title: White
     red: 1.0

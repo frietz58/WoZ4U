@@ -791,7 +791,7 @@ def get_eye_colors():
     # just return the value of one of the Leds in one of the eyes...
     # this is BGR -.- the inconsistency in this API is unreal...
     bgr = led_srv.getIntensity("RightFaceLed1")
-    rgb = [bgr[2], bgr[1], bgr[0]]
+    rgb = [round(bgr[2], 2), round(bgr[1], 2), round(bgr[0], 2)]
     return rgb
 
                 
