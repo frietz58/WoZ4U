@@ -346,9 +346,12 @@
 
   function exec_gesture(name, index) {
     id_9898234 = "#gesture_btn_" + index
-    console.log(id_9898234)
+    // console.log(id_9898234)
     $(id_9898234).html("...")
-    $(id_9898234).addClass("example_c_ongoing"); // give it the css class for "processing"
+    $(id_9898234).addClass("example_c_ongoing");
+    $("[id^=gesture_btn_]").prop("disabled", true)
+    $("[id^=custom_gesture_btn]").prop("disabled", true)
+
     $.getJSON(
       "exec_gesture?index=" + index,
       function(data){
@@ -358,9 +361,12 @@
       console.log("resetting")
       $(id_9898234).html($(id_9898234).attr("default_text"));
       $(id_9898234).removeClass("example_c_ongoing");
-      console.log(id_9898234)
+      // console.log(id_9898234)
       // ^this sometimes just doesn't do anything??
-      // something was binding to id from outside, wtf? unique names solves is
+      // something was binding to variable id from outside, wtf? unique names solves is
+      $("[id^=gesture_btn_]").prop("disabled", false)
+      $("[id^=custom_gesture_btn]").prop("disabled", false)
+
       update_states()
     });
   }
