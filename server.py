@@ -365,25 +365,25 @@ def show_tablet_item(index):
     # very hacky, but this is the only way I got this to work... 
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
     file = config["tablet_items"][int(index)]["file_name"]
-    # img_name = config["tablet_items"][int(img_name)]["file_name"]
+    print(distinguish_path(file))
 
-    if is_video(file):
+    if distinguish_path(file) == "is_url" and not is_video(file):
+        # show website
+        tablet_srv.enableWifi()
+        tablet_srv.showWebview(file)
+
+    elif is_video(file):
         if distinguish_path(file) == "is_url":
-            print("is url")
             path = file
         else:
-            print("is not url")
-            path = "http://130.239.183.189:5000/" + config["image_root_location"] + file
+            path = "http://130.239.183.189:5000" + config["tablet_root_location"] + file
         
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
 
-        tablet_state["showing"] = file
     else:
-
         # TODO: get IP dynamicaly
         tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + file)
-        tablet_state["showing"] = file
 
         # this works as well...:
         # js_code = """
@@ -391,6 +391,7 @@ def show_tablet_item(index):
         #    audio.volume = 0.1;
         #    audio.play();"""
 
+    tablet_state["showing"] = file
     return {
     "status": "ok",
     "file": file
@@ -398,7 +399,7 @@ def show_tablet_item(index):
 
 @app.route("/show_img_page/<img_name>")
 def show_img_page(img_name):
-    img_path = config["image_root_location"] + img_name
+    img_path = config["tablet_root_location"] + img_name
     print(img_path)
     return render_template("img_view.html", src=img_path)  # WORKS! 
 

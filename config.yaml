@@ -29,6 +29,7 @@ autonomous_life_config:
 # example flag: key_comb: ["ctrl", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
 # ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
 
+tablet_root_location: /static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
   -
     title: Default img
@@ -52,15 +53,17 @@ tablet_items:
     file_name: sound_playing.png
     key_comb: ["ctrl", "shift", 5]
   - 
-    title: Local video
-    file_name: mov_bbb.mp4
+    title: Local video  # Videos can also be played 
+    file_name: mov_bbb.mp4  # file stored on host machine
     key_comb: ["ctrl", "shift", 6]
   - 
     title: Remote video
-    file_name: http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4
+    file_name: http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4  # Remote file also possible, just put URL here
     key_comb: ["ctrl", "shift", 7]
-
-image_root_location: /static/tablet_items/  # place image files here, on host machine
+  - 
+    title: Website  # We can also show a website on Pepper's tablet
+    file_name: https://www.google.com/  # Also just put URL to website here
+    key_comb: ["ctrl", "shift", 8]
 
 animated_speech:
     # Avoid special characters in messages, this can break the backend.
