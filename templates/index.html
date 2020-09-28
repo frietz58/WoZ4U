@@ -345,10 +345,9 @@
   }
 
   function exec_gesture(name, index) {
-    id_9898234 = "#gesture_btn_" + index
-    // console.log(id_9898234)
-    $(id_9898234).html("...")
-    $(id_9898234).addClass("example_c_ongoing");
+    const id = "#gesture_btn_" + index
+    $(id).html("...")
+    $(id).addClass("example_c_ongoing");
     $("[id^=gesture_btn_]").prop("disabled", true)
     $("[id^=custom_gesture_btn]").prop("disabled", true)
 
@@ -358,12 +357,8 @@
         console.log(data)
       }
     ).done(function() {
-      console.log("resetting")
-      $(id_9898234).html($(id_9898234).attr("default_text"));
-      $(id_9898234).removeClass("example_c_ongoing");
-      // console.log(id_9898234)
-      // ^this sometimes just doesn't do anything??
-      // something was binding to variable id from outside, wtf? unique names solves is
+      $(id).html($(id).attr("default_text"));
+      $(id).removeClass("example_c_ongoing");
       $("[id^=gesture_btn_]").prop("disabled", false)
       $("[id^=custom_gesture_btn]").prop("disabled", false)
 
@@ -565,13 +560,9 @@ function hexToRGB (hex){
       alert("Please select a color other than white for the eye rotation")
       return ""
     } 
-
-    // hex_val = document.getElementById("eye_led_colorpicker").value;
-    //console.log(hex_val)
-    // hex_val = hex_val.replace("#", "0x")
-
-    $("#eye_anim_btn").addClass("example_c_ongoing")
-    $("#eye_anim_btn").html("...")
+    const id = "#" + anim + "_anim_btn"
+    $(id).addClass("example_c_ongoing")
+    $(id).html("...")
 
     url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration
     $.getJSON(
@@ -580,8 +571,8 @@ function hexToRGB (hex){
         console.log(data)
       }
     ).done(function() {
-      $("#eye_anim_btn").removeClass("example_c_ongoing")
-      $("#eye_anim_btn").html("EXECUTE")
+      $(id).removeClass("example_c_ongoing")
+      $(id).html("EXECUTE")
       update_states()
 
     })
