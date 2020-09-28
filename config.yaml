@@ -172,39 +172,47 @@ colors:
     red: 1.0
     green: 0
     blue: 0
+    key_comb: ["c", "r"]
   -
     title: Yellow
     red: 1.0
     green: 1.0
     blue: 0
+    key_comb: ["c", "y"]
   -
     title: Orange
     red: 1.0
     green: 0.7
     blue: 0
+    key_comb: ["c", "o"]
   -
     title: Green
     red: 0
     green: 1.0
     blue: 0
+    key_comb: ["c", "g"]
     is_default: True  # default color will be set on connect
   -
     title: Aqua
     red: 0
     green: 1.0
     blue: 1.0
+    key_comb: ["c", "a"]
   -
     title: Blue
     red: 0
     green: 0
     blue: 1.0
+    key_comb: ["c", "b"]
   -
     title: Magenta
     red: 1.0
     green: 0
     blue: 1.0
+    key_comb: ["c", "m"]
   -
     title: White
     red: 1.0
     green: 1.0
     blue: 1.0
+    key_comb: ["c", "w"]

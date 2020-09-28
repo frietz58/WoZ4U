@@ -105,7 +105,7 @@
                   $(identifier).removeClass("example_c_green");
                   $(identifier).removeClass("example_c_red");
                   $(identifier).removeClass("example_c_ongoing");
-                  $(identifier).html("OFF")
+                  $(identifier).html($(identifier).attr("default_text"));
                 }
               {% endfor%}
             }
@@ -1438,9 +1438,26 @@ function degrees_to_radians(degrees)
           <button 
           class="example_c" 
           onclick="set_eye_led_color('{{color["title"]}}')"
+          default_text="
+            {% if (color["key_comb"] is defined) and color["key_comb"] %}
+              {{ color["key_comb"]|safe }}
+            {% else %}
+              OFF
+            {% endif %}"
           id="eye_colo_btn_{{color["title"]}}">
-            SET
+            {% if (color["key_comb"] is defined) and color["key_comb"] %}
+              {{ color["key_comb"]|safe }}
+            {% else %}
+              OFF
+            {% endif %}
           </button>
+
+          <!-- add the keyboard shortcut to the button, if the flag has been given -->
+          {% if (color["key_comb"] is defined) and  color["key_comb"] %}  
+            <script>
+              add_keyboard_shortcut({{ color["key_comb"]|safe }}, "eye_colo_btn_{{color["title"]}}" )
+            </script>
+          {% endif %}
         </div>
         <br>
       {% endfor %}
