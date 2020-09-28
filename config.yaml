@@ -29,7 +29,7 @@ autonomous_life_config:
 # example flag: key_comb: ["ctrl", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
 # ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
 
-images:
+tablet_items:
   -
     title: Default img
     file_name: climate_change.jpg
@@ -51,8 +51,16 @@ images:
     title: Sound playing
     file_name: sound_playing.png
     key_comb: ["ctrl", "shift", 5]
+  - 
+    title: Local video
+    file_name: mov_bbb.mp4
+    key_comb: ["ctrl", "shift", 6]
+  - 
+    title: Remote video
+    file_name: http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4
+    key_comb: ["ctrl", "shift", 7]
 
-image_root_location: /static/imgs/  # place image files here, on host machine
+image_root_location: /static/tablet_items/  # place image files here, on host machine
 
 animated_speech:
     # Avoid special characters in messages, this can break the backend.

@@ -11,6 +11,7 @@ import matplotlib
 from utils import distinguish_path
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
+from utils import is_video
 
 import qi
 from naoqi import ALProxy
@@ -57,13 +58,13 @@ def connect_robot():
     get_all_services(qi_session)
 
     # almemory event subscribers
-    global tts_sub
-    tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
-    tts_sub.signal.connect(tts_callback)
+    # global tts_sub
+    # tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
+    # tts_sub.signal.connect(tts_callback)
     
-    global s
-    s = tablet_srv.onPageStarted
-    s.connect(onSignal)
+    global vid_finished_signal
+    vid_finished_signal = tablet_srv.videoFinished
+    vid_finished_signal.connect(onVidEnd)
     
     tts_srv.setVolume(config["volume"])
     tts_srv.setParameter("pitchShift", config["voice_pitch"])
@@ -120,8 +121,9 @@ def tts_callback(value):
     print("in tts callback")
     print(value)
 
-def onSignal():
-  print("signal value")
+def onVidEnd():
+    # TODO: get IP dynamicaly
+    show_default_img_or_hide()
 
 def get_all_services(sess):
     """
@@ -305,12 +307,12 @@ def show_default_img_or_hide():
     Depending on whether a default image is given in the config, either shows that or resets the tablet to the default
     animation gif.
     """
-    for image in config["images"]:
-            if "is_default_img" in image.keys():
-                url = "http://130.239.183.189:5000/show_img_page/" + image["file_name"]
+    for item in config["tablet_items"]:
+            if "is_default_img" in item.keys():
+                url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
                 print("URL:", url)
                 tablet_srv.showWebview(url)
-                tablet_state["showing"] = image["file_name"]
+                tablet_state["showing"] = item["file_name"]
 
                 return {
                     "showing": "default image"
@@ -358,31 +360,47 @@ def stop_sound_play():
         "status": "stopped all sounds that were playing"
     }
 
-@app.route("/show_img/<img_name>")
-def show_img(img_name):
+@app.route("/show_tablet_item/<index>")
+def show_tablet_item(index):
     # very hacky, but this is the only way I got this to work... 
     # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
-    # TODO: get IP dynamicaly
-    tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + img_name)
-    tablet_state["showing"] = img_name
+    file = config["tablet_items"][int(index)]["file_name"]
+    # img_name = config["tablet_items"][int(img_name)]["file_name"]
 
-    # this works as well...:
-    # js_code = """
-    #    var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
-    #    audio.volume = 0.1;
-    #    audio.play();"""
+    if is_video(file):
+        if distinguish_path(file) == "is_url":
+            print("is url")
+            path = file
+        else:
+            print("is not url")
+            path = "http://130.239.183.189:5000/" + config["image_root_location"] + file
+        
+        tablet_srv.enableWifi()
+        tablet_srv.playVideo(path)
+
+        tablet_state["showing"] = file
+    else:
+
+        # TODO: get IP dynamicaly
+        tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + file)
+        tablet_state["showing"] = file
+
+        # this works as well...:
+        # js_code = """
+        #    var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
+        #    audio.volume = 0.1;
+        #    audio.play();"""
 
     return {
-       "status": "ok",
-       "img_name": img_name
+    "status": "ok",
+    "file": file
     }
 
 @app.route("/show_img_page/<img_name>")
 def show_img_page(img_name):
-    img_path = "/static/imgs/" + img_name
     img_path = config["image_root_location"] + img_name
     print(img_path)
-    return render_template("img_view.html", img_src=img_path)  # WORKS! 
+    return render_template("img_view.html", src=img_path)  # WORKS! 
 
 @app.route("/clear_tablet")
 def clear_tablet():
@@ -426,7 +444,7 @@ def exec_anim_speech():
 
 @app.route("/exec_gesture")
 def exec_gesture():
-    index = request.args.get('index', type=int)
+    index = request.args.get('^', type=int)
     print(index)
 
     gesture = config["gestures"][index]["gesture"]

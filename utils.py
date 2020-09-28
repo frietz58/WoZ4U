@@ -1,6 +1,13 @@
 from PIL import Image
 import io
 
+def is_video(path):
+    ext = path.split(".")[-1]
+    if ext in ["mp4", "m4v", "mkv", "webm", "mov", "avi", "wmv", "mpg", "flv"]:
+        return True
+    else:
+        return False
+
 
 def distinguish_path(path):
     if "http" in path:

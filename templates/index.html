@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>WoZ4U</title>
-<link rel="shortcut icon" type="image/x-icon" href="../static/imgs/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico">
 <link rel="stylesheet" type="text/css" href="../static/style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
@@ -96,7 +96,6 @@
                 ]
                 
                 // if it matches, set that btn to ON, to indicate the eye color begin shown
-                console.log(data[key], color_array)
                 if (arraysEqual(data[key], color_array)) {
                   $(identifier).addClass("example_c_ongoing");
                   $(identifier).removeClass("example_c_green");
@@ -281,9 +280,9 @@
           update_states()
       })
     } else {
-          // show the image on the tablet
+      // show the image on the tablet
       $.getJSON(
-      "/show_img/" + img_name,
+      "/show_tablet_item/" + index,
       function(data) {
         console.log(data);
       }).done(function() {
@@ -905,7 +904,7 @@ function degrees_to_radians(degrees)
   <div class="tablet">
     <h2>Pepper tablet</h2>
 
-    {%for img in config["images"]%}
+    {%for img in config["tablet_items"]%}
       <!-- Here, we iterate over all the messages and create labels and buttons for each-->
       <div class="row">
         <div class="speech_lbl_wrapper">
@@ -1344,7 +1343,7 @@ function degrees_to_radians(degrees)
     <h2>Pepper motion</h2>
 
     <div class="row">
-      <img src="../static/imgs/arrow_keys.png" style="max-height:80px;">
+      <img src="../static/tablet_items/arrow_keys.png" style="max-height:80px;">
       <table style="width:100%; border-collapse: collapse;" id="movement_control_table">
         <tr class="table_row_line">
           <td style="text-align: right;">Move head</td>
