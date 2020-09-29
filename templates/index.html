@@ -97,7 +97,7 @@
 
               // see if the querried color matches one of the defined colors
               {% for color in config["colors"] %}
-                identifier = "#eye_colo_btn_{{ color["title"] }}"
+                color_identifier = "#eye_colo_btn_{{ color["title"] }}"
                 color_array = [
                   Math.round(({{ color["red"] }} + Number.EPSILON) * 100) / 100,
                   Math.round(({{ color["green"] }} + Number.EPSILON) * 100) / 100,
@@ -106,16 +106,16 @@
                 
                 // if it matches, set that btn to ON, to indicate the eye color begin shown
                 if (arraysEqual(data[key], color_array)) {
-                  $(identifier).addClass("example_c_ongoing");
-                  $(identifier).removeClass("example_c_green");
-                  $(identifier).removeClass("example_c_red");
-                  $(identifier).html("ACTIVE")
+                  $(color_identifier).addClass("example_c_ongoing");
+                  $(color_identifier).removeClass("example_c_green");
+                  $(color_identifier).removeClass("example_c_red");
+                  $(color_identifier).html("ACTIVE")
                 } 
                 else {
-                  $(identifier).removeClass("example_c_green");
-                  $(identifier).removeClass("example_c_red");
-                  $(identifier).removeClass("example_c_ongoing");
-                  $(identifier).html($(identifier).attr("default_text"));
+                  $(color_identifier).removeClass("example_c_green");
+                  $(color_identifier).removeClass("example_c_red");
+                  $(color_identifier).removeClass("example_c_ongoing");
+                  $(color_identifier).html($(color_identifier).attr("default_text"));
                 }
               {% endfor%}
             }
@@ -132,7 +132,7 @@
       robot_ip = ip
     }
 
-    identifier = "#connect_btn"
+    const identifier = "#connect_btn"
 
     $(identifier).html("..."); // set btn text to ...
     $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
@@ -186,13 +186,13 @@
   }
 
   function toggle_setting(setting){
-    identifier = "#toggle_btn_" + setting
+    const identifier = "#toggle_btn_" + setting
     $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
     $(identifier).removeClass("example_c_green"); // remove class for ongoing
     $(identifier).removeClass("example_c_red"); // remove class for ongoing
     $(identifier).html("...")
 
-    let url = "/toggle_setting?setting=" + setting
+    const url = "/toggle_setting?setting=" + setting
     console.log(url)
     $.getJSON( // async call flask function with arguments
       url,
@@ -465,7 +465,7 @@
 
   function set_collision_avoidance(type) {
     // 
-    bt_identifier = ""
+    const bt_identifier = ""
     if (type == "tangential") {
       bt_identifier = "#tangential_collision_set"
       value = $("#tangential_collision").val()
