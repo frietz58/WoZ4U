@@ -34,7 +34,7 @@
     $.getJSON(
       "/querry_states",
       function(data) {
-        console.log(data)
+        // console.log(data)
         if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
           disable_all()
           $("*").removeClass("example_c_ongoing");

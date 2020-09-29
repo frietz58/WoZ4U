@@ -45,6 +45,7 @@ def connect_robot():
     ip = request.args.get('ip', type=str)
     port = 9559
 
+    read_config() # update the config in case it has been edited in the meantime
 
     global qi_session
     qi_session = qi.Session()
@@ -813,16 +814,18 @@ def get_eye_colors():
     rgb = [round(bgr[2], 2), round(bgr[1], 2), round(bgr[0], 2)]
     return rgb
 
-                
-
-if __name__ == '__main__':
-
+def read_config():
     global config
     with open("config.yaml", "r") as f:
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         config = yaml.safe_load(f)
         print(config)
+
+                
+
+if __name__ == '__main__':
+    read_config()
 
     global SAVE_IMGS
     SAVE_IMGS = False
