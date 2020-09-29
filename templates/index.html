@@ -34,7 +34,16 @@
     $.getJSON(
       "/querry_states",
       function(data) {
-        // console.log(data)
+        console.log(data)
+        if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
+          disable_all()
+          $("*").removeClass("example_c_ongoing");
+          $("#connect_btn").removeClass("example_c_green")
+          $("#connect_btn").html("CONNECT")
+          window.session_is_connected = false;
+          console.log("session not connected")
+          return
+        }
         Object.keys(data).forEach(key => {
           //console.log(key, data[key]);
           //console.log(key)
