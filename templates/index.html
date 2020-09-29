@@ -37,9 +37,17 @@
         // console.log(data)
         if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
           disable_all()
-          $("*").removeClass("example_c_ongoing");
+          // $("*").removeClass("example_c_ongoing");
           $("#connect_btn").removeClass("example_c_green")
           $("#connect_btn").html("CONNECT")
+          $("*").each(function(index) {
+            $(this).removeClass("example_c_ongoing");
+            if(typeof $(this).attr("default_text") !== "undefined") {
+              // if this is an element with the 'default_text' attribute, its a btn with a keyboard shortcut
+              // so we reset all to their default text, because we can't know right now which is the once that should be active
+              $(this).html($(this).attr("default_text"))
+            } 
+          })
           window.session_is_connected = false;
           console.log("session not connected")
           return
