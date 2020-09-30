@@ -1,4 +1,5 @@
-from flask import Flask, render_template, Response, url_for, request, send_file, abort, send_from_directory, jsonify, json
+from flask import Flask, render_template, Response, url_for, request, send_file, abort, send_from_directory, jsonify, \
+    json
 
 import yaml
 import time
@@ -28,6 +29,7 @@ tablet_state = {
     "showing": None
 }
 
+
 @app.route('/')
 def index():
     try:
@@ -37,6 +39,7 @@ def index():
             return render_template("index.html", config=config, reconnect_ip=ip)
     except NameError:
         return render_template('index.html', config=config, reconnect_ip="")
+
 
 @app.route("/connect_robot")
 def connect_robot():
@@ -48,11 +51,11 @@ def connect_robot():
     global port
     port = 9559
 
-    read_config() # update the config in case it has been edited in the meantime
+    read_config()  # update the config in case it has been edited in the meantime
 
     global qi_session
     qi_session = qi.Session()
-    
+
     try:
         qi_session.connect(str("tcp://" + str(ip) + ":" + str(port)))
     except RuntimeError as msg:
@@ -65,11 +68,11 @@ def connect_robot():
     # global tts_sub
     # tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
     # tts_sub.signal.connect(tts_callback)
-    
+
     global vid_finished_signal
     vid_finished_signal = tablet_srv.videoFinished
     vid_finished_signal.connect(onVidEnd)
-    
+
     tts_srv.setVolume(config["volume"])
     tts_srv.setParameter("pitchShift", config["voice_pitch"])
     tts_srv.setParameter("speed", config["voice_speed"])
@@ -105,14 +108,14 @@ def connect_robot():
     show_default_img_or_hide()
 
     for color in config["colors"]:
-        try: 
+        try:
             if color["is_default"]:
                 r = color["red"]
                 g = color["green"]
                 b = color["blue"]
-                
+
                 led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
-           
+
         except KeyError:  # only one of the elements should have the flag...
             pass
 
@@ -121,20 +124,23 @@ def connect_robot():
         "ip": ip,
     }
 
+
 def tts_callback(value):
     print("in tts callback")
     print(value)
+
 
 def onVidEnd():
     # TODO: get IP dynamicaly
     show_default_img_or_hide()
 
+
 def get_all_services(sess):
     """
     Provides global references to all naoqi services used somewhere down the line
     """
-    global tts_srv 
-    tts_srv  = qi_session.service("ALTextToSpeech")
+    global tts_srv
+    tts_srv = qi_session.service("ALTextToSpeech")
 
     global al_srv
     al_srv = qi_session.service("ALAutonomousLife")
@@ -187,6 +193,7 @@ def get_all_services(sess):
     global led_srv
     led_srv = qi_session.service("ALLeds")
 
+
 @app.route("/querry_states")
 def querry_states():
     """
@@ -198,7 +205,8 @@ def querry_states():
     try:
         return {
             "#autonomous_states": al_srv.getState(),
-            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3) * 100,  # convert form m to cm for frontend
+            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3) * 100,
+        # convert form m to cm for frontend
             "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3) * 100,
             "#toggle_btn_blinking": ab_srv.isEnabled(),
             "#toggle_btn_basic_awareness": ba_srv.isEnabled(),
@@ -219,6 +227,7 @@ def querry_states():
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
 
+
 @app.route("/set_autonomous_state")
 def set_autonomous_state():
     """
@@ -230,9 +239,10 @@ def set_autonomous_state():
     al_srv.setState(state)
 
     return {
-       "status": "ok",
-       "state": state 
+        "status": "ok",
+        "state": state
     }
+
 
 @app.route("/set_engagement_mode")
 def set_engagement_mode():
@@ -245,9 +255,10 @@ def set_engagement_mode():
     ba_srv.setEngagementMode(mode)
 
     return {
-       "status": "ok",
-       "mode": mode 
+        "status": "ok",
+        "mode": mode
     }
+
 
 @app.route("/say_text")
 def say_text():
@@ -256,9 +267,10 @@ def say_text():
     tts_srv.say(msg)
 
     return {
-       "status": "ok",
-       "msg": msg 
+        "status": "ok",
+        "msg": msg
     }
+
 
 @app.route("/toggle_setting")
 def toggle_setting():
@@ -270,7 +282,7 @@ def toggle_setting():
         ab_srv.setEnabled(not ab_srv.isEnabled())
         new_state = ab_srv.isEnabled()
 
-    elif setting == "head_breathing":      
+    elif setting == "head_breathing":
         motion_srv.setBreathEnabled("Head", not motion_srv.getBreathEnabled("Head"))
         new_state = motion_srv.getBreathEnabled("Head")
 
@@ -306,44 +318,46 @@ def toggle_setting():
         "new_state": new_state
     }
 
+
 def show_default_img_or_hide():
     """
     Depending on whether a default image is given in the config, either shows that or resets the tablet to the default
     animation gif.
     """
     for item in config["tablet_items"]:
-            if "is_default_img" in item.keys():
-                url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
-                print("URL:", url)
-                tablet_srv.showWebview(url)
-                tablet_state["showing"] = item["file_name"]
+        if "is_default_img" in item.keys():
+            url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
+            print("URL:", url)
+            tablet_srv.showWebview(url)
+            tablet_state["showing"] = item["file_name"]
 
-                return {
-                    "showing": "default image"
-                }
-    
+            return {
+                "showing": "default image"
+            }
+
     tablet_srv.hideWebview()
     tablet_state["showing"] = None
 
     return {
-       "showing": "Pepper default gif, no default image found in config",
+        "showing": "Pepper default gif, no default image found in config",
     }
+
 
 @app.route("/serve_audio/<path:filename>")
 def serve_audio(filename):
     print(filename)
     return send_from_directory(config["audio_root_location"], filename)
 
+
 @app.route("/play_audio")
 def play_audio():
-
     index = request.args.get('index', type=int)
     print(index)
 
     print("playing sound")
 
     location = config["audio_files"][index]["location"]
-    
+
     # stored locally on pepper, here we can nicely use the ALAudio_player
     audio_file = audio_player.loadFile(location)
     audio_player.setVolume(audio_file, tts_srv.getVolume())
@@ -351,18 +365,19 @@ def play_audio():
     audio_player.unloadAllFiles()
 
     return {
-       "status": "ok",
+        "status": "ok",
     }
+
 
 @app.route("/stop_sound_play")
 def stop_sound_play():
-
     audio_player.stopAll()
     audio_player.unloadAllFiles()
 
     return {
         "status": "stopped all sounds that were playing"
     }
+
 
 @app.route("/show_tablet_item/<index>")
 def show_tablet_item(index):
@@ -381,7 +396,7 @@ def show_tablet_item(index):
             path = file
         else:
             path = "http://130.239.183.189:5000" + config["tablet_root_location"] + file
-        
+
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
 
@@ -397,9 +412,10 @@ def show_tablet_item(index):
 
     tablet_state["showing"] = file
     return {
-    "status": "ok",
-    "file": file
+        "status": "ok",
+        "file": file
     }
+
 
 @app.route("/show_img_page/<img_name>")
 def show_img_page(img_name):
@@ -407,15 +423,17 @@ def show_img_page(img_name):
     print(img_path)
     return render_template("img_view.html", src=img_path)  # WORKS! 
 
+
 @app.route("/clear_tablet")
 def clear_tablet():
-        tablet_srv.hideWebview()
-        tablet_state["showing"] = None
-        
-        status = show_default_img_or_hide()
-        status["msg"] =  "cleaned tablet webview"
+    tablet_srv.hideWebview()
+    tablet_state["showing"] = None
 
-        return status
+    status = show_default_img_or_hide()
+    status["msg"] = "cleaned tablet webview"
+
+    return status
+
 
 @app.route("/adjust_volume")
 def adjust_volume():
@@ -431,7 +449,8 @@ def adjust_volume():
         "status": "ok",
         "volume": target,
         "currently playing audio files": currently_playing
-    } 
+    }
+
 
 @app.route("/exec_anim_speech")
 def exec_anim_speech():
@@ -447,6 +466,7 @@ def exec_anim_speech():
         "annotated_text": annotated_text
     }
 
+
 @app.route("/exec_gesture")
 def exec_gesture():
     index = request.args.get('index', type=int)
@@ -460,6 +480,7 @@ def exec_gesture():
         "status": "ok",
         "gesture": gesture
     }
+
 
 @app.route("/exec_custom_gesture")
 def exec_custom_gesture():
@@ -476,6 +497,7 @@ def exec_custom_gesture():
         "gesture": gesture
     }
 
+
 @app.route("/set_tts_param")
 def set_tts_param():
     param = request.args.get("param", type=str)
@@ -491,10 +513,11 @@ def set_tts_param():
         tts_srv.setParameter(param, value)
 
     return {
-            "status": "ok",
-            "param": param,
-            "value": value
-        }
+        "status": "ok",
+        "param": param,
+        "value": value
+    }
+
 
 @app.route("/set_collision_radius")
 def set_collision_radius():
@@ -513,6 +536,7 @@ def set_collision_radius():
         "param": param,
         "value": value
     }
+
 
 @app.route("/move_to")
 def move_to():
@@ -553,6 +577,7 @@ def stop_motion():
         "theta_vel": theta_vel
     }
 
+
 @app.route("/resting_position")
 def resting_position():
     motion_srv.stopMove()
@@ -561,6 +586,7 @@ def resting_position():
     return {
         "status": "entering resting position move"
     }
+
 
 @app.route("/netural_stand_position")
 def netural_stand_position():
@@ -576,12 +602,12 @@ def move_joint():
     axis = request.args.get("axis", type=str)
     val = request.args.get("val", type=float)
 
-    stiffness=0.5
-    time=1
+    stiffness = 0.5
+    time = 1
 
     if not motion_srv.robotIsWakeUp():
-            motion_srv.wakeUp()
-    
+        motion_srv.wakeUp()
+
     motion_srv.setStiffnesses("Head", stiffness)
 
     motion_srv.angleInterpolation(
@@ -589,7 +615,7 @@ def move_joint():
         [float(val)],  # amount of  movement
         [int(time)],  # time for movement
         False  # in absolute angles
-        )
+    )
 
     if "Head" in axis:
         status = "moving head"
@@ -604,13 +630,13 @@ def move_joint():
         "stiffness": stiffness
     }
 
-@app.route("/camera_view")    
+
+@app.route("/camera_view")
 def camera_view():
     # see if there are any old subscribers...
     if video_srv.getSubscribers():
         for subscriber in video_srv.getSubscribers():
             video_srv.unsubscribe(subscriber)
-
 
     resolution = vision_definitions.kQVGA  # 320 * 240
     colorSpace = vision_definitions.kRGBColorSpace
@@ -623,15 +649,17 @@ def camera_view():
 
     return render_template("camera.html")
 
+
 @app.route("/video_feed")
 def video_feed():
     return Response(
         stream_generator(),
         mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 def stream_generator():
     counter = 0
-    try: 
+    try:
         while True:
             # frame = camera.get_frame()
             global imgClient
@@ -650,7 +678,7 @@ def stream_generator():
                 counter += 1
 
                 yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
+                       b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
 
             time.sleep(0.01)
     except IOError:  # ideally this would catch the error when tab is closed, but it doesnt :/ TODO
@@ -659,6 +687,7 @@ def stream_generator():
         if video_srv.getSubscribers():
             for subscriber in video_srv.getSubscribers():
                 video_srv.unsubscribe(subscriber)
+
 
 @app.route("/toggle_img_save")
 def toggle_img_save():
@@ -669,11 +698,11 @@ def toggle_img_save():
         "SAVE_IMGS": SAVE_IMGS
     }
 
+
 @app.route("/record_audio_data")
 def start_audio_recording():
-
     global RECORD_AUDIO
-    RECORD_AUDIO = not RECORD_AUDIO    
+    RECORD_AUDIO = not RECORD_AUDIO
 
     timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
     filename = timestamp + ".wav"
@@ -682,7 +711,7 @@ def start_audio_recording():
     if RECORD_AUDIO:
         ad_srv.enableEnergyComputation()
         ar_srv.startMicrophonesRecording(
-            save_path,  
+            save_path,
             "wav",
             16000,  # samplerate
             [1, 1, 1, 1]  # binary: which microphones do we want? [1, 1, 1, 1]  => all four... [0, 1, 0, 0] specific one
@@ -695,12 +724,14 @@ def start_audio_recording():
         "now_recording_audio": RECORD_AUDIO,
         "pepper_save_dir": config["audio_save_dir"],
         "filename": filename
-    }   
+    }
+
 
 # TODO doesn't appear to detect faces even in perfect lighting (?)
 @app.route("/face")
 def face():
     return face_detect_stream()
+
 
 def face_detect_stream():
     memValue = "FaceDetected"
@@ -713,16 +744,16 @@ def face_detect_stream():
         time.sleep(0.5)
 
         result = {
-                    "alpha": None,
-                    "beta": None,
-                    "width": None,
-                    "height": None
-                }
+            "alpha": None,
+            "beta": None,
+            "width": None,
+            "height": None
+        }
 
         val = mem_srv.getData(memValue, 0)
         print(val, counter)
 
-        if(val and isinstance(val, list) and len(val) == 2):
+        if (val and isinstance(val, list) and len(val) == 2):
             timeStamp = val[0]
             faceInfoArray = val[1]
 
@@ -739,6 +770,7 @@ def face_detect_stream():
 
         print(result)
 
+
 @app.route("/set_led_intensity")
 def set_led_intensity():
     group = request.args.get('led_group', type=str)
@@ -753,6 +785,7 @@ def set_led_intensity():
         "LED group": group,
         "intensity": intensity
     }
+
 
 @app.route("/set_led_color")
 def set_led_color():
@@ -776,7 +809,6 @@ def set_led_color():
                 "color": color
             }
 
-    
 
 @app.route("/exec_eye_anim")
 def exec_eye_anim():
@@ -796,7 +828,7 @@ def exec_eye_anim():
 
         for color_enum in config["colors"]:
             if color_enum["title"] == color:
-                final_hex_int = matplotlib.colors.to_hex([color_enum["red"], color_enum["green"] , color_enum["blue"]])
+                final_hex_int = matplotlib.colors.to_hex([color_enum["red"], color_enum["green"], color_enum["blue"]])
                 # print(final_hex_int)
                 final_hex_int = final_hex_int.replace("#", "0x")
                 # print(final_hex_int)
@@ -814,12 +846,14 @@ def exec_eye_anim():
         "animation": anim
     }
 
+
 def get_eye_colors():
     # just return the value of one of the Leds in one of the eyes...
     # this is BGR -.- the inconsistency in this API is unreal...
     bgr = led_srv.getIntensity("RightFaceLed1")
     rgb = [round(bgr[2], 2), round(bgr[1], 2), round(bgr[0], 2)]
     return rgb
+
 
 def read_config():
     global config
@@ -829,7 +863,6 @@ def read_config():
         config = yaml.safe_load(f)
         print(config)
 
-                
 
 if __name__ == '__main__':
     read_config()
