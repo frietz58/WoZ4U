@@ -650,6 +650,21 @@ def camera_view():
     return render_template("camera.html")
 
 
+@app.route("/camera_unload")
+def camera_unload():
+    print("CAMERA TAB CLOSED")
+    print("CAMERA TAB CLOSED")
+    print("CAMERA TAB CLOSED")
+    print("CAMERA TAB CLOSED")
+    print("CAMERA TAB CLOSED")
+    print("CAMERA TAB CLOSED")
+
+    return {
+        "status": "closed camera tab"
+    }
+
+
+
 @app.route("/video_feed")
 def video_feed():
     return Response(

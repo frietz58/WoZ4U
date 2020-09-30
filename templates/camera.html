@@ -38,6 +38,38 @@
             }
         )
     }
+
+    var unloadEvent = function (e) {
+        /*
+        $.getJSON(
+            "/camera_unload",
+            function(data) {
+                console.log(data)
+            }
+        );
+        */
+
+        //window.open("/camera_unload");
+        //window.open("https://www.w3schools.com");
+        // location.replace("https://www.w3schools.com");
+
+
+        // YES THIS APPEARS TO WORK!!!
+        // TODO finalize backend tomorrow!!
+        const http = new XMLHttpRequest()
+        http.open("GET", "/camera_unload")
+        http.send()
+
+
+        var confirmationMessage = "Warning: Leaving this page will result in any unsaved data being lost. Are you sure you wish to continue?";
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Webkit, Safari, Chrome etc.
+    };
+
+    window.addEventListener("beforeunload", unloadEvent);
+
+
+
     /*
     function toggle_face_detection(){
         $.getJSON(
