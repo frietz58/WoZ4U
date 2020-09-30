@@ -446,7 +446,7 @@ def exec_anim_speech():
 
 @app.route("/exec_gesture")
 def exec_gesture():
-    index = request.args.get('^', type=int)
+    index = request.args.get('index', type=int)
     print(index)
 
     gesture = config["gestures"][index]["gesture"]
