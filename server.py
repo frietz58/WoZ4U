@@ -13,6 +13,8 @@ from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
 from utils import is_video
 
+from simple_sound_stream import SpeechRecognitionModule
+
 import qi
 from naoqi import ALProxy
 import vision_definitions
@@ -43,6 +45,7 @@ def connect_robot():
     """
     global ip
     ip = request.args.get('ip', type=str)
+    global port
     port = 9559
 
     read_config() # update the config in case it has been edited in the meantime
@@ -613,6 +616,10 @@ def camera_view():
     colorSpace = vision_definitions.kRGBColorSpace
     global imgClient
     imgClient = video_srv.subscribe("_client", resolution, colorSpace, 5)
+
+    global SpeechRecognition
+    SpeechRecognition = SpeechRecognitionModule("SpeechRecognition", ip, port)
+    SpeechRecognition.start()
 
     return render_template("camera.html")
 

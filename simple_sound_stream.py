@@ -17,40 +17,81 @@ MOD_NAME = "SpeechRecognition"
 #  we need to inherit from ALModule so that we can subscribe to the audio device...
 class SpeechRecognitionModule(naoqi.ALModule):
 
-    def __init__(self, strModuleName, strNaoIp):
-        naoqi.ALModule.__init__(self, strModuleName)
+    def __init__(self, strModuleName, strNaoIp, noaPort):
+
+        # kill previous instance, useful for developing ;)
+        try:
+            p = ALProxy(MOD_NAME)
+            p.exit()
+        except RuntimeError:  # when there is no instance in the broke...
+            pass
+
+        self.strNaoIp = strNaoIp
+        self.naoPort = noaPort
+        self.broker = self.setup_broker()  # setup naoqi broker for module communication
+
+        naoqi.ALModule.__init__(self, strModuleName)  # init module
 
         self.BIND_PYTHON(self.getName(), "callback")  # not sure what this does?
-        self.strNaoIp = strNaoIp
 
         self.memory = naoqi.ALProxy("ALMemory")
         self.memory.declareEvent(self.getName())  # needed for callback
+
+        self.audio = naoqi.ALProxy("ALAudioDevice")
 
         # audio buffer
         self.buffer = []
 
         # sounddevice stream for audio playback in realtime
+        # dtype=np.int16 is very important! This fixes the insane static noises
         self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16)
 
         self.livestream = True
 
+        self.isStarted = False
+
+    def setup_broker(self):
+        return naoqi.ALBroker(
+            "myBroker",     # we need to use the broker when when we implement own module...
+            "0.0.0.0",      # listen to anyone
+            0,              # find a free port and use it
+            self.strNaoIp,  # parent broker IP
+            self.naoPort)   # parent broker port
+
     def start(self):
-        audio = naoqi.ALProxy("ALAudioDevice")
+        # audio = naoqi.ALProxy("ALAudioDevice")
         nNbrChannelFlag = 3  # ALL_Channels: 0,  AL::LEFTCHANNEL: 1, AL::RIGHTCHANNEL: 2 AL::FRONTCHANNEL: 3  or AL::REARCHANNEL: 4.
         nDeinterleave = 0
-        audio.setClientPreferences(self.getName(), SAMPLE_RATE, nNbrChannelFlag, nDeinterleave)  # setting same as default generate a bug !?!
+        self.audio.setClientPreferences(self.getName(), SAMPLE_RATE, nNbrChannelFlag,
+                                        nDeinterleave)  # setting same as default generate a bug !?!
 
         # we can only subscribe to the ALAudiodevice with an implementation of ALModule...
         # needs to have a "process" method that will be used as callback...
-        audio.subscribe(self.getName())
+        self.audio.subscribe(self.getName())
 
         # also start the sounddevice stream so that we can write data on it
         self.stream.start()
+        self.isStarted = True
+
+    def stop(self):
+        if not self.isStarted:
+            return
+        else:
+            self.isStarted = False
+            self.stream.close()
+            self.audio.unsubscribe(self.getName())
 
     def processRemote(self, nbOfChannels, nbrOfSamplesByChannel, aTimeStamp, buffer):
-        # this is our callback method!
-        # Due to inheritance, this will be called once our module subscribes to the audio device in start()
-        # Name may not be changed!
+        """
+        This is our callback method!
+        Due to inheritance, this will be called once our module subscribes to the audio device in start()
+        Name of method may not be changed!
+        :param nbOfChannels: param required for signature to work
+        :param nbrOfSamplesByChannel: param required for signature to work
+        :param aTimeStamp: param required for signature to work
+        :param buffer: the actual, buffer audio data from Pepper's mic
+        :return: None
+        """
 
         # calculate a decimal seconds timestamp
         timestamp = float(str(aTimeStamp[0]) + "." + str(aTimeStamp[1]))
@@ -81,29 +122,19 @@ class SpeechRecognitionModule(naoqi.ALModule):
         print filename
 
     def transform_buffer(self):
+        """
+        Reshapes buffer matrix to 1d array of microphone energy values, so that it can be treated as audio data
+        :return:
+        """
         return np.concatenate(self.buffer, axis=1)[0]
 
 
 def main():
-    # kill previous instance, useful for developing ;)
-    try:
-        p = ALProxy(MOD_NAME)
-        p.exit()
-    except RuntimeError:  # when there is no instance in the broke...
-        pass
-
-    myBroker = naoqi.ALBroker(
-        "myBroker",  # we need to use the broker when when we implement own module...
-        "0.0.0.0",  # listen to anyone
-        0,  # find a free port and use it
-        str(IP),  # parent broker IP
-        PORT)  # parent broker port
-
     # Warning: SpeechRecognition must be a global variable
     # The name given to the constructor must be the name of the
     # variable
     global SpeechRecognition
-    SpeechRecognition = SpeechRecognitionModule("SpeechRecognition", IP)
+    SpeechRecognition = SpeechRecognitionModule("SpeechRecognition", IP, PORT)
     SpeechRecognition.start()
 
     # # sound quality testing
