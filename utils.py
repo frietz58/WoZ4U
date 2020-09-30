@@ -1,5 +1,7 @@
 from PIL import Image
 import io
+import wave
+import os
 
 def is_video(path):
     ext = path.split(".")[-1]
@@ -43,4 +45,30 @@ def PIL_to_JPEG_BYTEARRAY(pil_img):
     jpeg_bytes = imgByteArr.getvalue()
 
     return jpeg_bytes
+
+def rawToWav(filename):
+    """
+    Waves a raw audio signal as physical .wav file
+    """
+    rawfile = filename + ".raw"
+    if not os.path.isfile(rawfile):
+        return
+
+    outfile = wave.open(filename + ".wav", "wb")
+    outfile.setframerate(48000)
+    outfile.setnchannels(1)
+    outfile.setsampwidth(2)
+
+    f = open(rawfile, "rb")
+    sample = f.read(4096)
+    print 'writing file: ' + filename + '.wav'
+
+    while sample != "":
+        outfile.writeframes(sample)
+        sample = f.read(4096)
+
+    outfile.close()
+
+    os.remove(rawfile)
+
 
