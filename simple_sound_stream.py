@@ -101,8 +101,8 @@ class SpeechRecognitionModule(naoqi.ALModule):
         """
         if self.isStarted:
             # calculate a decimal seconds timestamp
-            timestamp = float(str(aTimeStamp[0]) + "." + str(aTimeStamp[1]))
-            print str(timestamp), "processRemote!!!!"
+            # timestamp = float(str(aTimeStamp[0]) + "." + str(aTimeStamp[1]))
+            # print str(timestamp), "processRemote!!!!"
 
             aSoundDataInterlaced = np.fromstring(str(buffer), dtype=np.int16)
             aSoundData = np.reshape(aSoundDataInterlaced, (nbOfChannels, nbrOfSamplesByChannel), 'F')
@@ -117,7 +117,6 @@ class SpeechRecognitionModule(naoqi.ALModule):
     def save_buffer(self):
         """
         Saves buffered audio data to physical .wav file.
-        :param data:
         :return:
         """
         filename = "simple_out"

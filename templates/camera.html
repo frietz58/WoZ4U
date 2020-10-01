@@ -39,17 +39,6 @@
         )
     }
 
-    var unloadEvent = function (e) {
-        const http = new XMLHttpRequest();
-        http.open("GET", "/camera_unload");
-        http.send();
-
-        return null;  // this needs to be here to ensure that event gets handeled correctly! https://stackoverflow.com/questions/7255649/capturing-window-onbeforeunload
-    };
-
-    // appears that this only work 8/10 times... needs something else...
-    window.addEventListener("beforeunload", unloadEvent);  // gets triggered when tab is closed
-
      // this is ugly but should work: ping server regularly. if no ping arrived in a few seconds, we now tab was closed
     function ping_server() {
         $.getJSON(

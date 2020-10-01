@@ -217,18 +217,15 @@ def querry_states():
         try:
             now = timer()
             if now - camera_tab_timestamp > 5:  # if now keep alive ping within 5 seconds...
-                print ("stopping camera stream!!!!")
-                print ("stopping camera stream!!!!")
-                print ("stopping camera stream!!!!")
-                print ("stopping camera stream!!!!")
+                if SpeechRecognition.isStarted:
+                    print("Handling close camera tab!")
+                    SpeechRecognition.stop()  # stop the audio transmission
 
-                SpeechRecognition.stop()  # stop the audio transmission
-
-                # remove camera stream subscriber from video service
-                if video_srv.getSubscribers():
-                    for subscriber in video_srv.getSubscribers():
-                        if "CameraStream" in subscriber:  # name passed as argument on subscription
-                            video_srv.unsubscribe(subscriber)
+                    # remove camera stream subscriber from video service
+                    if video_srv.getSubscribers():
+                        for subscriber in video_srv.getSubscribers():
+                            if "CameraStream" in subscriber:  # name passed as argument on subscription
+                                video_srv.unsubscribe(subscriber)
 
         except NameError:
             pass  # if SpeechRecognition module has never been started and doesn't exist...
@@ -687,31 +684,10 @@ def camera_view():
 
     return render_template("camera.html")
 
-
-@app.route("/camera_unload")
-def camera_unload():
-    print("CAMERA TAB CLOSED")
-
-    global camera_tab_closed
-    camera_tab_closed = True
-
-    return {
-        "status": "closed camera tab"
-    }
-
-
 @app.route("/camera_tab_keep_alive")
 def camera_tab_keep_alive():
     global camera_tab_timestamp
     camera_tab_timestamp = timer()
-
-    print("keep alive tab")
-    print(SpeechRecognition.isStarted)
-    # try:
-    #     if not SpeechRecognition.isStarted:
-    #         SpeechRecognition.start()
-    # except:
-    #     pass
 
     return {
         "set keep alive timestamp": camera_tab_timestamp
