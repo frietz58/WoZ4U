@@ -9,8 +9,7 @@ import os
 import numpy as np
 import matplotlib
 from timeit import default_timer as timer
-
-end = timer()
+from collections import deque
 
 from utils import distinguish_path
 from utils import alImage_to_PIL
@@ -38,9 +37,24 @@ camera_tab_closed = True
 global camera_tab_timestamp
 camera_tab_timestamp = 0
 
+global touchdown_hist
+touchdown_hist = []
+
+global touchmove_hist
+touchmove_hist = []
+
+global touchmove_ind
+touchmove_ind = 0
+
+global latest_touchmove_used
+latest_touchmove_used = 0
+
 
 @app.route('/')
 def index():
+
+    read_config()
+
     try:
         global qi_session
         if qi_session is not None:  # if session already exists, fronted was just reloaded...
@@ -71,12 +85,15 @@ def connect_robot():
         print("qi session connect error!:")
         print(msg)
 
-    get_all_services(qi_session)
+    get_all_services()
 
     # almemory event subscribers
     # global tts_sub
     # tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
     # tts_sub.signal.connect(tts_callback)
+    tablet_srv.onTouchDownRatio.connect(touchDown_callback)  # on touch down, aka one "click"
+    tablet_srv.onTouchMove.connect(touchMove_callback)  # finger slides on tablet
+    tablet_srv.onTouchUp.connect(touchUp_callback)
 
     global vid_finished_signal
     vid_finished_signal = tablet_srv.videoFinished
@@ -144,7 +161,41 @@ def onVidEnd():
     show_default_img_or_hide()
 
 
-def get_all_services(sess):
+def touchDown_callback(x, y, msg):
+    print(x, y, msg)
+    # we append newest first, so that we can nicely iterate over list and fade color out...
+    global touchdown_hist
+    touchdown_hist.insert(0, (x, y))
+    if len(touchdown_hist) > 5:
+        touchdown_hist = touchdown_hist[:5]
+
+
+def touchMove_callback(x_offset, y_offset):
+    print("slide: ", touchmove_ind, x_offset, y_offset)
+    # if this is a new "series" of touchmoves, create empty list of at current index
+    global touchmove_hist
+    global latest_touchmove_used
+
+    if latest_touchmove_used != touchmove_ind:
+        touchmove_hist.append([])
+        latest_touchmove_used = touchmove_ind
+
+    touchmove_hist[-1].append((x_offset / 1600, y_offset / 1080))
+
+    # if len(touchmove_hist) > 5:
+    #     touchmove_hist = touchmove_hist[5:]  # we keep the last 5 recent
+
+
+def touchUp_callback(x, y):
+    print("Touchup!")
+    global touchmove_ind
+    touchmove_ind += 1
+
+    global touchmove_hist
+    touchmove_hist.append([])  # whenever we have a touchdown event, this might be followed by a finger slide...
+
+
+def get_all_services():
     """
     Provides global references to all naoqi services used somewhere down the line
     """
@@ -897,6 +948,31 @@ def get_eye_colors():
     bgr = led_srv.getIntensity("RightFaceLed1")
     rgb = [round(bgr[2], 2), round(bgr[1], 2), round(bgr[0], 2)]
     return rgb
+
+
+@app.route("/tablet_drawer")
+def tablet_drawer():
+
+    return render_template('tablet_drawer.html')
+
+
+@app.route("/get_touch_data")
+def get_touch_data():
+
+    global touchmove_hist
+    filtered_touchmove_list = []
+    # this one we must reverse here, because doing this before would be more cumbersome
+    for sequence in reversed(touchmove_hist):
+
+        if len(sequence) > 2:
+
+            filtered_touchmove_list.append(sequence)
+
+    return {
+        # we return the list in reverse order, so that we can put a nice fading color gradient on the older items...
+        "touchdown_hist": touchdown_hist,
+        "touchmove_hist": filtered_touchmove_list
+    }
 
 
 def read_config():

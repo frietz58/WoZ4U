@@ -204,3 +204,9 @@ input[disabled]{
 .table_row_line td{
   border-bottom: 2px solid black;
 }
+
+.tablet_draw_canvas{
+  border: 1px solid black;
+  max-width: 1200px;
+  max-height: 800px;
+}

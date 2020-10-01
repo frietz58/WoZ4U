@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WoZ4U - Tablet activity</title>
+<link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico">
+<link rel="shortcut icon" href="http://www.example.com/myicon.ico"/>
+<link rel="stylesheet" type="text/css" href="../static/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="background-color: #264653">
+    <div>
+        <div class="single_cell_div">
+            <div class="row">
+                <h1>Pepper tablet activity</h1>
+            <div>
+            <div class="row" stlye="">
+                <canvas id="id_tablet_draw_canvas" class="tablet_draw_canvas"></canvas>
+            </div>
+                <div class="row">
+                <h1></h1>
+            <div>
+        </div>
+    </div>
+
+    <script type=text/javascript>
+
+
+    // this is ugly but should work: ping server regularly. if no ping arrived in a few seconds, we now tab was closed
+    /*
+    function ping_server() {
+        $.getJSON(
+            "/camera_tab_keep_alive",
+            function(data) {
+                console.log(data)
+            })
+    }
+
+    setInterval(ping_server, 1000);
+    */
+
+     var drawn_circles = [];
+
+    function get_touch_data() {
+        $.getJSON(
+            "/get_touch_data",
+            function(data) {
+                console.log(data)
+                clear_canvas()
+                if (data["touchdown_hist"] === null) {
+                    return
+                } else {
+                    data["touchdown_hist"].forEach(function(item, index) {
+                        console.log("drawing circle" + item);
+
+                        alpha = 1 - index / data["touchdown_hist"].length;
+                        color_str = `rgba(255, 0, 0, ${alpha})`;
+
+                        draw_touchdown_circle(item[0], item[1], color=color_str);
+                        /*
+                        // we only want to draw each circle once...
+                        if (!drawn_circles.includes(item.toString())) {
+                            console.log("drawing " + item);
+                            draw_touchdown_circle(item[0], item[1]);
+
+                            // save drawn circle in list
+                            drawn_circles.push(item.toString())
+                        }
+                        */
+                    })
+                }
+
+                if (data["touchmove_hist"] === null) {
+                    return
+                } else {
+                    data["touchmove_hist"].forEach(function(item, index) {
+                    console.log("drawing line" + item);
+
+                    alpha = 1 - index / data["touchmove_hist"].length;
+                    color_str = `rgba(0, 0, 255, ${alpha})`;
+
+                    draw_touchdown_line(item, color=color_str);
+
+                    })
+
+                }
+
+            }
+        )
+    }
+
+    setInterval(get_touch_data, 1000);
+
+    // wait for the content of the window element
+    // to load, then performs the operations.
+    // This is considered best practice.
+    window.addEventListener('load', ()=>{
+
+        resize(); // Resizes the canvas once the window loads
+        fill_bg(); // fill background with color
+        draw_touchdown_circle(0.5, 0.5, "green")
+        document.addEventListener('mousedown', startPainting);
+        document.addEventListener('mouseup', stopPainting);
+        document.addEventListener('mousemove', sketch);
+        window.addEventListener('resize', resize);
+    });
+
+    const canvas = document.querySelector('#id_tablet_draw_canvas');
+
+    // Context for the canvas for 2 dimensional operations
+    const ctx = canvas.getContext('2d');
+
+    // Resizes the canvas to the available size of the window.
+    function resize() {
+        // minus something so that we always have a nice margin in all directions
+        // more height because heading nad btns...
+        ctx.canvas.width = innerWidth - 50;
+        ctx.canvas.height = innerHeight - 100;
+        }
+
+    // Stores the initial position of the cursor
+    let coord = {x:0 , y:0};
+
+    // This is the flag that we are going to use to
+    // trigger drawing
+    let paint = false;
+
+    // Updates the coordianates of the cursor when
+    // an event e is triggered to the coordinates where
+    // the said event is triggered.
+    function getPosition(event){
+        coord.x = event.clientX - canvas.offsetLeft;
+        coord.y = event.clientY - canvas.offsetTop;
+    }
+
+    // The following functions toggle the flag to start
+    // and stop drawing
+    function startPainting(event){
+        paint = true;
+        getPosition(event);
+    }
+
+    function stopPainting(){
+        paint = false;
+    }
+
+    function sketch(event){
+        if (!paint) return;
+        ctx.beginPath();
+
+        ctx.lineWidth = 5;
+
+
+        // Sets the end of the lines drawn
+        // to a round shape.
+        ctx.lineCap = 'round';
+
+        ctx.strokeStyle = 'blue';
+
+        // The cursor to start drawing
+        // moves to this coordinate
+        ctx.moveTo(coord.x, coord.y);
+
+        // The position of the cursor
+        // gets updated as we move the
+        // mouse around.
+        getPosition(event);
+
+        // A line is traced from start
+        // coordinate to this coordinate
+        ctx.lineTo(coord.x , coord.y);
+
+        // Draws the line.
+        ctx.stroke();
+    }
+
+    function fill_bg(){
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw_touchdown_circle(rel_center_x, rel_center_y, color="red") {
+        abs_center_x = rel_center_x * canvas.width;
+        abs_center_y = rel_center_y * canvas.height;
+        ctx.beginPath();
+        ctx.arc(abs_center_x, abs_center_y, 10, 0, 2 * Math.PI);
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+
+        ctx.strokeStyle = "blue";
+    }
+
+    function clear_canvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        fill_bg()
+    }
+
+    function draw_touchdown_line(point_list, color="blue") {
+        ctx.beginPath();
+        ctx.moveTo(point_list[0][0] * canvas.width, point_list[0][1] * canvas.height);
+        //ctx.moveTo(0, 0);
+
+        point_list.forEach(function(rel_point_tup, index) {
+            abs_point_x = rel_point_tup[0] * canvas.width;
+            abs_point_y = rel_point_tup[1] * canvas.height;
+
+            ctx.lineTo(abs_point_x, abs_point_y);
+        });
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    }
+
+
+
+    </script>
+</body>
+</html>
