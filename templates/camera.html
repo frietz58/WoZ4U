@@ -11,12 +11,12 @@
         $.getJSON(
             "/toggle_img_save",
             function(data){
-                console.log(data)
+                console.log(data);
                 if (data["SAVE_IMGS"]) { // if true means it is recording, so btn says stop recording
-                    $("#video_recording_btn").html("STOP RECORDING")
+                    $("#video_recording_btn").html("STOP RECORDING");
                     $("#video_recording_btn").addClass("example_c_ongoing");
                 } else {
-                    $("#video_recording_btn").html("START RECORDING")
+                    $("#video_recording_btn").html("START RECORDING");
                     $("#video_recording_btn").removeClass("example_c_ongoing");
                 }
             }
@@ -27,12 +27,12 @@
         $.getJSON(
             "/record_audio_data",
             function(data) {
-                console.log(data)
+                console.log(data);
                 if (data["now_recording_audio"]) { // if true means it is recording, so btn says stop recording
-                    $("#audio_recording_btn").html("STOP RECORDING")
+                    $("#audio_recording_btn").html("STOP RECORDING");
                     $("#audio_recording_btn").addClass("example_c_ongoing");
                 } else {
-                    $("#audio_recording_btn").html("START RECORDING")
+                    $("#audio_recording_btn").html("START RECORDING");
                     $("#audio_recording_btn").removeClass("example_c_ongoing");
                 }
             }
@@ -40,46 +40,27 @@
     }
 
     var unloadEvent = function (e) {
-        /*
-        $.getJSON(
-            "/camera_unload",
-            function(data) {
-                console.log(data)
-            }
-        );
-        */
+        const http = new XMLHttpRequest();
+        http.open("GET", "/camera_unload");
+        http.send();
 
-        //window.open("/camera_unload");
-        //window.open("https://www.w3schools.com");
-        // location.replace("https://www.w3schools.com");
-
-
-        // YES THIS APPEARS TO WORK!!!
-        // TODO finalize backend tomorrow!!
-        const http = new XMLHttpRequest()
-        http.open("GET", "/camera_unload")
-        http.send()
-
-
-        var confirmationMessage = "Warning: Leaving this page will result in any unsaved data being lost. Are you sure you wish to continue?";
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Webkit, Safari, Chrome etc.
+        return null;  // this needs to be here to ensure that event gets handeled correctly! https://stackoverflow.com/questions/7255649/capturing-window-onbeforeunload
     };
 
-    window.addEventListener("beforeunload", unloadEvent);
+    // appears that this only work 8/10 times... needs something else...
+    window.addEventListener("beforeunload", unloadEvent);  // gets triggered when tab is closed
 
-
-
-    /*
-    function toggle_face_detection(){
+     // this is ugly but should work: ping server regularly. if no ping arrived in a few seconds, we now tab was closed
+    function ping_server() {
         $.getJSON(
-            "/toggle_face_detection",
-            function (data) {
+            "/camera_tab_keep_alive",
+            function(data) {
                 console.log(data)
-            }
-        )
+            })
     }
-    */
+
+    setInterval(ping_server, 1000);
+
 
 </script>
 </head>

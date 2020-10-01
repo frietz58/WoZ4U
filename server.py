@@ -8,6 +8,9 @@ from datetime import datetime
 import os
 import numpy as np
 import matplotlib
+from timeit import default_timer as timer
+
+end = timer()
 
 from utils import distinguish_path
 from utils import alImage_to_PIL
@@ -28,6 +31,12 @@ global tablet_state
 tablet_state = {
     "showing": None
 }
+
+global camera_tab_closed
+camera_tab_closed = True
+
+global camera_tab_timestamp
+camera_tab_timestamp = 0
 
 
 @app.route('/')
@@ -203,11 +212,31 @@ def querry_states():
     """
     print("Querrying")
     try:
+
+        # see if audio transmission is running even though camera tab is closed...
+        try:
+            now = timer()
+            if now - camera_tab_timestamp > 5:  # if now keep alive ping within 5 seconds...
+                print ("stopping camera stream!!!!")
+                print ("stopping camera stream!!!!")
+                print ("stopping camera stream!!!!")
+                print ("stopping camera stream!!!!")
+
+                SpeechRecognition.stop()  # stop the audio transmission
+
+                # remove camera stream subscriber from video service
+                if video_srv.getSubscribers():
+                    for subscriber in video_srv.getSubscribers():
+                        if "CameraStream" in subscriber:  # name passed as argument on subscription
+                            video_srv.unsubscribe(subscriber)
+
+        except NameError:
+            pass  # if SpeechRecognition module has never been started and doesn't exist...
+
         return {
             "#autonomous_states": al_srv.getState(),
-            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3) * 100,
-        # convert form m to cm for frontend
-            "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3) * 100,
+            "#tangential_collision": round(motion_srv.getTangentialSecurityDistance(), 3) * 100,  # convert form m to
+            "#orthogonal_collision": round(motion_srv.getOrthogonalSecurityDistance(), 3) * 100,  # cm for frontend
             "#toggle_btn_blinking": ab_srv.isEnabled(),
             "#toggle_btn_basic_awareness": ba_srv.isEnabled(),
             "#engagement_states": ba_srv.getEngagementMode(),
@@ -633,15 +662,24 @@ def move_joint():
 
 @app.route("/camera_view")
 def camera_view():
-    # see if there are any old subscribers...
+
+
+    # see if there are any old video subscribers...
     if video_srv.getSubscribers():
         for subscriber in video_srv.getSubscribers():
-            video_srv.unsubscribe(subscriber)
+            if "CameraStream" in subscriber:  # name passed as argument on subscription
+                video_srv.unsubscribe(subscriber)
 
     resolution = vision_definitions.kQVGA  # 320 * 240
     colorSpace = vision_definitions.kRGBColorSpace
     global imgClient
-    imgClient = video_srv.subscribe("_client", resolution, colorSpace, 5)
+    imgClient = video_srv.subscribe("CameraStream", resolution, colorSpace, 5)
+
+    global camera_tab_closed
+    camera_tab_closed = False
+
+    global camera_tab_timestamp
+    camera_tab_timestamp = timer()
 
     global SpeechRecognition
     SpeechRecognition = SpeechRecognitionModule("SpeechRecognition", ip, port)
@@ -653,16 +691,31 @@ def camera_view():
 @app.route("/camera_unload")
 def camera_unload():
     print("CAMERA TAB CLOSED")
-    print("CAMERA TAB CLOSED")
-    print("CAMERA TAB CLOSED")
-    print("CAMERA TAB CLOSED")
-    print("CAMERA TAB CLOSED")
-    print("CAMERA TAB CLOSED")
+
+    global camera_tab_closed
+    camera_tab_closed = True
 
     return {
         "status": "closed camera tab"
     }
 
+
+@app.route("/camera_tab_keep_alive")
+def camera_tab_keep_alive():
+    global camera_tab_timestamp
+    camera_tab_timestamp = timer()
+
+    print("keep alive tab")
+    print(SpeechRecognition.isStarted)
+    # try:
+    #     if not SpeechRecognition.isStarted:
+    #         SpeechRecognition.start()
+    # except:
+    #     pass
+
+    return {
+        "set keep alive timestamp": camera_tab_timestamp
+    }
 
 
 @app.route("/video_feed")

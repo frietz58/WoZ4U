@@ -1,3 +1,10 @@
+"""
+    Implements a naoqi ALModule for live streaming of Pepper's microphone to default host default audio output device.
+    Based on: https://github.com/JBramauer/pepperspeechrecognition/blob/master/module_speechrecognition.py
+
+    Author: Finn Rietz
+"""
+
 import sounddevice as sd
 import time
 import numpy as np
@@ -92,20 +99,20 @@ class SpeechRecognitionModule(naoqi.ALModule):
         :param buffer: the actual, buffer audio data from Pepper's mic
         :return: None
         """
+        if self.isStarted:
+            # calculate a decimal seconds timestamp
+            timestamp = float(str(aTimeStamp[0]) + "." + str(aTimeStamp[1]))
+            print str(timestamp), "processRemote!!!!"
 
-        # calculate a decimal seconds timestamp
-        timestamp = float(str(aTimeStamp[0]) + "." + str(aTimeStamp[1]))
-        print str(timestamp), "processRemote!!!!"
+            aSoundDataInterlaced = np.fromstring(str(buffer), dtype=np.int16)
+            aSoundData = np.reshape(aSoundDataInterlaced, (nbOfChannels, nbrOfSamplesByChannel), 'F')
 
-        aSoundDataInterlaced = np.fromstring(str(buffer), dtype=np.int16)
-        aSoundData = np.reshape(aSoundDataInterlaced, (nbOfChannels, nbrOfSamplesByChannel), 'F')
+            self.buffer.append(aSoundData)
 
-        self.buffer.append(aSoundData)
-
-        # write the callback data from ALAudiodevice to sounddevice stream, causing it to be played
-        # we need to transpose, because sounddevice expects columns to be channels, and we get rows as channels
-        if self.livestream:
-            self.stream.write(aSoundData.T)
+            # write the callback data from ALAudiodevice to sounddevice stream, causing it to be played
+            # we need to transpose, because sounddevice expects columns to be channels, and we get rows as channels
+            if self.livestream:
+                self.stream.write(aSoundData.T)
 
     def save_buffer(self):
         """
