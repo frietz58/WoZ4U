@@ -44,7 +44,7 @@ global touchmove_hist
 touchmove_hist = []
 
 global touchmove_ind
-touchmove_ind = 0
+touchmove_ind = 1
 
 global latest_touchmove_used
 latest_touchmove_used = 0
