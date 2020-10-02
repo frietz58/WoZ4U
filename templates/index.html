@@ -933,20 +933,18 @@ function hexToRGB (hex){
           <span>{{img["title"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button class="example_c"
+          <button class="example_c capitalize"
           id="image_btn_{{loop.index0}}"
           file="{{img['file_name']}}"
           onclick="show_img('{{img["file_name"]}}', {{loop.index0}})"
           default_text="
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-            pretty_print_shortcut({{ img["key_comb"]|safe }})
+            {{ img["key_comb"]|prettyshortcut }}
           {% else %}
             SHOW
           {% endif %}">
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-               <script>
-                    pretty_print_shortcut({{ img["key_comb"]|safe }})
-              </script>
+              {{ img["key_comb"]|prettyshortcut }}
           {% else %}
             SHOW
           {% endif %}

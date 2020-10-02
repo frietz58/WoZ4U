@@ -210,3 +210,7 @@ input[disabled]{
   max-width: 1200px;
   max-height: 800px;
 }
+
+.capitalize {
+  text-transform: capitalize !important;
+}

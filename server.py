@@ -9,7 +9,7 @@ import os
 import numpy as np
 import matplotlib
 from timeit import default_timer as timer
-from collections import deque
+import jinja2
 
 from utils import distinguish_path
 from utils import alImage_to_PIL
@@ -26,10 +26,12 @@ from urlparse import unquote
 
 app = Flask(__name__)
 
+# helper for knowing what is on the tablet
 global tablet_state
 tablet_state = {
     "showing": None
 }
+
 
 global camera_tab_closed
 camera_tab_closed = True
@@ -984,6 +986,24 @@ def read_config():
         print(config)
 
 
+def pretty_print_shortcut(raw_string):
+    """
+    A custom Jinja 2 filter that formats the list.toString that we get in the frontent for the keyboard shortcut for
+    the buttons.
+    Is registered for Jinja in __main__
+    :param raw_string: the list.toString() string form js
+    :return: a beautified version of the string
+    """
+    pretty_string = str(raw_string)  # raw string is a list a this point...
+    pretty_string = pretty_string.replace("[", "")
+    pretty_string = pretty_string.replace("]", "")
+    pretty_string = pretty_string.replace("'", "")
+    pretty_string = pretty_string.replace(",", "")
+    pretty_string = pretty_string.replace(" ", " + ")
+
+    return pretty_string
+
+
 if __name__ == '__main__':
     read_config()
 
@@ -993,5 +1013,10 @@ if __name__ == '__main__':
 
     global motion_vector
     motion_vector = [0, 0, 0]
+
+    # register custom filter for jinja2, so that we can use it in the frontend
+    # env = Environment()
+    # env.filters['prettyshortcut'] = pretty_print_shortcut
+    jinja2.filters.FILTERS['prettyshortcut'] = pretty_print_shortcut
 
     app.run(host='0.0.0.0', debug=True)
