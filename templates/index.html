@@ -939,12 +939,12 @@ function hexToRGB (hex){
           onclick="show_img('{{img["file_name"]}}', {{loop.index0}})"
           default_text="
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-            {{ img["key_comb"]|prettyshortcut }}
+            {{ img["key_comb"]|safe|prettyshortcut }}
           {% else %}
             SHOW
           {% endif %}">
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-              {{ img["key_comb"]|prettyshortcut }}
+              {{ img["key_comb"]|safe|prettyshortcut }}
           {% else %}
             SHOW
           {% endif %}
@@ -1269,17 +1269,17 @@ function hexToRGB (hex){
         <div class="speech_btn_wrapper">
           <button
             title="{{anim_speech['tooltip']}}"
-            class="example_c"
+            class="example_c capitalize"
             id="anim_speech_btn_{{loop.index0}}"
             default_text="
               {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                {{ anim_speech["key_comb"]|safe }}
+                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
               {% else %}
                 EXECUTE
               {% endif %}"
             onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
             {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-              {{ anim_speech["key_comb"]|safe }}
+              {{ anim_speech["key_comb"]|safe|prettyshortcut }}
             {% else %}
               EXECUTE
             {% endif %}
@@ -1320,17 +1320,17 @@ function hexToRGB (hex){
         <div class="speech_btn_wrapper">
           <button
             title="{{audio['location']}}"
-            class="example_c"
+            class="example_c capitalize"
             id="audio_file_{{loop.index0}}"
             onclick="play_audio('{{audio["title"]}}', {{loop.index0}})"
             default_text="
             {% if (audio["key_comb"] is defined) and audio["key_comb"] %}
-              {{ audio["key_comb"]|safe }}
+              {{ audio["key_comb"]|safe|prettyshortcut }}
             {% else %}
               SHOW
             {% endif %}">
             {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
-              {{ audio["key_comb"]|safe }}
+              {{ audio["key_comb"]|safe|prettyshortcut }}
             {% else %}
               PLAY
             {% endif %}
@@ -1373,8 +1373,8 @@ function hexToRGB (hex){
           <td></td>
         </tr>
         <tr class="table_row_line">
-          <td style="text-align: right;">Move / Rotate base</td>
-          <td style="text-align: left;">: ALT + Arrow keys</td>
+          <td style="text-align: right;">Move base</td>
+          <td style="text-align: left;">: Alt + Arrow keys</td>
           <td>
             <div class="speech_lbl_wrapper">
               <label for="drive_distance_input">Move (cm)</label>
@@ -1400,12 +1400,12 @@ function hexToRGB (hex){
         </tr>
         <tr>
           <td style="text-align: right;">Move Hip</td>
-          <td style="text-align: left;">: SHIFT + Arrow keys</td>
+          <td style="text-align: left;">: Shift + Arrow keys</td>
           <td>
           </td>
         </tr>
         <tr>
-          <td style="text-align: right;">ESCAPE</td>
+          <td style="text-align: right;">Escape</td>
           <td style="text-align: left;">: Stop driving</td>
           <td></td>
         </tr>
@@ -1459,17 +1459,17 @@ function hexToRGB (hex){
               $("#color_box_{{ color["title"] }}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
             </script>
           <button
-          class="example_c"
+          class="example_c capitalize"
           onclick="set_eye_led_color('{{color["title"]}}')"
           default_text="
             {% if (color["key_comb"] is defined) and color["key_comb"] %}
-              {{ color["key_comb"]|safe }}
+              {{ color["key_comb"]|safe|prettyshortcut }}
             {% else %}
               OFF
             {% endif %}"
           id="eye_colo_btn_{{color["title"]}}">
             {% if (color["key_comb"] is defined) and color["key_comb"] %}
-              {{ color["key_comb"]|safe }}
+              {{ color["key_comb"]|safe|prettyshortcut }}
             {% else %}
               OFF
             {% endif %}
@@ -1500,17 +1500,17 @@ function hexToRGB (hex){
           <div class="speech_btn_wrapper">
             <button
               title="{{gesture['tooltip']}}"
-              class="example_c"
+              class="example_c capitalize"
               id="gesture_btn_{{loop.index0}}"
               default_text="
               {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
-                {{ gesture["key_comb"]|safe }}
+                {{ gesture["key_comb"]|safe|prettyshortcut }}
               {% else %}
                 EXECUTE
               {% endif %}"
               onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
               {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
-                {{ gesture["key_comb"]|safe }}
+                {{ gesture["key_comb"]|safe|prettyshortcut }}
               {% else %}
               EXECUTE
               {% endif %}
