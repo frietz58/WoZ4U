@@ -48,7 +48,7 @@ tablet_items:
     title: Arrow keys
     file_name: arrow_keys.png
     key_comb: ["ctrl", "shift", 4]
-  - 
+  -
     title: Sound playing
     file_name: sound_playing.png
     key_comb: ["ctrl", "shift", 5]
@@ -227,3 +227,17 @@ colors:
     green: 1.0
     blue: 1.0
     key_comb: ["c", "w"]
+
+# Eye animation configuration
+# these are further configurable, because there are only those three animations available
+rasta_anim:
+  duration: 3
+  key_comb: ["ctrl", "alt", 1]
+
+random_anim:
+  duration: 6
+  key_comb: ["ctrl", "alt", 2]
+
+rotate_anim:
+  duration: 4
+  key_comb: ["ctrl", "alt", 3]
