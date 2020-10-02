@@ -17,8 +17,14 @@
                 <canvas id="id_tablet_draw_canvas" class="tablet_draw_canvas"></canvas>
             </div>
                 <div class="row">
-                <h1></h1>
             <div>
+            <div class="row">
+                <button class="example_c" onclick=clear_canvas()>
+                    Clear
+                </button>
+                <br>
+                <br>
+            </div>
         </div>
     </div>
 
@@ -98,9 +104,9 @@
         resize(); // Resizes the canvas once the window loads
         fill_bg(); // fill background with color
         draw_touchdown_circle(0.5, 0.5, "green")
-        document.addEventListener('mousedown', startPainting);
-        document.addEventListener('mouseup', stopPainting);
-        document.addEventListener('mousemove', sketch);
+        //document.addEventListener('mousedown', startPainting);
+        //document.addEventListener('mouseup', stopPainting);
+        //document.addEventListener('mousemove', sketch);
         window.addEventListener('resize', resize);
     });
 
