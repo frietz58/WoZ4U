@@ -8,9 +8,9 @@
 <script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
 <script type=text/javascript>
 
-  var keyboard_shortcuts = {}
-  var session_is_connected = false
-  var motion_blocking = false
+  var keyboard_shortcuts = {};
+  var session_is_connected = false;
+  var motion_blocking = false;
 
   //applies styling to a toggle button, depending on the value it should take
   function toggle_btn_handle(identifier, bool, onText="ON", offText="OFF"){
@@ -36,10 +36,10 @@
       function(data) {
         // console.log(data)
         if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
-          disable_all()
+          disable_all();
           // $("*").removeClass("example_c_ongoing");
-          $("#connect_btn").removeClass("example_c_green")
-          $("#connect_btn").html("CONNECT")
+          $("#connect_btn").removeClass("example_c_green");
+          $("#connect_btn").html("CONNECT");
           $("*").each(function(index) {
             $(this).removeClass("example_c_ongoing");
             if(typeof $(this).attr("default_text") !== "undefined") {
@@ -47,9 +47,9 @@
               // so we reset all to their default text, because we can't know right now which is the once that should be active
               $(this).html($(this).attr("default_text"))
             } 
-          })
+          });
           window.session_is_connected = false;
-          console.log("session not connected")
+          console.log("session not connected");
           return
         }
         Object.keys(data).forEach(key => {
@@ -101,16 +101,16 @@
               // querried color div
               // console.log(key, data[key]);
               // set color of "querried" block to querried val
-              $(key).css("background", "rgba(" + data[key][0] * 255 + ", " + data[key][1] * 255 + ", " + data[key][2] * 255 + ")")
+              $(key).css("background", "rgba(" + data[key][0] * 255 + ", " + data[key][1] * 255 + ", " + data[key][2] * 255 + ")");
 
               // see if the querried color matches one of the defined colors
               {% for color in config["colors"] %}
-                color_identifier = "#eye_colo_btn_{{ color["title"] }}"
+                color_identifier = "#eye_colo_btn_{{ color["title"] }}";
                 color_array = [
                   Math.round(({{ color["red"] }} + Number.EPSILON) * 100) / 100,
                   Math.round(({{ color["green"] }} + Number.EPSILON) * 100) / 100,
                   Math.round(({{ color["blue"] }} + Number.EPSILON) * 100) / 100
-                ]
+                ];
                 
                 // if it matches, set that btn to ON, to indicate the eye color begin shown
                 if (arraysEqual(data[key], color_array)) {
@@ -140,7 +140,7 @@
       robot_ip = ip
     }
 
-    const identifier = "#connect_btn"
+    const identifier = "#connect_btn";
 
     $(identifier).html("..."); // set btn text to ...
     $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
@@ -150,7 +150,7 @@
         console.log(data)
       
       }).done(function() {
-        update_states() // set all the dynamic values on the UI
+        update_states(); // set all the dynamic values on the UI
 
         $(identifier).html("Connected"); // set btn text
         $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
@@ -169,44 +169,43 @@
       $(identifier).removeClass("example_c_ongoing");
       $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
     })
-  };
-
+  }
   function set_autonomous_state(){
     state = document.getElementById("autonomous_states").value;
-    $("#auto_state_set").html("...")
+    $("#auto_state_set").html("...");
     $("#auto_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/set_autonomous_state?state=" + state,
       function(data) {
         console.log(data);
     }).done(function() {
-      $("#auto_state_set").html("Set")
+      $("#auto_state_set").html("Set");
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_green"); // give class for succes
-      $("#auto_state_set").prop("has_uncommited_state", false)
+      $("#auto_state_set").prop("has_uncommited_state", false);
       update_states()
     }).fail(function() {
       $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#auto_state_set").addClass("example_c_red"); // give class for succes
-      $("#auto_state_set").html("FAIL")
+      $("#auto_state_set").html("FAIL");
       $("#auto_state_set").prop("has_uncommited_state", false)
     })
   }
 
   function toggle_setting(setting){
-    const identifier = "#toggle_btn_" + setting
+    const identifier = "#toggle_btn_" + setting;
     $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
     $(identifier).removeClass("example_c_green"); // remove class for ongoing
     $(identifier).removeClass("example_c_red"); // remove class for ongoing
-    $(identifier).html("...")
+    $(identifier).html("...");
 
-    const url = "/toggle_setting?setting=" + setting
-    console.log(url)
+    const url = "/toggle_setting?setting=" + setting;
+    console.log(url);
     $.getJSON( // async call flask function with arguments
       url,
       function(data) {
         console.log(data);
-        toggle_btn_handle(identifier, data["new_state"])
+        toggle_btn_handle(identifier, data["new_state"]);
         if (setting == "blinking" && data["new_state"]) {
           if (document.getElementById("autonomous_states").value != "interactive") {
               alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
@@ -229,8 +228,8 @@
         console.log(data);
       }
     ).done(function() {
-      $("#custom_text_btn").html("Say it")
-      $("#custom_text_btn").removeClass("example_c_ongoing")
+      $("#custom_text_btn").html("Say it");
+      $("#custom_text_btn").removeClass("example_c_ongoing");
       update_states()
     })
   }
@@ -239,7 +238,7 @@
     // depending on value of btn we either start playing audio or interrupt it
     // console.log($("#audio_file_"+index).text())
 
-    const id = "#audio_file_"+index
+    const id = "#audio_file_"+index;
 
     if ($(id).prop("disabled")) {
       return
@@ -255,7 +254,7 @@
       ).done(function() {
         // console.log($(id).attr("default_text"))
         $(id).html($(id).attr("default_text"));
-        $(id).removeClass("example_c_ongoing")
+        $(id).removeClass("example_c_ongoing");
         $("[id^=image_btn_]").prop('disabled', false);
         $("[id^=audio_file_]").prop('disabled', false);
         update_states()
@@ -266,7 +265,7 @@
       $(id).addClass("example_c_ongoing");
 
       $("[id^=audio_file_]").prop('disabled', true); // also disable all the other sounds btns...
-      $(id).prop("disabled", false)
+      $(id).prop("disabled", false);
 
       $.getJSON(
       "/play_audio?index=" + index,
@@ -274,7 +273,7 @@
         console.log(data);
       }).done(function() {
       $(id).html($(id).attr("default_text"));
-      $(id).removeClass("example_c_ongoing")
+      $(id).removeClass("example_c_ongoing");
       $("[id^=image_btn_]").prop('disabled', false);
       $("[id^=audio_file_]").prop('disabled', false);
       update_states()
@@ -283,7 +282,7 @@
   }
 
   function show_img(img_name, index) {
-    const id = "#image_btn_"+index
+    const id = "#image_btn_"+index;
     //depending on the state of the button, we either want to show or hide an image...
     if ($(id).text() == "HIDE") {
       // clear the image from the tablet
@@ -293,7 +292,7 @@
           console.log(data)
         }).done(function() {
           $(id).html($(id).prop("default_text")); // set btn text
-          $(id).removeClass("example_c_ongoing")
+          $(id).removeClass("example_c_ongoing");
           update_states()
       })
     } else {
@@ -304,7 +303,7 @@
         console.log(data);
       }).done(function() {
         $(id).html("HIDE"); // set btn text
-        $(id).addClass("example_c_ongoing")
+        $(id).addClass("example_c_ongoing");
         update_states()
       })
     }
@@ -321,7 +320,7 @@
 
   function set_engagement_state() {
     mode = document.getElementById("engagement_states").value;
-    $("#engagement_state_set").html("...")
+    $("#engagement_state_set").html("...");
     $("#engagement_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/set_engagement_mode?mode=" + mode,
@@ -329,15 +328,15 @@
         console.log(data);
       }
     ).done(function() {
-      $("#engagement_state_set").html("Set")
+      $("#engagement_state_set").html("Set");
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_green"); // give class for succes
-      $("#engagement_state_set").prop("has_uncommited_state", false)
+      $("#engagement_state_set").prop("has_uncommited_state", false);
       update_states()
     }).fail(function() {
       $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
       $("#engagement_state_set").addClass("example_c_red"); // give class for succes
-      $("#engagement_state_set").html("FAIL")
+      $("#engagement_state_set").html("FAIL");
       $("#engagement_state_set").prop("has_uncommited_state", false)
 
     })
@@ -345,7 +344,7 @@
 
   function setVolume(reset=false) {
     if (reset) {
-      target_volume = 10
+      target_volume = 10;
       $("#volume_slider").val(10)
     } else {
       target_volume = $("#volume_slider").val()
@@ -359,17 +358,17 @@
   }
 
   function exec_anim_speech(name, index) {
-    const id = "#anim_speech_btn_" + index
+    const id = "#anim_speech_btn_" + index;
 
     if ($(id).prop("disabled")) {
       // make sure nothing else is currently being said
       return
     }
 
-    $("[id^=anim_speech_btn_]").prop("disabled", true)
-    $("[id^=custom_text_btn]").prop("disabled", true)
+    $("[id^=anim_speech_btn_]").prop("disabled", true);
+    $("[id^=custom_text_btn]").prop("disabled", true);
 
-    $(id).html("...")
+    $(id).html("...");
     $(id).addClass("example_c_ongoing");
     $.getJSON(
       "exec_anim_speech?index=" + index,
@@ -377,26 +376,26 @@
         console.log(data)
       }
     ).done(function() {
-      $(id).html($(id).attr("default_text"))
+      $(id).html($(id).attr("default_text"));
       $(id).removeClass("example_c_ongoing");
-      $("[id^=anim_speech_btn_]").prop("disabled", false)
-      $("[id^=custom_text_btn]").prop("disabled", false)
+      $("[id^=anim_speech_btn_]").prop("disabled", false);
+      $("[id^=custom_text_btn]").prop("disabled", false);
 
       update_states()
     });
   }
 
   function exec_gesture(name, index) {
-    const id = "#gesture_btn_" + index
+    const id = "#gesture_btn_" + index;
 
     if ($(id).prop("disabled")) {
       return
     }
 
-    $(id).html("...")
+    $(id).html("...");
     $(id).addClass("example_c_ongoing");
-    $("[id^=gesture_btn_]").prop("disabled", true)
-    $("[id^=custom_gesture_btn]").prop("disabled", true)
+    $("[id^=gesture_btn_]").prop("disabled", true);
+    $("[id^=custom_gesture_btn]").prop("disabled", true);
 
     $.getJSON(
       "exec_gesture?index=" + index,
@@ -406,23 +405,23 @@
     ).done(function() {
       $(id).html($(id).attr("default_text"));
       $(id).removeClass("example_c_ongoing");
-      $("[id^=gesture_btn_]").prop("disabled", false)
-      $("[id^=custom_gesture_btn]").prop("disabled", false)
+      $("[id^=gesture_btn_]").prop("disabled", false);
+      $("[id^=custom_gesture_btn]").prop("disabled", false);
 
       update_states()
     });
   }
 
   function exec_custom_gesture() {
-    $("#custom_gesture_btn").html("...")
+    $("#custom_gesture_btn").html("...");
     $("#custom_gesture_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
 
     let gesture_string = $("#custom_gesture_string").val();
-    gesture_string = gesture_string.trim()
+    gesture_string = gesture_string.trim();
 
-    gesture_string = encodeURIComponent(gesture_string)
+    gesture_string = encodeURIComponent(gesture_string);
 
-    console.log(gesture_string)
+    console.log(gesture_string);
 
     $.getJSON(
       "exec_custom_gesture?string=" + gesture_string,
@@ -430,7 +429,7 @@
         console.log(data)
       }
     ).done(function() {
-      $("#custom_gesture_btn").html("EXECUTE")
+      $("#custom_gesture_btn").html("EXECUTE");
       $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
       update_states()
     });
@@ -439,14 +438,14 @@
   function set_tts_param(param, reset=false) {
     if (param == "speed") {
       if (reset){
-        target_val = 100
+        target_val = 100;
         $("#voice_speed_input").val(100);
       } else {
         target_val = $("#voice_speed_input").val();
       }
     } else {
       if (reset) {
-        target_val = 100
+        target_val = 100;
         $("#voice_pitch_input").val(100);
 
       } else {
@@ -462,45 +461,45 @@
   }
 
   function add_ongoing(identifier) {
-    $(identifier).removeClass("example_c_green")
+    $(identifier).removeClass("example_c_green");
     $(identifier).addClass("example_c_ongoing")
   }
 
   function add_uncommited_flag(identifier) {
-    console.log("adding uncommited flag", identifier)
+    console.log("adding uncommited flag", identifier);
     $(identifier).prop("has_uncommited_state", true)
   }
 
   function set_collision_avoidance(type) {
     // 
-    const bt_identifier = ""
+    const bt_identifier = "";
     if (type == "tangential") {
-      bt_identifier = "#tangential_collision_set"
-      value = $("#tangential_collision").val()
+      bt_identifier = "#tangential_collision_set";
+      value = $("#tangential_collision").val();
       payload = "?param=Tangential&value=" + value
     } else {
-      bt_identifier= "#orthogonal_collision_set"
-      value = $("#orthogonal_collision").val()
+      bt_identifier= "#orthogonal_collision_set";
+      value = $("#orthogonal_collision").val();
       payload = "?param=Orthogonal&value=" + value
     }
 
-    value = value / 100.0  // values is given in CM, expects m 
+    value = value / 100.0;  // values is given in CM, expects m
 
     // set corresponding btn 
-    $(bt_identifier).html("...")
+    $(bt_identifier).html("...");
     $(bt_identifier).addClass("example_c_ongoing");
 
-    url = "/set_collision_radius" + payload
-    console.log(url)
+    url = "/set_collision_radius" + payload;
+    console.log(url);
 
     $.getJSON(
       url,
       function(data){
         console.log(data);
       }).done(function() {
-      $(bt_identifier).html("SET")
+      $(bt_identifier).html("SET");
       $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#engagement_state").prop("has_uncommited_state", false)
+      $("#engagement_state").prop("has_uncommited_state", false);
       update_states()
     });
   }
@@ -530,7 +529,7 @@
   }
 
   function setLedIntensity(reset=false) {
-    group = "FaceLeds"
+    group = "FaceLeds";
     
     if (reset) {
       intensity = 100
@@ -538,7 +537,7 @@
       intensity = $("#intensity_slider").val()
     }
 
-    url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity
+    url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity;
 
     if ($("#toggle_btn_blinking").html() == "ON") {
               alert("Blinking resets intensity, consider disabling the setting!")
@@ -560,9 +559,9 @@
   }
 
   function rgbToHex(r, g, b) {
-    r = r * 255
-    g = g * 255
-    b = b * 255
+    r = r * 255;
+    g = g * 255;
+    b = b * 255;
     return "#" + componentToHex(Math.round(r)) + componentToHex(Math.round(g)) + componentToHex(Math.round(b));
   }
 
@@ -581,10 +580,10 @@ function hexToRGB (hex){
 }
 
   function set_eye_led_color(color) {
-    group = "FaceLeds"
+    group = "FaceLeds";
     // $("[id^=eye_colo_btn_]").removeClass("example_c_ongoing")
 
-    url = "/set_led_color?color=" + color
+    url = "/set_led_color?color=" + color;
     $.getJSON(
       url,
       function(data) {
@@ -592,8 +591,8 @@ function hexToRGB (hex){
       }
     ).done(function() {
       // $("#eye_led_color_btn").removeClass("example_c_ongoing")
-      $("#eye_colo_btn_"+color).addClass("example_c_ongoing")
-      $("#eye_colo_btn_"+color).html("ACTIVE")
+      $("#eye_colo_btn_"+color).addClass("example_c_ongoing");
+      $("#eye_colo_btn_"+color).html("ACTIVE");
       update_states()
 
     })
@@ -602,34 +601,34 @@ function hexToRGB (hex){
   function exec_eye_anim(anim) {
     duration = document.getElementById(anim + "_anim_duration").value;
     color = document.getElementById("colors_select").value;
-    console.log(color)
-    console.log(anim)
+    console.log(color);
+    console.log(anim);
     if (anim == "rotateEyes" && color == "White") {
-      alert("Please select a color other than white for the eye rotation")
+      alert("Please select a color other than white for the eye rotation");
       return ""
     } 
-    const id = "#" + anim + "_anim_btn"
+    const id = "#" + anim + "_anim_btn";
 
     // make sure there isn't any other anim currently playing...
     if ($(id).prop("disabled")) {
       return
     }
 
-    $("[id$=_anim_btn]").prop("disabled", true)
+    $("[id$=_anim_btn]").prop("disabled", true);
 
-    $(id).addClass("example_c_ongoing")
-    $(id).html("...")
+    $(id).addClass("example_c_ongoing");
+    $(id).html("...");
 
-    url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration
+    url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration;
     $.getJSON(
       url,
       function(data) {
         console.log(data)
       }
     ).done(function() {
-      $(id).removeClass("example_c_ongoing")
-      $(id).html("EXECUTE")
-      $("[id$=_anim_btn]").prop("disabled", false)
+      $(id).removeClass("example_c_ongoing");
+      $(id).html("EXECUTE");
+      $("[id$=_anim_btn]").prop("disabled", false);
       update_states()
 
     })
@@ -660,11 +659,11 @@ function degrees_to_radians(degrees)
     for (const [key, value] of Object.entries(keyboard_shortcuts)) {
       //console.log(`${key}: ${value}`);
       if (arraysEqual(value, key_list)) {
-        console.log("EQ:", value, key_list)
-        msg = "Dublicate shortcut detected!\n"
-        msg += "1) #" + key + ": " + value.join("+") + "\n"
-        msg += "2) #" + id + ": " + key_list.join("+") + " (is now bound)\n\n"
-        msg += "Change this in the YAML config file."
+        console.log("EQ:", value, key_list);
+        msg = "Dublicate shortcut detected!\n";
+        msg += "1) #" + key + ": " + value.join("+") + "\n";
+        msg += "2) #" + id + ": " + key_list.join("+") + " (is now bound)\n\n";
+        msg += "Change this in the YAML config file.";
         alert(msg)
       }
     }
@@ -672,7 +671,7 @@ function degrees_to_radians(degrees)
       key_list.join("+"), function() {
         $("#"+id).click();
       }
-    )
+    );
     keyboard_shortcuts[id] = key_list
   }
 
@@ -680,7 +679,7 @@ function degrees_to_radians(degrees)
   //keyboard listener for keyboard control of pepper motors
   document.addEventListener('keydown', function(event) {
     if (!window.session_is_connected) {
-      console.log("Session isn't connected")
+      console.log("Session isn't connected");
       return
     }
 
@@ -716,15 +715,15 @@ function degrees_to_radians(degrees)
 
     // DRIVING
     Mousetrap.bind("alt+up", function() {
-      x = $("#drive_distance_input").val()
+      x = $("#drive_distance_input").val();
       if (x  == "") {
-        alert("Please enter a valid value for move distance")
+        alert("Please enter a valid value for move distance");
         document.getElementById("drive_distance_input").focus();
         return
       }
-      x = x / 100
+      x = x / 100;
       if (!motion_blocking) {
-        motion_blocking = true
+        motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
         $("#rotation_degree_input").prop('disabled', true);
         
@@ -734,7 +733,7 @@ function degrees_to_radians(degrees)
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         }).done(function() {
-          motion_blocking = false
+          motion_blocking = false;
           $("#drive_distance_input").prop('disabled', false);
           $("#rotation_degree_input").prop('disabled', false);
         })
@@ -742,16 +741,16 @@ function degrees_to_radians(degrees)
     });
 
     Mousetrap.bind("alt+down", function() {
-      x = $("#drive_distance_input").val()
+      x = $("#drive_distance_input").val();
       if (x  == "") {
-        alert("Please enter a valid value for move distance")
+        alert("Please enter a valid value for move distance");
         document.getElementById("drive_distance_input").focus();
         return
       }
-      x = x *-1
-      x = x / 100
+      x = x *-1;
+      x = x / 100;
       if (!motion_blocking) {
-        motion_blocking = true
+        motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
         $("#rotation_degree_input").prop('disabled', true);
 
@@ -761,7 +760,7 @@ function degrees_to_radians(degrees)
             console.log(data);
             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
           }).done(function() {
-          motion_blocking = false
+          motion_blocking = false;
           $("#drive_distance_input").prop('disabled', false);
           $("#rotation_degree_input").prop('disabled', false);
         })
@@ -769,17 +768,17 @@ function degrees_to_radians(degrees)
     });
 
     Mousetrap.bind("alt+left", function() {
-      theta = $("#rotation_degree_input").val()
+      theta = $("#rotation_degree_input").val();
       if (theta  == "") {
-        alert("Please enter a valid value for rotation degrees")
+        alert("Please enter a valid value for rotation degrees");
         document.getElementById("rotation_degree_input").focus();
         return
       }
-      theta = (degrees_to_radians(theta))
+      theta = (degrees_to_radians(theta));
       
 
       if (!motion_blocking) {
-        motion_blocking = true
+        motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
         $("#rotation_degree_input").prop('disabled', true);
 
@@ -789,7 +788,7 @@ function degrees_to_radians(degrees)
             console.log(data);
             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
           }).done(function() {
-          motion_blocking = false
+          motion_blocking = false;
           $("#drive_distance_input").prop('disabled', false);
           $("#rotation_degree_input").prop('disabled', false);
         })
@@ -797,18 +796,18 @@ function degrees_to_radians(degrees)
     });
 
     Mousetrap.bind("alt+right", function() {
-      theta = $("#rotation_degree_input").val()
+      theta = $("#rotation_degree_input").val();
       if (theta  == "") {
-        alert("Please enter a valid value for rotation degrees")
+        alert("Please enter a valid value for rotation degrees");
         document.getElementById("rotation_degree_input").focus();
         return
       }
-      theta = theta *-1
-      theta = (degrees_to_radians(theta))
+      theta = theta *-1;
+      theta = (degrees_to_radians(theta));
       
 
       if (!motion_blocking) {
-        motion_blocking = true
+        motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
         $("#rotation_degree_input").prop('disabled', true);
 
@@ -818,7 +817,7 @@ function degrees_to_radians(degrees)
             console.log(data);
             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
           }).done(function() {
-          motion_blocking = false
+          motion_blocking = false;
           $("#drive_distance_input").prop('disabled', false);
           $("#rotation_degree_input").prop('disabled', false);
         })
@@ -830,10 +829,10 @@ function degrees_to_radians(degrees)
       $.getJSON(
         "/stop_motion",
         function(data) { 
-          console.log(data)
+          console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
-    })
+    });
 
     // HIP MOVEMENT
     Mousetrap.bind("shift+down", function() {
@@ -864,18 +863,18 @@ function degrees_to_radians(degrees)
           console.log(data);
       })
     });
-  })
+  });
 
   // for reconnecting upon reload of site
   {% if reconnect_ip != "" %}
-    console.log("reconnecting to", '{{reconnect_ip}}')
-    connect_robot(ip='{{reconnect_ip}}')
+    console.log("reconnecting to", '{{reconnect_ip}}');
+    connect_robot(ip='{{reconnect_ip}}');
   {% endif %}
 
   function disable_all() {
     $(":button").prop('disabled', true); // Disable all the buttons
     $(":input").prop('disabled', true); // Disable all the inputs
-    $("#connect_btn").prop("disabled", false) // enable connect btn
+    $("#connect_btn").prop("disabled", false); // enable connect btn
     $("#pepper_select_ips").prop("disabled", false) // enable pepper dropdown
 
   }
