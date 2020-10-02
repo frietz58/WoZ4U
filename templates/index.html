@@ -627,7 +627,7 @@ function hexToRGB (hex){
       }
     ).done(function() {
       $(id).removeClass("example_c_ongoing");
-      $(id).html("EXECUTE");
+      $(id).html($(id).attr("default_text"));
       $("[id$=_anim_btn]").prop("disabled", false);
       update_states()
 
@@ -1552,13 +1552,35 @@ function hexToRGB (hex){
       </span>
     <input
       type="text"
-      value="5"
+      value="{{ config["rasta_anim"]["duration"] }}"
       placeholder="5 seconds"
       id="rasta_anim_duration"
       style="width: 50px; margin-left: 10px;">
       <span>Duraction (s)</span>
 
-    <button id="rasta_anim_btn" class="example_c" onclick="exec_eye_anim('rasta')">EXECUTE</button>
+    <button
+        id="rasta_anim_btn"
+        class="example_c"
+        onclick="exec_eye_anim('rasta')"
+        default_text="
+              {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
+                {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
+              {% else %}
+                EXECUTE
+              {% endif %}">
+        {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
+            {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
+        {% else %}
+            EXECUTE
+        {% endif %}
+    </button>
+
+    {% if (config["rasta_anim"]["key_comb"] is defined) and config["rasta_anim"]["key_comb"] %}
+      <script>
+        add_keyboard_shortcut({{ config["rasta_anim"]["key_comb"]|safe }}, "rasta_anim_btn")
+      </script>
+    {% endif %}
+
     </div>
     <br>
 
@@ -1570,12 +1592,35 @@ function hexToRGB (hex){
       </span>
     <input
       type="text"
-      value="5"
+      value="{{ config["random_anim"]["duration"] }}"
       placeholder="5 seconds"
       id="randomEyes_anim_duration"
       style="width: 50px; margin-left: 10px;">
     <span>Duraction (s)</span>
-    <button id="randomEyes_anim_btn" class="example_c" onclick="exec_eye_anim('randomEyes')">EXECUTE</button>
+
+    <button
+        id="randomEyes_anim_btn"
+        class="example_c"
+        onclick="exec_eye_anim('randomEyes')"
+        default_text="
+              {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
+                {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
+              {% else %}
+                EXECUTE
+              {% endif %}">
+        {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
+            {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
+        {% else %}
+            EXECUTE
+        {% endif %}
+    </button>
+
+    {% if (config["random_anim"]["key_comb"] is defined) and config["random_anim"]["key_comb"] %}
+      <script>
+        add_keyboard_shortcut({{ config["random_anim"]["key_comb"]|safe }}, "randomEyes_anim_btn")
+      </script>
+    {% endif %}
+
     </div>
     <br>
 
@@ -1587,7 +1632,7 @@ function hexToRGB (hex){
       </span>
     <input
       type="text"
-      value="5"
+      value="{{ config["rotate_anim"]["duration"] }}"
       placeholder="5 seconds"
       id="rotateEyes_anim_duration"
       style="width: 50px; margin-left: 10px;">
@@ -1600,7 +1645,29 @@ function hexToRGB (hex){
     </select>
     <span>Color</span>
 
-    <button id="rotateEyes_anim_btn" class="example_c" onclick="exec_eye_anim('rotateEyes'); add_uncommited_flag('#eye_led_colorpicker')">Execute</button>
+    <button
+        id="rotateEyes_anim_btn"
+        class="example_c"
+        onclick="exec_eye_anim('rotateEyes')"
+        default_text="
+              {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
+                {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
+              {% else %}
+                EXECUTE
+              {% endif %}">
+        {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
+            {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
+        {% else %}
+            EXECUTE
+        {% endif %}
+    </button>
+
+    {% if (config["rotate_anim"]["key_comb"] is defined) and config["rotate_anim"]["key_comb"] %}
+      <script>
+        add_keyboard_shortcut({{ config["rotate_anim"]["key_comb"]|safe }}, "rotateEyes_anim_btn")
+      </script>
+    {% endif %}
+
 
     </div>
   </div>
