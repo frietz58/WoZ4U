@@ -46,7 +46,7 @@
               // if this is an element with the 'default_text' attribute, its a btn with a keyboard shortcut
               // so we reset all to their default text, because we can't know right now which is the once that should be active
               $(this).html($(this).attr("default_text"))
-            } 
+            }
           });
           window.session_is_connected = false;
           console.log("session not connected");
@@ -63,7 +63,7 @@
               if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
                 $(id).html("HIDE");
                 $(id).addClass("example_c_ongoing")
-              } 
+              }
               else {
                 // if another btn in front still indicates being active, reset that
                 $(id).html($(id).attr("default_text")); // set btn text
@@ -73,11 +73,11 @@
           } else {
               if ($(key).get(0).nodeName == "BUTTON") {
                 toggle_btn_handle(key, data[key])
-              } 
+              }
               else  if ($(key).get(0).nodeName == "SPAN"){
                 // motion vector
                 $(key).text("[" + data[key].toString() + "]")
-              } 
+              }
               else if ($(key).get(0).nodeName == "INPUT") {
                 if ($(key).attr("type") == "range") {
                   if (key != "#voice_speed_input"){
@@ -90,7 +90,7 @@
                   if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
                     $(key).val(data[key])
                   }
-                } 
+                }
                 else if ($(key).attr("type") == "color") {
                   if (!$(key).prop("has_uncommited_state")) {
                     $(key).val(rgbToHex(data[key][0], data[key][1], data[key][2]))
@@ -111,14 +111,14 @@
                   Math.round(({{ color["green"] }} + Number.EPSILON) * 100) / 100,
                   Math.round(({{ color["blue"] }} + Number.EPSILON) * 100) / 100
                 ];
-                
+
                 // if it matches, set that btn to ON, to indicate the eye color begin shown
                 if (arraysEqual(data[key], color_array)) {
                   $(color_identifier).addClass("example_c_ongoing");
                   $(color_identifier).removeClass("example_c_green");
                   $(color_identifier).removeClass("example_c_red");
                   $(color_identifier).html("ACTIVE")
-                } 
+                }
                 else {
                   $(color_identifier).removeClass("example_c_green");
                   $(color_identifier).removeClass("example_c_red");
@@ -148,7 +148,7 @@
       "/connect_robot?ip=" + robot_ip,
       function(data) {
         console.log(data)
-      
+
       }).done(function() {
         update_states(); // set all the dynamic values on the UI
 
@@ -221,7 +221,7 @@
 
     $("#custom_text_btn").html("..."); // set btn text to ...
     $("#custom_text_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
-    
+
     $.getJSON(
       "/say_text?msg=" + text,
       function(data) {
@@ -307,7 +307,7 @@
         update_states()
       })
     }
-    
+
     // iter over all buttons and reset style, except for the one that is currently being displayed
     // https://stackoverflow.com/questions/5376431/wildcards-in-jquery-selectors
     $("[id^=image_btn_]").each(function( iter_ind ) {
@@ -471,7 +471,7 @@
   }
 
   function set_collision_avoidance(type) {
-    // 
+    //
     const bt_identifier = "";
     if (type == "tangential") {
       bt_identifier = "#tangential_collision_set";
@@ -485,7 +485,7 @@
 
     value = value / 100.0;  // values is given in CM, expects m
 
-    // set corresponding btn 
+    // set corresponding btn
     $(bt_identifier).html("...");
     $(bt_identifier).addClass("example_c_ongoing");
 
@@ -530,7 +530,7 @@
 
   function setLedIntensity(reset=false) {
     group = "FaceLeds";
-    
+
     if (reset) {
       intensity = 100
     } else {
@@ -596,7 +596,7 @@ function hexToRGB (hex){
       update_states()
 
     })
-  } 
+  }
 
   function exec_eye_anim(anim) {
     duration = document.getElementById(anim + "_anim_duration").value;
@@ -606,7 +606,7 @@ function hexToRGB (hex){
     if (anim == "rotateEyes" && color == "White") {
       alert("Please select a color other than white for the eye rotation");
       return ""
-    } 
+    }
     const id = "#" + anim + "_anim_btn";
 
     // make sure there isn't any other anim currently playing...
@@ -645,11 +645,10 @@ function hexToRGB (hex){
   return true;
 }
 
-function degrees_to_radians(degrees)
-{
-  var pi = Math.PI;
-  return degrees * (pi/180);
-}
+  function degrees_to_radians(degrees) {
+      var pi = Math.PI;
+      return degrees * (pi/180);
+  }
 
   function add_keyboard_shortcut(key_list, id) {
     /*
@@ -726,7 +725,7 @@ function degrees_to_radians(degrees)
         motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
         $("#rotation_degree_input").prop('disabled', true);
-        
+
         $.getJSON(
         "/move_to?x=" + x + "&y=0&theta=0",
         function(data){
@@ -775,7 +774,7 @@ function degrees_to_radians(degrees)
         return
       }
       theta = (degrees_to_radians(theta));
-      
+
 
       if (!motion_blocking) {
         motion_blocking = true;
@@ -804,7 +803,7 @@ function degrees_to_radians(degrees)
       }
       theta = theta *-1;
       theta = (degrees_to_radians(theta));
-      
+
 
       if (!motion_blocking) {
         motion_blocking = true;
@@ -828,7 +827,7 @@ function degrees_to_radians(degrees)
     Mousetrap.bind("escape", function() {
       $.getJSON(
         "/stop_motion",
-        function(data) { 
+        function(data) {
           console.log(data);
           $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
         })
@@ -894,7 +893,7 @@ function degrees_to_radians(degrees)
       <select name="pepper_ips" id="pepper_select_ips">
         {%for ip in config["pepper_ips"]%}
           <option value="{{ip}}">{{ip}}</option>
-        {%endfor%} 
+        {%endfor%}
       </select>
       <br>
       <br>
@@ -934,18 +933,20 @@ function degrees_to_radians(degrees)
           <span>{{img["title"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button class="example_c" 
-          id="image_btn_{{loop.index0}}" 
+          <button class="example_c"
+          id="image_btn_{{loop.index0}}"
           file="{{img['file_name']}}"
           onclick="show_img('{{img["file_name"]}}', {{loop.index0}})"
           default_text="
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-            {{ img["key_comb"]|safe }}
+            pretty_print_shortcut({{ img["key_comb"]|safe }})
           {% else %}
             SHOW
           {% endif %}">
           {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-            {{ img["key_comb"]|safe }}
+               <script>
+                    pretty_print_shortcut({{ img["key_comb"]|safe }})
+              </script>
           {% else %}
             SHOW
           {% endif %}
@@ -955,14 +956,14 @@ function degrees_to_radians(degrees)
       <br>
 
       <!-- add the keyboard shortcut to the button, if the flag has been given -->
-      {% if (img["key_comb"] is defined) and img["key_comb"] %}  
+      {% if (img["key_comb"] is defined) and img["key_comb"] %}
         <script>
           add_keyboard_shortcut({{ img["key_comb"]|safe }}, "image_btn_{{loop.index0}}" )
         </script>
       {% endif %}
 
-      {%endfor%} 
-    
+      {%endfor%}
+
   </div>
 
 
@@ -975,15 +976,15 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-5/ref/life/state_machine_management.html#autonomouslife-states#states" target="blank">
-            Autonomous state: 
-          </a> 
+            Autonomous state:
+          </a>
         </div>
-        
+
         <div class="btn_wrapper">
-          <select 
-            name="pepper_ips" 
-            id="autonomous_states" 
-            oninput="add_ongoing('#auto_state_set'); 
+          <select
+            name="pepper_ips"
+            id="autonomous_states"
+            oninput="add_ongoing('#auto_state_set');
             add_uncommited_flag('#autonomous_states')"
             style="margin-left: 10px;">
             <option value="interactive">Interactive</option>
@@ -1005,10 +1006,10 @@ function degrees_to_radians(degrees)
             Tangential collision avoidance:
           </a>
         </div>
-        <input 
-        type="text" 
+        <input
+        type="text"
         placeholder="10"
-        id="tangential_collision" 
+        id="tangential_collision"
         style="width: 10%; float: left; margin-left: 10px;"
         oninput="add_ongoing('#tangential_collision_set'); add_uncommited_flag('#tangential_collision')">
         <span style="float:left; margin-left: 10px">cm</span>
@@ -1022,10 +1023,10 @@ function degrees_to_radians(degrees)
             Orthogonal collision avoidance:
           </a>
         </div>
-        <input 
+        <input
         type="text"
         placeholder="10"
-        id="orthogonal_collision" 
+        id="orthogonal_collision"
         style="width: 10%; float: left; margin-left: 10px;"
         oninput="add_ongoing('#orthogonal_collision_set'); add_uncommited_flag('#orthogonal_collision')">
         <span style="float:left; margin-left: 10px">cm</span>
@@ -1036,13 +1037,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/alautonomousblinking.html#alautonomousblinking" target=blank>
-            Toggle blinking: 
+            Toggle blinking:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_blinking" 
-          onclick="toggle_setting('blinking')" 
+          <button
+          id="toggle_btn_blinking"
+          onclick="toggle_setting('blinking')"
           class="example_c"
           title="Current status">
           On
@@ -1054,13 +1055,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement" target=blank>
-            Toggle listening movements: 
+            Toggle listening movements:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_listening" 
-          onclick="toggle_setting('listening')" 
+          <button
+          id="toggle_btn_listening"
+          onclick="toggle_setting('listening')"
           class="example_c"
           title="Current status">
           On
@@ -1072,13 +1073,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement" target=blank>
-            Toggle speaking movements: 
+            Toggle speaking movements:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_speaking" 
-          onclick="toggle_setting('speaking')" 
+          <button
+          id="toggle_btn_speaking"
+          onclick="toggle_setting('speaking')"
           class="example_c"
           title="Current status">
           On
@@ -1090,13 +1091,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/alspeakingmovement.html#alspeakingmovement" target=blank>
-            Toggle basic awareness: 
+            Toggle basic awareness:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_basic_awareness" 
-          onclick="toggle_setting('basic_awareness')" 
+          <button
+          id="toggle_btn_basic_awareness"
+          onclick="toggle_setting('basic_awareness')"
           class="example_c"
           title="Current status">
           On
@@ -1108,13 +1109,13 @@ function degrees_to_radians(degrees)
       <div class="row" style="position: relative;">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/albasicawareness.html#engagement-modes" target=blank>
-            Engagement mode: 
-          </a> 
+            Engagement mode:
+          </a>
         </div>
-        
+
         <div class="btn_wrapper">
-          <select 
-          name="engagement_state" 
+          <select
+          name="engagement_state"
           id="engagement_states"
           oninput="add_ongoing('#engagement_state_set'); add_uncommited_flag('#engagement_states')"
           style="margin-left: 10px;">
@@ -1137,9 +1138,9 @@ function degrees_to_radians(degrees)
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_head_breathing" 
-          onclick="toggle_setting('head_breathing')" 
+          <button
+          id="toggle_btn_head_breathing"
+          onclick="toggle_setting('head_breathing')"
           class="example_c"
           title="Current status">
           On
@@ -1151,13 +1152,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target=blank>
-            Arms breathing: 
+            Arms breathing:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_arms_breathing" 
-          onclick="toggle_setting('arms_breathing')" 
+          <button
+          id="toggle_btn_arms_breathing"
+          onclick="toggle_setting('arms_breathing')"
           class="example_c"
           title="Current status">
           On
@@ -1169,13 +1170,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Body breathing: 
+            Body breathing:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_body_breathing" 
-          onclick="toggle_setting('body_breathing')" 
+          <button
+          id="toggle_btn_body_breathing"
+          onclick="toggle_setting('body_breathing')"
           class="example_c"
           title="Current status">
           On
@@ -1187,13 +1188,13 @@ function degrees_to_radians(degrees)
       <div class="row">
         <div class="btn_label_wrapper">
           <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Legs breathing: 
+            Legs breathing:
           </a>
         </div>
         <div class="btn_wrapper">
-          <button 
-          id="toggle_btn_legs_breathing" 
-          onclick="toggle_setting('legs_breathing')" 
+          <button
+          id="toggle_btn_legs_breathing"
+          onclick="toggle_setting('legs_breathing')"
           class="example_c"
           title="Current status">
           On
@@ -1214,10 +1215,10 @@ function degrees_to_radians(degrees)
       <tr>
         <td>Adjust volume</td>
         <td>
-          <input 
-          id="volume_slider" 
-          type="range" 
-          min="1" max="100" value="50" 
+          <input
+          id="volume_slider"
+          type="range"
+          min="1" max="100" value="50"
           onchange="setVolume()"
           style="width: 100%;">
         </td>
@@ -1228,10 +1229,10 @@ function degrees_to_radians(degrees)
       <tr>
         <td>Voice speed</td>
         <td>
-          <input 
-          id="voice_speed_input" 
-          type="range" 
-          min="50" max="400" value="100" 
+          <input
+          id="voice_speed_input"
+          type="range"
+          min="50" max="400" value="100"
           onchange="set_tts_param('speed')"
           style="width: 100%;">
         </td>
@@ -1242,11 +1243,11 @@ function degrees_to_radians(degrees)
       <tr>
         <td>Voice pitch</td>
         <td>
-          <input 
-          id="voice_pitch_input" 
-          type="range" 
-          min="1" max="400" value="100" 
-          onchange="set_tts_param('pitchShift')" 
+          <input
+          id="voice_pitch_input"
+          type="range"
+          min="1" max="400" value="100"
+          onchange="set_tts_param('pitchShift')"
           style="width: 100%;">
         </td>
         <td>
@@ -1254,7 +1255,7 @@ function degrees_to_radians(degrees)
         </td>
       </tr>
     </table>
-    
+
     <!-- COLUMN 1: SPEECH-->
     <div style="width: 50%; float: left;">
 
@@ -1268,9 +1269,9 @@ function degrees_to_radians(degrees)
           <span>{{anim_speech["title"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button 
+          <button
             title="{{anim_speech['tooltip']}}"
-            class="example_c" 
+            class="example_c"
             id="anim_speech_btn_{{loop.index0}}"
             default_text="
               {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
@@ -1290,7 +1291,7 @@ function degrees_to_radians(degrees)
       <br>
 
         <!-- add the keyboard shortcut to the button, if the flag has been given-->
-        {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}  
+        {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
           <script>
             // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
             // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
@@ -1319,9 +1320,9 @@ function degrees_to_radians(degrees)
           <span>{{audio["title"]}}</span>
         </div>
         <div class="speech_btn_wrapper">
-          <button 
+          <button
             title="{{audio['location']}}"
-            class="example_c" 
+            class="example_c"
             id="audio_file_{{loop.index0}}"
             onclick="play_audio('{{audio["title"]}}', {{loop.index0}})"
             default_text="
@@ -1341,7 +1342,7 @@ function degrees_to_radians(degrees)
       <br>
 
       <!-- add the keyboard shortcut to the button, if the flag has been given -->
-      {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}  
+      {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
         <script>
           add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}" )
         </script>
@@ -1354,11 +1355,11 @@ function degrees_to_radians(degrees)
   </div>
 
   <!-- Camera stream  -->
-  <!-- 
+  <!--
   <div class="camera">
     <h2>Camera</h2>
     <img src="../static/imgs/umea_logo.png" style="max-width: 400px">
-  </div>  
+  </div>
   -->
 
   <!-- Pepper  motion comands -->
@@ -1380,9 +1381,9 @@ function degrees_to_radians(degrees)
             <div class="speech_lbl_wrapper">
               <label for="drive_distance_input">Move (cm)</label>
             </div>
-            <input 
-              type="text" 
-              id="drive_distance_input" 
+            <input
+              type="text"
+              id="drive_distance_input"
               style="width: 20%; float: left; margin-left: 10px;"
               placeholder="20"
               value="20">
@@ -1391,9 +1392,9 @@ function degrees_to_radians(degrees)
             <div class="speech_lbl_wrapper">
               <label for="rotation_degree_input">Rotate (degree)</label>
             </div>
-            <input 
-              type="text" 
-              id="rotation_degree_input"  
+            <input
+              type="text"
+              id="rotation_degree_input"
               style="width: 20%; float: left; margin-left: 10px;"
               placeholder="45"
               value="45">
@@ -1412,23 +1413,23 @@ function degrees_to_radians(degrees)
         </tr>
       </table>
 
-      <button 
+      <button
         title="Put pepper in resting position"
-        class="example_c" 
-        id="resting_pos_btn" 
+        class="example_c"
+        id="resting_pos_btn"
         onclick="enter_resting_pos()">
         Resting position
       </button>
-      <button 
+      <button
         title="Put pepper in netral stand position"
-        class="example_c" 
-        id="resting_pos_btn" 
+        class="example_c"
+        id="resting_pos_btn"
         onclick="netural_stand_position()">
        Neutral stand position
       </button>
       <br><br>
       <span>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></span>
-      
+
     </div>
     <br>
 
@@ -1438,7 +1439,7 @@ function degrees_to_radians(degrees)
         <h3>Eye Colors</h3>
       </a>
 
-      
+
       <div class="row">
         <div class="speech_lbl_wrapper">
           <span>Current color: </span>
@@ -1447,7 +1448,7 @@ function degrees_to_radians(degrees)
       </div>
       <br>
       <br>
-    
+
 
       {%for color in config["colors"]%}
         <div class="row">
@@ -1459,8 +1460,8 @@ function degrees_to_radians(degrees)
               // console.log(rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}))
               $("#color_box_{{ color["title"] }}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
             </script>
-          <button 
-          class="example_c" 
+          <button
+          class="example_c"
           onclick="set_eye_led_color('{{color["title"]}}')"
           default_text="
             {% if (color["key_comb"] is defined) and color["key_comb"] %}
@@ -1477,7 +1478,7 @@ function degrees_to_radians(degrees)
           </button>
 
           <!-- add the keyboard shortcut to the button, if the flag has been given -->
-          {% if (color["key_comb"] is defined) and  color["key_comb"] %}  
+          {% if (color["key_comb"] is defined) and  color["key_comb"] %}
             <script>
               add_keyboard_shortcut({{ color["key_comb"]|safe }}, "eye_colo_btn_{{color["title"]}}" )
             </script>
@@ -1499,10 +1500,10 @@ function degrees_to_radians(degrees)
             <span>{{gesture["title"]}}</span>
           </div>
           <div class="speech_btn_wrapper">
-            <button 
+            <button
               title="{{gesture['tooltip']}}"
-              class="example_c" 
-              id="gesture_btn_{{loop.index0}}" 
+              class="example_c"
+              id="gesture_btn_{{loop.index0}}"
               default_text="
               {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
                 {{ gesture["key_comb"]|safe }}
@@ -1520,7 +1521,7 @@ function degrees_to_radians(degrees)
         </div>
         <br>
         <!-- add the keyboard shortcut to the button, if the flag has been given -->
-        {% if (gesture["key_comb"] is defined) and gesture["key_comb"] %}  
+        {% if (gesture["key_comb"] is defined) and gesture["key_comb"] %}
           <script>
             add_keyboard_shortcut({{ gesture["key_comb"]|safe }}, "gesture_btn_{{loop.index0}}" )
           </script>
@@ -1551,11 +1552,11 @@ function degrees_to_radians(degrees)
           Rasta animation:
         </a>
       </span>
-    <input 
-      type="text" 
+    <input
+      type="text"
       value="5"
       placeholder="5 seconds"
-      id="rasta_anim_duration" 
+      id="rasta_anim_duration"
       style="width: 50px; margin-left: 10px;">
       <span>Duraction (s)</span>
 
@@ -1569,11 +1570,11 @@ function degrees_to_radians(degrees)
           Random animation:
         </a>
       </span>
-    <input 
-      type="text" 
+    <input
+      type="text"
       value="5"
       placeholder="5 seconds"
-      id="randomEyes_anim_duration" 
+      id="randomEyes_anim_duration"
       style="width: 50px; margin-left: 10px;">
     <span>Duraction (s)</span>
     <button id="randomEyes_anim_btn" class="example_c" onclick="exec_eye_anim('randomEyes')">EXECUTE</button>
@@ -1586,18 +1587,18 @@ function degrees_to_radians(degrees)
           Rotate Eyes:
         </a>
       </span>
-    <input 
-      type="text" 
+    <input
+      type="text"
       value="5"
       placeholder="5 seconds"
-      id="rotateEyes_anim_duration" 
+      id="rotateEyes_anim_duration"
       style="width: 50px; margin-left: 10px;">
     <span>Duraction (s), </span>
 
     <select id="colors_select">
         {%for color in config["colors"]%}
           <option value="{{color.title}}">{{color.title}}</option>
-        {%endfor%} 
+        {%endfor%}
     </select>
     <span>Color</span>
 
