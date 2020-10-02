@@ -471,19 +471,25 @@
   }
 
   function set_collision_avoidance(type) {
-    //
-    const bt_identifier = "";
+    // let is fine aswell, can only be accessed in this code block. const can not be reassigned a value...
+    let bt_identifier = "";
+    let input_identifier = ""
+    let value = 0;
+    let payload = "";
     if (type == "tangential") {
       bt_identifier = "#tangential_collision_set";
-      value = $("#tangential_collision").val();
-      payload = "?param=Tangential&value=" + value
+      input_identifier = "#tangential_collision"
+      value = $(input_identifier).val();
+      payload = "?param=Tangential&value="
     } else {
       bt_identifier= "#orthogonal_collision_set";
-      value = $("#orthogonal_collision").val();
-      payload = "?param=Orthogonal&value=" + value
+      input_identifier = "#orthogonal_collision"
+      value = $(input_identifier).val();
+      payload = "?param=Orthogonal&value="
     }
 
-    value = value / 100.0;  // values is given in CM, expects m
+    value = value / 100;  // values is given in CM, expects m
+    payload += value;
 
     // set corresponding btn
     $(bt_identifier).html("...");
@@ -499,7 +505,7 @@
       }).done(function() {
       $(bt_identifier).html("SET");
       $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#engagement_state").prop("has_uncommited_state", false);
+      $(input_identifier).prop("has_uncommited_state", false);
       update_states()
     });
   }
