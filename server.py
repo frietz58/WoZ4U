@@ -184,9 +184,6 @@ def touchMove_callback(x_offset, y_offset):
 
     touchmove_hist[-1].append((x_offset / 1600, y_offset / 1080))
 
-    # if len(touchmove_hist) > 5:
-    #     touchmove_hist = touchmove_hist[5:]  # we keep the last 5 recent
-
 
 def touchUp_callback(x, y):
     print("Touchup!")
@@ -965,10 +962,11 @@ def get_touch_data():
     filtered_touchmove_list = []
     # this one we must reverse here, because doing this before would be more cumbersome
     for sequence in reversed(touchmove_hist):
-
         if len(sequence) > 2:
-
             filtered_touchmove_list.append(sequence)
+
+    if len(filtered_touchmove_list) > 5:
+        filtered_touchmove_list = filtered_touchmove_list[:5]  # we keep the last 5 recent
 
     return {
         # we return the list in reverse order, so that we can put a nice fading color gradient on the older items...
