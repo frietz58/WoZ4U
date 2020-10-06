@@ -131,6 +131,10 @@ def connect_robot():
                 motion_srv.setBreathEnabled("Legs", config["autonomous_life_config"][key])
             elif key == "basic_awareness":
                 ba_srv.setEnabled(config["autonomous_life_config"][key])
+            elif key == "listening_movement":
+                lm_srv.setEnabled(config["autonomous_life_config"][key])
+            elif key == "speaking_movement":
+                sm_srv.setEnabled(config["autonomous_life_config"][key])
 
     # show default image if given
     show_default_img_or_hide()

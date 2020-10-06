@@ -21,7 +21,8 @@ autonomous_life_config:
   arms_breathing: True
   body_breathing: True
   legs_breathing: True
-  # TODO: ADD listening/speaking movements
+  listening_movement: False
+  speaking_movement: True
 
 # ALL CONCRETE ACTIONS (BUTTONS IN THE UI) CAN GET THE "key_comb" FIELD.
 # PROVIDING A LIST WILL BIND THE KEYS IN THAT LAST TO THE CONCRETE ACTION TO EXECUTE
@@ -143,7 +144,6 @@ gestures: # Buttons will be created for every item in the list
     gesture: "animations/Stand/Gestures/No_1"
     tooltip: "No_1 gesture"
     key_comb: ["shift", "2"]
-
   -
     title: "Wave"
     gesture: "animations/Stand/Gestures/Hey_3"
