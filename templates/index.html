@@ -690,32 +690,70 @@ function hexToRGB (hex){
 
     // MOVE HEAD:
     Mousetrap.bind("down", function() {
-        $.getJSON(
-        "/move_joint?axis=HeadPitch&val=+0.2",
-        function(data){
-          console.log(data);
-        })
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HeadPitch&val=+0.2",
+                function (data) {
+                console.log(data);
+            }).done(function () {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
+            })
+        }
     });
+
     Mousetrap.bind("up", function() {
-      $.getJSON(
-        "/move_joint?axis=HeadPitch&val=-0.2",
-        function(data){
-          console.log(data);
-        })
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HeadPitch&val=-0.2",
+                function (data) {
+                    console.log(data);
+            }).done(function () {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
+            })
+        }
     });
+
     Mousetrap.bind("left", function() {
-      $.getJSON(
-        "/move_joint?axis=HeadYaw&val=+0.2",
-        function(data){
-          console.log(data);
-        })
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HeadYaw&val=+0.2",
+                function(data){
+                console.log(data);
+            }).done(function () {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
+            })
+        }
     });
     Mousetrap.bind("right", function() {
-      $.getJSON(
-        "/move_joint?axis=HeadYaw&val=-0.2",
-        function(data){
-          console.log(data);
-        })
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HeadYaw&val=-0.2",
+                function(data){
+                console.log(data);
+            }).done(function () {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
+            })
+        }
     });
 
     // DRIVING
@@ -810,7 +848,6 @@ function hexToRGB (hex){
       theta = theta *-1;
       theta = (degrees_to_radians(theta));
 
-
       if (!motion_blocking) {
         motion_blocking = true;
         $("#drive_distance_input").prop('disabled', true);
@@ -841,11 +878,20 @@ function hexToRGB (hex){
 
     // HIP MOVEMENT
     Mousetrap.bind("shift+down", function() {
-      $.getJSON(
-        "/move_joint?axis=HipPitch&val=+0.2",
-        function(data){
-          console.log(data);
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HipPitch&val=+0.2",
+                function(data){
+                console.log(data);
+            }).done(function() {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
         })
+      }
     });
     Mousetrap.bind("shift+up", function() {
       $.getJSON(
@@ -855,19 +901,38 @@ function hexToRGB (hex){
         })
     });
     Mousetrap.bind("shift+left", function() {
-      $.getJSON(
-        "/move_joint?axis=HipRoll&val=+0.2",
-        function(data){
-          console.log(data);
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HipRoll&val=+0.2",
+                function(data){
+                    console.log(data);
+            }).done(function() {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
         })
+      }
     });
     Mousetrap.bind("shift+right", function() {
-      $.getJSON(
-        "/move_joint?axis=HipRoll&val=-0.2",
-        function(data){
-          console.log(data);
-      })
+        if (!motion_blocking) {
+            motion_blocking = true;
+            $("#drive_distance_input").prop('disabled', true);
+            $("#rotation_degree_input").prop('disabled', true);
+            $.getJSON(
+                "/move_joint?axis=HipRoll&val=-0.2",
+                function(data){
+                console.log(data);
+            }).done(function() {
+                motion_blocking = false;
+                $("#drive_distance_input").prop('disabled', false);
+                $("#rotation_degree_input").prop('disabled', false);
+        })
+      }
     });
+
   });
 
   // for reconnecting upon reload of site
