@@ -60,6 +60,27 @@
             // iterate over image btns
             $("[id^=image_btn_]").each(function(index){
               const id = "#image_btn_" + index;
+                if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
+                    /*
+                    console.log("file attr: " + $(id).attr("file") + "\ntablet_state[curr_tab_item]: " + data[key]["curr_tab_item"])
+                    console.log("curr_ts: " + data["timestamp"] + "\nlast tablet ping: " + data[key]["last_ping"])
+
+                    if (data["timestamp"] > data[key]["last_ping"] + 5) {
+                        console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!")
+                        $.getJSON(
+                          "/show_tablet_item/" + index,
+                          function(data) {
+                            console.log(data);
+                              }).done(function() {
+                            $(id).html("HIDE"); // set btn text
+                            $(id).addClass("example_c_ongoing");
+                          }
+                        );
+                        $.getJSON("ping_curr_tablet_item?file=" + $(id).attr("file") )
+                    }
+                  // TODO what do here? The pinging approach does not work for videos or external websites...
+                  */
+                }
               if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
                 $(id).html("HIDE");
                 $(id).addClass("example_c_ongoing")
@@ -70,7 +91,10 @@
                 $(id).removeClass("example_c_ongoing")
               }
             })
-          } else {
+          } else if (key == "timestamp") {
+                // just to avoid error, we need the timestamp but don't do anything frontend related with it
+            }
+          else {
             if ($(key).get(0).nodeName == "BUTTON") {
                 toggle_btn_handle(key, data[key])
               }

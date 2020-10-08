@@ -302,7 +302,8 @@ def querry_states():
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
             "tablet_state": tablet_state,
-            "#querried_color": get_eye_colors()
+            "#querried_color": get_eye_colors(),
+            "timestamp": timer()
         }
     except NameError:
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
@@ -470,6 +471,7 @@ def show_tablet_item(index):
         # show website
         tablet_srv.enableWifi()
         tablet_srv.showWebview(file)
+        tablet_state["curr_tab_item"] = file
 
     elif is_video(file):
         if distinguish_path(file) == "is_url":
@@ -479,6 +481,7 @@ def show_tablet_item(index):
 
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
+        tablet_state["curr_tab_item"] = path
 
     else:
         # TODO: get IP dynamicaly
@@ -501,7 +504,8 @@ def show_tablet_item(index):
 def show_img_page(img_name):
     img_path = config["tablet_root_location"] + img_name
     print(img_path)
-    return render_template("img_view.html", src=img_path)  # WORKS! 
+    tablet_state["curr_tab_item"] = img_path
+    return render_template("img_view.html", src=img_path)  # WORKS!
 
 
 @app.route("/clear_tablet")
@@ -513,6 +517,19 @@ def clear_tablet():
     status["msg"] = "cleaned tablet webview"
 
     return status
+
+
+@app.route("/ping_curr_tablet_item")
+def ping_curr_tablet_item():
+    # this works for locally images, but not for anything else, need to find more, TODO!!!
+    file = request.args.get('file', type=str)
+    tablet_state["curr_tab_item"] = file
+    tablet_state["last_ping"] = timer()
+
+    return {
+        "set cur_tab_item": file
+    }
+
 
 
 @app.route("/adjust_volume")
@@ -955,8 +972,8 @@ def get_eye_colors():
 
 @app.route("/tablet_drawer")
 def tablet_drawer():
-
-    return render_template('tablet_drawer.html')
+    img_path = config["tablet_root_location"] + tablet_state["showing"]
+    return render_template('tablet_drawer.html', src=img_path)
 
 
 @app.route("/get_touch_data")
@@ -977,6 +994,10 @@ def get_touch_data():
         "touchdown_hist": touchdown_hist,
         "touchmove_hist": filtered_touchmove_list
     }
+
+
+def get_tablet_state():
+    return tablet_state
 
 
 def read_config():
