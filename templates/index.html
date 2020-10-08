@@ -71,14 +71,14 @@
               }
             })
           } else {
-              if ($(key).get(0).nodeName == "BUTTON") {
+            if ($(key).get(0).nodeName == "BUTTON") {
                 toggle_btn_handle(key, data[key])
               }
-              else  if ($(key).get(0).nodeName == "SPAN"){
+            else  if ($(key).get(0).nodeName == "SPAN"){
                 // motion vector
                 $(key).text("[" + data[key].toString() + "]")
               }
-              else if ($(key).get(0).nodeName == "INPUT") {
+            else if ($(key).get(0).nodeName == "INPUT") {
                 if ($(key).attr("type") == "range") {
                   if (key != "#voice_speed_input"){
                     // volume and pitch must be multiplied by 100 to so that we get a proper range...
@@ -91,11 +91,11 @@
                     $(key).val(data[key])
                   }
                 }
-                else if ($(key).attr("type") == "color") {
-                  if (!$(key).prop("has_uncommited_state")) {
-                    $(key).val(rgbToHex(data[key][0], data[key][1], data[key][2]))
-                  }
-                }
+              }
+            else if ($(key).get(0).nodeName == "SELECT") {
+                // engagment and autonomous state
+                // console.log(key, data[key])
+                $(key).val(data[key])
               }
             else if ($(key).get(0).nodeName == "DIV") {
               // querried color div
