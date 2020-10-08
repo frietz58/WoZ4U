@@ -172,23 +172,15 @@
   }
   function set_autonomous_state(){
     state = document.getElementById("autonomous_states").value;
-    $("#auto_state_set").html("...");
-    $("#auto_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
+
     $.getJSON( // async call flask function with arguments
       "/set_autonomous_state?state=" + state,
       function(data) {
         console.log(data);
     }).done(function() {
-      $("#auto_state_set").html("Set");
-      $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#auto_state_set").addClass("example_c_green"); // give class for succes
-      $("#auto_state_set").prop("has_uncommited_state", false);
-      update_states()
+        update_states()
     }).fail(function() {
-      $("#auto_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#auto_state_set").addClass("example_c_red"); // give class for succes
-      $("#auto_state_set").html("FAIL");
-      $("#auto_state_set").prop("has_uncommited_state", false)
+        update_states()
     })
   }
 
@@ -320,25 +312,15 @@
 
   function set_engagement_state() {
     mode = document.getElementById("engagement_states").value;
-    $("#engagement_state_set").html("...");
-    $("#engagement_state_set").addClass("example_c_ongoing"); // give it the css class for "processing"
     $.getJSON( // async call flask function with arguments
       "/set_engagement_mode?mode=" + mode,
       function(data) {
         console.log(data);
       }
     ).done(function() {
-      $("#engagement_state_set").html("Set");
-      $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#engagement_state_set").addClass("example_c_green"); // give class for succes
-      $("#engagement_state_set").prop("has_uncommited_state", false);
-      update_states()
+        update_states()
     }).fail(function() {
-      $("#engagement_state_set").removeClass("example_c_ongoing"); // remove class for ongoing
-      $("#engagement_state_set").addClass("example_c_red"); // give class for succes
-      $("#engagement_state_set").html("FAIL");
-      $("#engagement_state_set").prop("has_uncommited_state", false)
-
+        update_states()
     })
   }
 
@@ -477,12 +459,10 @@
     let value = 0;
     let payload = "";
     if (type == "tangential") {
-      bt_identifier = "#tangential_collision_set";
       input_identifier = "#tangential_collision"
       value = $(input_identifier).val();
       payload = "?param=Tangential&value="
     } else {
-      bt_identifier= "#orthogonal_collision_set";
       input_identifier = "#orthogonal_collision"
       value = $(input_identifier).val();
       payload = "?param=Orthogonal&value="
@@ -490,10 +470,6 @@
 
     value = value / 100;  // values is given in CM, expects m
     payload += value;
-
-    // set corresponding btn
-    $(bt_identifier).html("...");
-    $(bt_identifier).addClass("example_c_ongoing");
 
     url = "/set_collision_radius" + payload;
     console.log(url);
@@ -503,8 +479,6 @@
       function(data){
         console.log(data);
       }).done(function() {
-      $(bt_identifier).html("SET");
-      $(bt_identifier).removeClass("example_c_ongoing"); // remove class for ongoing
       $(input_identifier).prop("has_uncommited_state", false);
       update_states()
     });
@@ -1053,17 +1027,14 @@ function hexToRGB (hex){
           <select
             name="pepper_ips"
             id="autonomous_states"
-            oninput="add_ongoing('#auto_state_set');
-            add_uncommited_flag('#autonomous_states')"
+            oninput="add_uncommited_flag('#autonomous_states')"
+            onchange="set_autonomous_state()"
             style="margin-left: 10px;">
             <option value="interactive">Interactive</option>
             <option value="solitary">Solitary</option>
             <option value="safeguard">Safeguard</option>
             <option value="disabled">Disabled</option>
           </select>
-          <a href="#" onclick="set_autonomous_state()">
-            <button class="example_c" id="auto_state_set">Set</button>
-          </a>
         </div>
 
       </div>
@@ -1080,9 +1051,10 @@ function hexToRGB (hex){
         placeholder="10"
         id="tangential_collision"
         style="width: 10%; float: left; margin-left: 10px;"
-        oninput="add_ongoing('#tangential_collision_set'); add_uncommited_flag('#tangential_collision')">
+        oninput="add_uncommited_flag('#tangential_collision')"
+        onchange="set_collision_avoidance('tangential')">
         <span style="float:left; margin-left: 10px">cm</span>
-        <button id="tangential_collision_set" onclick="set_collision_avoidance('tangential')" class="example_c">Set</button>
+        <br>
       </div>
       <br>
 
@@ -1097,9 +1069,10 @@ function hexToRGB (hex){
         placeholder="10"
         id="orthogonal_collision"
         style="width: 10%; float: left; margin-left: 10px;"
-        oninput="add_ongoing('#orthogonal_collision_set'); add_uncommited_flag('#orthogonal_collision')">
+        oninput="add_uncommited_flag('#orthogonal_collision')"
+        onchange="set_collision_avoidance('orthogonal')">
         <span style="float:left; margin-left: 10px">cm</span>
-        <button id="orthogonal_collision_set" onclick="set_collision_avoidance('orthogonal')" class="example_c">Set</button>
+        <br>
       </div>
       <br>
 
@@ -1186,15 +1159,13 @@ function hexToRGB (hex){
           <select
           name="engagement_state"
           id="engagement_states"
-          oninput="add_ongoing('#engagement_state_set'); add_uncommited_flag('#engagement_states')"
+          oninput="add_uncommited_flag('#engagement_states')"
+          onchange="set_engagement_state()"
           style="margin-left: 10px;">
             <option value="Unengaged">Unengaged</option>
             <option value="SemiEngaged">SemiEngaged</option>
             <option value="FullyEngaged">FullyEngaged</option>
           </select>
-          <a href="#" onclick="set_engagement_state()">
-            <button class="example_c" id="engagement_state_set">Set</button>
-          </a>
         </div>
 
       </div>
