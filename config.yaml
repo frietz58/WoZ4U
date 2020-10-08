@@ -33,9 +33,8 @@ autonomous_life_config:
 tablet_root_location: /static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
   -
-    title: Default img
+    title: Timeline
     file_name: climate_change.jpg
-    is_default_img: True  # image with this flag will be displayed on connect
     key_comb: ["ctrl", "shift", 1]  # example for more complex shortcut
   - 
     title: Landscape
@@ -43,6 +42,7 @@ tablet_items:
     key_comb: ["ctrl", "shift", 2]
   -
     title: Umea logo
+    is_default_img: True  # image with this flag will be displayed on connect
     file_name: umea_logo.png
     key_comb: ["ctrl", "shift", 3]
   -
@@ -65,6 +65,11 @@ tablet_items:
     title: Website  # We can also show a website on Pepper's tablet
     file_name: https://www.google.com/  # Also just put URL to website here
     key_comb: ["ctrl", "shift", 8]
+  -
+    title: Confused cat
+    file_name: https://i.kym-cdn.com/photos/images/facebook/001/564/773/6cf.jpg
+    key_comb: ["ctrl", "shift", 9]
+
 
 animated_speech:
     # Avoid special characters in messages, this can break the backend.
@@ -72,17 +77,17 @@ animated_speech:
   -
     title: Plain  # This will be shown in the GUI
     string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
-    tooltip: "This is just a simple message, no animations, no tags or annotations added."  # tooltip for the button in UI
+    tooltip: "Plain message without annotations"  # tooltip for the button in UI
     key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
   - 
     title: Pitch annotation
     string: "This is a message where we \\vct=150\\ change the pitch halfway through."
-    tooltip: "This is a message where we \\vct=150\\ change the pitch halfway through."
+    tooltip: "Voice pitch annotated change"
     key_comb: ["ctrl", "2"]
   -
     title: Speed annotation
     string: "This is a message where we \\rspd=50\\ change the speed halfway through."
-    tooltip: "This is a message where we \\rspd=50\\ change the speed halfway through."
+    tooltip: "Voice speed annotated change"
     key_comb: ["ctrl", "3"]
   -
     title: Speech and animation
@@ -147,31 +152,29 @@ gestures: # Buttons will be created for every item in the list
   -
     title: "Wave"
     gesture: "animations/Stand/Gestures/Hey_3"
-    tooltip: blah
+    tooltip: "Hey_3 gesture"
     key_comb: ["shift", "3"]
 
   -
     title: "Me"
     gesture: "animations/Stand/Gestures/Me_1"
-    tooltip: blah
+    tooltip: "Me_1 gestzre"
     key_comb: ["shift", "4"]
-
   -
     title: "You"
     gesture: "animations/Stand/Gestures/You_1"
-    tooltip: blah
+    tooltip: "You_1 gesture"
     key_comb: ["shift", "5"]
-
   -
     title: "Embarrassed"
     gesture: "animations/Stand/Emotions/Neutral/Embarrassed_1"
-    tooltip: blah
+    tooltip: "Embarrassed_1 gesture"
     key_comb: ["shift", "6"]
 
   -
     title: "Happy"
     gesture: "animations/Stand/Emotions/Positive/Happy_4"
-    tooltip: blah
+    tooltip: "blah"
     key_comb: ["shift", "7"]
 
 colors:
