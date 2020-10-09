@@ -25,6 +25,8 @@ from urlparse import unquote
 
 app = Flask(__name__)
 
+QI_SESSION = None
+
 # helper for knowing what is on the tablet
 TABLET_STATE = {
     "index": None,
@@ -69,12 +71,10 @@ def index():
 
     read_config()
 
-    try:
-        global qi_session
-        if qi_session is not None:  # if session already exists, fronted was just reloaded...
-            global ip
-            return render_template("index.html", config=config, reconnect_ip=ip)
-    except NameError:
+    if QI_SESSION is not None:  # if session already exists, fronted was just reloaded...
+        global ip
+        return render_template("index.html", config=config, reconnect_ip=ip)
+    else:
         return render_template('index.html', config=config, reconnect_ip="")
 
 
@@ -88,13 +88,13 @@ def connect_robot():
     global port
     port = 9559
 
-    read_config()  # update the config in case it has been edited in the meantime
+    read_config()  # update the config in case it has been edited in the meantime, nice for developing ^
 
-    global qi_session
-    qi_session = qi.Session()
+    global QI_SESSION
+    QI_SESSION = qi.Session()
 
     try:
-        qi_session.connect(str("tcp://" + str(ip) + ":" + str(port)))
+        QI_SESSION.connect(str("tcp://" + str(ip) + ":" + str(port)))
     except RuntimeError as msg:
         print("qi session connect error!:")
         print(msg)
@@ -215,58 +215,58 @@ def get_all_services():
     Provides global references to all naoqi services used somewhere down the line
     """
     global tts_srv
-    tts_srv = qi_session.service("ALTextToSpeech")
+    tts_srv = QI_SESSION.service("ALTextToSpeech")
 
     global al_srv
-    al_srv = qi_session.service("ALAutonomousLife")
+    al_srv = QI_SESSION.service("ALAutonomousLife")
 
     global ba_srv
-    ba_srv = qi_session.service("ALBasicAwareness")
+    ba_srv = QI_SESSION.service("ALBasicAwareness")
 
     global ab_srv
-    ab_srv = qi_session.service("ALAutonomousBlinking")
+    ab_srv = QI_SESSION.service("ALAutonomousBlinking")
 
     global motion_srv
-    motion_srv = qi_session.service("ALMotion")
+    motion_srv = QI_SESSION.service("ALMotion")
 
     global video_srv
-    video_srv = qi_session.service("ALVideoDevice")
+    video_srv = QI_SESSION.service("ALVideoDevice")
 
     global tablet_srv
-    tablet_srv = qi_session.service("ALTabletService")
+    tablet_srv = QI_SESSION.service("ALTabletService")
 
     global as_srv
-    as_srv = qi_session.service("ALAnimatedSpeech")
+    as_srv = QI_SESSION.service("ALAnimatedSpeech")
 
     global ap_srv
-    ap_srv = qi_session.service("ALAnimationPlayer")
+    ap_srv = QI_SESSION.service("ALAnimationPlayer")
 
     global posture_srv
-    posture_srv = qi_session.service("ALRobotPosture")
+    posture_srv = QI_SESSION.service("ALRobotPosture")
 
     global ar_srv
-    ar_srv = qi_session.service("ALAudioRecorder")
+    ar_srv = QI_SESSION.service("ALAudioRecorder")
 
     global ad_srv
-    ad_srv = qi_session.service("ALAudioDevice")
+    ad_srv = QI_SESSION.service("ALAudioDevice")
 
     global fd_srv
-    fd_srv = qi_session.service("ALFaceDetection")
+    fd_srv = QI_SESSION.service("ALFaceDetection")
 
     global mem_srv
-    mem_srv = qi_session.service("ALMemory")
+    mem_srv = QI_SESSION.service("ALMemory")
 
     global lm_srv
-    lm_srv = qi_session.service("ALListeningMovement")
+    lm_srv = QI_SESSION.service("ALListeningMovement")
 
     global sm_srv
-    sm_srv = qi_session.service("ALSpeakingMovement")
+    sm_srv = QI_SESSION.service("ALSpeakingMovement")
 
     global audio_player
-    audio_player = qi_session.service("ALAudioPlayer")
+    audio_player = QI_SESSION.service("ALAudioPlayer")
 
     global led_srv
-    led_srv = qi_session.service("ALLeds")
+    led_srv = QI_SESSION.service("ALLeds")
 
 
 @app.route("/querry_states")
@@ -276,7 +276,6 @@ def querry_states():
     which seting is toggeled?
     @return: A dict with ids from the frontend, with the value being what that element should represent
     """
-    print("Querrying")
     try:
 
         # see if audio transmission is running even though camera tab is closed...
