@@ -15,6 +15,8 @@ from utils import distinguish_path
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
 from utils import is_video
+from utils import is_image
+from utils import is_external_path
 
 from simple_sound_stream import SpeechRecognitionModule
 

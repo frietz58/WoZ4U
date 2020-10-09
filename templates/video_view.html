@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WoZ4U - Tablet view</title>
+<link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico">
+<link rel="stylesheet" type="text/css" href="../static/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<!-- <body onload="ping_server()">  -->
+
+<body>
+    <script>
+        function ping_server() {
+            url = "/ping_curr_tablet_item?file={{ src }}"
+            console.log(url)
+            $.getJSON(
+                url,
+                function(data) {
+                    console.log(data)
+                })
+        }
+
+        // setInterval(ping_server, 1000);
+
+    </script>
+    <img src="{{src}}" class="tablet_img">
+</body>
+</html>

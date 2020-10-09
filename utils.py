@@ -3,9 +3,19 @@ import io
 import wave
 import os
 
+
 def is_video(path):
     ext = path.split(".")[-1]
+    print(ext)
     if ext in ["mp4", "m4v", "mkv", "webm", "mov", "avi", "wmv", "mpg", "flv"]:
+        return True
+    else:
+        return False
+
+
+def is_image(path):
+    ext = path.split(".")[-1]
+    if ext.lower() in ["jpeg", "jpg", "gif", "bmp", "png", "ppm", "pgm", "webp", "svg"]:
         return True
     else:
         return False
@@ -18,6 +28,14 @@ def distinguish_path(path):
         return "is_abs_path"
     else:
         return "is_rel_path"
+
+
+def is_external_path(path):
+    if "http" == path[:4]:
+        return True
+    else:
+        return False
+
 
 def alImage_to_PIL(alImg):
     """
