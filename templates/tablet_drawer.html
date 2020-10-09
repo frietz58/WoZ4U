@@ -33,20 +33,7 @@
     <script type=text/javascript>
 
 
-    // this is ugly but should work: ping server regularly. if no ping arrived in a few seconds, we now tab was closed
-    /*
-    function ping_server() {
-        $.getJSON(
-            "/camera_tab_keep_alive",
-            function(data) {
-                console.log(data)
-            })
-    }
 
-    setInterval(ping_server, 1000);
-    */
-
-     var drawn_circles = [];
 
     function get_touch_data() {
         $.getJSON(
@@ -64,16 +51,6 @@
                         color_str = `rgba(255, 0, 0, ${alpha})`;
 
                         draw_touchdown_circle(item[0], item[1], color=color_str);
-                        /*
-                        // we only want to draw each circle once...
-                        if (!drawn_circles.includes(item.toString())) {
-                            console.log("drawing " + item);
-                            draw_touchdown_circle(item[0], item[1]);
-
-                            // save drawn circle in list
-                            drawn_circles.push(item.toString())
-                        }
-                        */
                     })
                 }
 

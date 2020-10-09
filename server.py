@@ -31,7 +31,7 @@ app = Flask(__name__)
 # helper for knowing what is on the tablet
 global tablet_state
 tablet_state = {
-    "showing": None,
+    "index": None,
     "video_or_website": False
 }
 
@@ -413,17 +413,17 @@ def show_default_img_or_hide():
     for index, item in enumerate(config["tablet_items"]):
         if "is_default_img" in item.keys():
             url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
+            tablet_state["index"] = index
 
             print("URL:", url)
             tablet_srv.showWebview(url)
-            tablet_state["showing"] = item["file_name"]
 
             return {
                 "showing": "default image"
             }
 
     tablet_srv.hideWebview()
-    tablet_state["showing"] = None
+    tablet_state["index"] = None
 
     return {
         "showing": "Pepper default gif, no default image found in config",
@@ -478,7 +478,7 @@ def show_tablet_item(index):
         tablet_srv.enableWifi()
         tablet_srv.showWebview(file)
         tablet_state["curr_tab_item"] = file
-        tablet_state["showing"] = file
+        tablet_state["index"] = index
         tablet_state["video_or_website"] = True
 
     elif is_video(file):
@@ -490,14 +490,14 @@ def show_tablet_item(index):
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
         tablet_state["curr_tab_item"] = path
-        tablet_state["showing"] = path
+        tablet_state["index"] = index
         tablet_state["video_or_website"] = True
 
     else:
         # TODO: get IP dynamicaly
         tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + file)
 
-        tablet_state["showing"] = file
+        tablet_state["index"] = index
         tablet_state["curr_tab_item"] = file
         tablet_state["video_or_website"] = False
 
@@ -536,7 +536,6 @@ def ping_curr_tablet_item():
     return {
         "set cur_tab_item": file
     }
-
 
 
 @app.route("/adjust_volume")
@@ -979,8 +978,7 @@ def get_eye_colors():
 
 @app.route("/tablet_drawer")
 def tablet_drawer():
-    img_path = config["tablet_root_location"] + tablet_state["showing"]
-    return render_template('tablet_drawer.html', src=img_path)
+    return render_template('tablet_drawer.html')
 
 
 @app.route("/get_touch_data")
