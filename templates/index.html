@@ -176,27 +176,31 @@
                 "/connect_robot?ip=" + robot_ip,
                 function (data) {
                     console.log(data)
+                }
+            ).done(
+                function () {
+                    update_states(); // set all the dynamic values on the UI
 
-                }).done(function () {
-                update_states(); // set all the dynamic values on the UI
+                    $(identifier).html("Connected"); // set btn text
+                    $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+                    $(identifier).addClass("example_c_green"); // give class for succes
 
-                $(identifier).html("Connected"); // set btn text
-                $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-                $(identifier).addClass("example_c_green"); // give class for succes
+                    $(":button").prop('disabled', false); // enable all btns on successful connect
+                    $(":input").prop('disabled', false); // enable all the inputs
 
-                $(":button").prop('disabled', false); // enable all btns on successful connect
-                $(":input").prop('disabled', false); // enable all the inputs
+                    // periodically querry all states
+                    setInterval(update_states, 1000);
 
-                // periodically querry all states
-                setInterval(update_states, 1000);
+                    window.session_is_connected = true;
 
-                window.session_is_connected = true;
-
-            }).fail(function () {
-                $(identifier).html("FAILURE"); // set btn text to ...
-                $(identifier).removeClass("example_c_ongoing");
-                $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
-            })
+                }
+            ).fail(
+                function () {
+                    $(identifier).html("FAILURE"); // set btn text to ...
+                    $(identifier).removeClass("example_c_ongoing");
+                    $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
+                }
+            )
         }
 
         function set_autonomous_state() {
@@ -942,22 +946,26 @@
 
         });
 
-        // for reconnecting upon reload of site
-        {% if reconnect_ip != "" %}
-            console.log("reconnecting to", '{{reconnect_ip}}');
-            connect_robot(ip = '{{reconnect_ip}}');
-        {% endif %}
-
         function disable_all() {
             $(":button").prop('disabled', true); // Disable all the buttons
             $(":input").prop('disabled', true); // Disable all the inputs
             $("#connect_btn").prop("disabled", false); // enable connect btn
             $("#pepper_select_ips").prop("disabled", false) // enable pepper dropdown
-
         }
 
         //disable all elements on load
         window.onload = disable_all;
+
+        // for reconnecting upon reload of site
+        {% if reconnect_ip != "" %}
+            console.log("reconnecting to", '{{reconnect_ip}}');
+            connect_robot(ip = '{{reconnect_ip}}', true);
+            $( document ).ready(function() {
+                // Handler for .ready() called.
+                $("#connect_btn").html("RECONNECTING..."); // set btn text to ...
+                $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+            });
+        {% endif %}
 
     </script>
 </head>
