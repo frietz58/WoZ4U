@@ -61,7 +61,7 @@
                                 // see if cur btn is the one for what is on the tablet
                                 //if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
                                 if (data[key]["index"] == index) {
-                                    console.log(data[key])
+                                    //console.log(data[key])
 
                                     // if it is not a video or website, we check whether tab is timed out and resend
                                     // request to show the item. For videos and websites we can't do this, because
@@ -83,13 +83,19 @@
                                     }
                                 }
 
-                                if (index == data[key]["index"]) { // the one that shows the current file gets the highlight
+                                // we can only do this this for the images as well, because the tablet might still
+                                // be active while a vide is playing... yikes
+                                if (index == data[key]["index"]) {
+                                    // the one that shows the current file gets the highlight
                                     $(id).html("HIDE");
                                     $(id).addClass("example_c_ongoing")
                                 } else {
-                                    // if another btn in front still indicates being active, reset that
-                                    $(id).html($(id).attr("default_text")); // set btn text
-                                    $(id).removeClass("example_c_ongoing")
+                                    // if another btn in front still indicates being active, reset that (if we don't
+                                    // currently play a video etc)
+                                    if (!data["tablet_state"]["video_or_website"]) {
+                                        $(id).html($(id).attr("default_text")); // set btn text
+                                        $(id).removeClass("example_c_ongoing")
+                                    }
                                 }
                             })
 
