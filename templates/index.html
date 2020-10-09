@@ -307,12 +307,16 @@
         function(data) {
           console.log(data)
         }).done(function() {
-          $(id).html($(id).prop("default_text")); // set btn text
+      $(id).html($(id).attr("default_text")); // set btn text
           $(id).removeClass("example_c_ongoing");
           update_states()
       })
     } else {
       // show the image on the tablet
+        //const url = "show_tablet_item?item=" + img_name;
+        // const url = "show_tablet_item?index=" + index;
+        // console.log(url);
+
       $.getJSON(
       "/show_tablet_item/" + index,
       function(data) {
@@ -324,13 +328,13 @@
       })
     }
 
-    // iter over all buttons and reset style, except for the one that is currently being displayed
-    // https://stackoverflow.com/questions/5376431/wildcards-in-jquery-selectors
     $("[id^=image_btn_]").each(function( iter_ind ) {
+        let iter_id = "#image_btn_"+iter_ind;
       if (iter_ind != index) {
-        $(id).html($(id).prop("default_text"));
-        $(id).removeClass("example_c_ongoing")
+        $(iter_id).html($(iter_id).attr("default_text"));
+        $(iter_id).removeClass("example_c_ongoing")
       }
+
   });
   }
 
@@ -479,15 +483,15 @@
   function set_collision_avoidance(type) {
     // let is fine aswell, can only be accessed in this code block. const can not be reassigned a value...
     let bt_identifier = "";
-    let input_identifier = ""
+    let input_identifier = "";
     let value = 0;
     let payload = "";
     if (type == "tangential") {
-      input_identifier = "#tangential_collision"
+      input_identifier = "#tangential_collision";
       value = $(input_identifier).val();
       payload = "?param=Tangential&value="
     } else {
-      input_identifier = "#orthogonal_collision"
+      input_identifier = "#orthogonal_collision";
       value = $(input_identifier).val();
       payload = "?param=Orthogonal&value="
     }
