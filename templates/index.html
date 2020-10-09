@@ -60,8 +60,8 @@
             // iterate over image btns
             $("[id^=image_btn_]").each(function(index){
               const id = "#image_btn_" + index;
+              /*
                 if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
-                    /*
                     console.log("file attr: " + $(id).attr("file") + "\ntablet_state[curr_tab_item]: " + data[key]["curr_tab_item"])
                     console.log("curr_ts: " + data["timestamp"] + "\nlast tablet ping: " + data[key]["last_ping"])
 
@@ -79,8 +79,9 @@
                         $.getJSON("ping_curr_tablet_item?file=" + $(id).attr("file") )
                     }
                   // TODO what do here? The pinging approach does not work for videos or external websites...
-                  */
+
                 }
+
               if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
                 $(id).html("HIDE");
                 $(id).addClass("example_c_ongoing")
@@ -90,6 +91,8 @@
                 $(id).html($(id).attr("default_text")); // set btn text
                 $(id).removeClass("example_c_ongoing")
               }
+            })
+              */
             })
           } else if (key == "timestamp") {
                 // just to avoid error, we need the timestamp but don't do anything frontend related with it
