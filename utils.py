@@ -21,15 +21,6 @@ def is_image(path):
         return False
 
 
-def distinguish_path(path):
-    if "http" in path:
-        return "is_url"
-    elif path[0] == '/':
-        return "is_abs_path"
-    else:
-        return "is_rel_path"
-
-
 def is_external_path(path):
     if "http" == path[:4]:
         return True
@@ -52,6 +43,7 @@ def alImage_to_PIL(alImg):
 
     return pil_img
 
+
 def PIL_to_JPEG_BYTEARRAY(pil_img):
     """
     Converts a Pillow image to a JPEG bytearray
@@ -63,6 +55,7 @@ def PIL_to_JPEG_BYTEARRAY(pil_img):
     jpeg_bytes = imgByteArr.getvalue()
 
     return jpeg_bytes
+
 
 def rawToWav(filename):
     """

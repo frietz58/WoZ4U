@@ -59,14 +59,15 @@
                                 const id = "#image_btn_" + index;
 
                                 // see if cur btn is the one for what is on the tablet
-                                if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
+                                //if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
+                                if (data[key]["index"] == index) {
                                     console.log(data[key])
 
                                     // if it is not a video or website, we check whether tab is timed out and resend
                                     // request to show the item. For videos and websites we can't do this, because
                                     // we cant nice display them via a website
                                     if (!data["tablet_state"]["video_or_website"]) {
-                                        if (data["timestamp"] > data[key]["last_ping"] + 5) {
+                                        if (data["timestamp"] > data[key]["last_ping"] + 3) {
                                             console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!")
                                             $.getJSON(
                                                 "/show_tablet_item/" + index,
@@ -77,7 +78,7 @@
                                                     $(id).addClass("example_c_ongoing");
                                                 }
                                             );
-                                            $.getJSON("ping_curr_tablet_item?file=" + $(id).attr("file"))
+                                            $.getJSON("ping_curr_tablet_item?index=" + index)
                                         }
                                     }
                                 }
@@ -301,7 +302,7 @@
             }
         }
 
-        function show_img(img_name, index) {
+        function show_img(index) {
             const id = "#image_btn_" + index;
             //depending on the state of the button, we either want to show or hide an image...
             if ($(id).text() == "HIDE") {
@@ -1012,8 +1013,7 @@
                 <div class="speech_btn_wrapper">
                     <button class="example_c capitalize"
                             id="image_btn_{{ loop.index0 }}"
-                            file="{{ img['file_name'] }}"
-                            onclick="show_img('{{ img["file_name"] }}', {{ loop.index0 }})"
+                            onclick="show_img({{ loop.index0 }})"
                             default_text="
                                 {% if (img["key_comb"] is defined) and  img["key_comb"] %}
                                     {{ img["key_comb"]|safe|prettyshortcut }}

@@ -3,15 +3,12 @@ from flask import Flask, render_template, Response, url_for, request, send_file,
 
 import yaml
 import time
-import threading
 from datetime import datetime
 import os
-import numpy as np
 import matplotlib
 from timeit import default_timer as timer
 import jinja2
 
-from utils import distinguish_path
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
 from utils import is_video
@@ -22,7 +19,6 @@ import socket
 from simple_sound_stream import SpeechRecognitionModule
 
 import qi
-from naoqi import ALProxy
 import vision_definitions
 
 from urlparse import unquote
@@ -30,8 +26,7 @@ from urlparse import unquote
 app = Flask(__name__)
 
 # helper for knowing what is on the tablet
-global tablet_state
-tablet_state = {
+TABLET_STATE = {
     "index": None,
     "video_or_website": False
 }
@@ -180,7 +175,7 @@ def tts_callback(value):
 
 
 def onVidEnd():
-    tablet_state["video_or_website"] = False
+    TABLET_STATE["video_or_website"] = False
     pass
 
 
@@ -318,7 +313,7 @@ def querry_states():
             "#motion_vector": [round(vel, 1) for vel in motion_srv.getRobotVelocity()],
             "#toggle_btn_listening": lm_srv.isEnabled(),
             "#toggle_btn_speaking": sm_srv.isEnabled(),
-            "tablet_state": tablet_state,
+            "tablet_state": TABLET_STATE,
             "#querried_color": get_eye_colors(),
             "timestamp": timer()
         }
@@ -422,12 +417,11 @@ def show_default_img_or_hide():
     Depending on whether a default image is given in the config, either shows that or resets the tablet to the default
     animation gif.
     """
-    for index, item in enumerate(config["tablet_items"]):
+    for enum_index, item in enumerate(config["tablet_items"]):
         if "is_default_img" in item.keys():
-            url = FLASK_HOME + "show_img_page/" + item["file_name"]
-            tablet_state["index"] = index
+            url = FLASK_HOME + "show_img_page/" + str(enum_index)
+            TABLET_STATE["index"] = enum_index
 
-            print("URL:", url)
             tablet_srv.showWebview(url)
 
             return {
@@ -435,7 +429,7 @@ def show_default_img_or_hide():
             }
 
     tablet_srv.hideWebview()
-    tablet_state["index"] = None
+    TABLET_STATE["index"] = None
 
     return {
         "showing": "Pepper default gif, no default image found in config",
@@ -480,55 +474,62 @@ def stop_sound_play():
 
 @app.route("/show_tablet_item/<index>")
 def show_tablet_item(index):
-    file = config["tablet_items"][int(index)]["file_name"]
-    print(distinguish_path(file))
+    item = config["tablet_items"][int(index)]["file_name"]
 
-    global tablet_state
-
-    if distinguish_path(file) == "is_url" and not is_video(file):
-        # show website
+    if is_external_path(item) and not is_video(item) and not is_image(item):
+        # tablet item is external website
         tablet_srv.enableWifi()
-        tablet_srv.showWebview(file)
-        tablet_state["curr_tab_item"] = file
-        tablet_state["index"] = index
-        tablet_state["video_or_website"] = True
+        tablet_srv.showWebview(item)
+        TABLET_STATE["video_or_website"] = True
 
-    elif is_video(file):
-        if distinguish_path(file) == "is_url":
-            path = file
+    elif is_video(item):
+        if is_external_path(item):
+            # externally hosted video
+            video_src = item
         else:
-            path = FLASK_HOME + config["tablet_root_location"] + file
+            # video hosted locally, prepare "external" path foir tablet
+            video_src = FLASK_HOME + config["tablet_root_location"] + item
 
         tablet_srv.enableWifi()
-        tablet_srv.playVideo(path)
-        tablet_state["curr_tab_item"] = path
-        tablet_state["index"] = index
-        tablet_state["video_or_website"] = True
+        tablet_srv.playVideo(video_src)
+        TABLET_STATE["video_or_website"] = True
 
     else:
-        tablet_srv.showWebview(FLASK_HOME + "show_img_page/" + file)
+        tablet_srv.showWebview(FLASK_HOME + "show_img_page/" + index)
 
-        tablet_state["index"] = index
-        tablet_state["curr_tab_item"] = file
-        tablet_state["video_or_website"] = False
+        TABLET_STATE["video_or_website"] = False
+
+    TABLET_STATE["index"] = index
 
     return {
         "status": "ok",
-        "file": file
+        "item": item
     }
 
 
-@app.route("/show_img_page/<img_name>")
-def show_img_page(img_name):
-    img_path = "/" + config["tablet_root_location"] + img_name  # FIXME: Make nicer?
-    tablet_state["curr_tab_item"] = img_path
-    return render_template("img_view.html", src=img_path)
+def get_tablet_img_from_index(index):
+    img_obj = config["tablet_items"][int(index)]
+    img_src = ""
+
+    if is_external_path(img_obj["file_name"]):
+        # if its externally hosted we don't have to do anything
+        img_src = img_obj["file_name"]
+    else:
+        img_src = "/" + config["tablet_root_location"] + img_obj["file_name"]
+
+    return img_src
+
+
+@app.route("/show_img_page/<index>")
+def show_img_page(index):
+    img_src = get_tablet_img_from_index(index)
+    return render_template("img_view.html", src=img_src, img_index=index)
 
 
 @app.route("/clear_tablet")
 def clear_tablet():
     tablet_srv.hideWebview()
-    tablet_state["showing"] = None
+    TABLET_STATE["index"] = None
 
     status = show_default_img_or_hide()
     status["msg"] = "cleaned tablet webview"
@@ -538,12 +539,12 @@ def clear_tablet():
 
 @app.route("/ping_curr_tablet_item")
 def ping_curr_tablet_item():
-    file = request.args.get('file', type=str)
-    tablet_state["curr_tab_item"] = file
-    tablet_state["last_ping"] = timer()
+    index = request.args.get('index', type=str)
+    TABLET_STATE["last_ping"] = timer()
+    TABLET_STATE["index"] = index
 
     return {
-        "set cur_tab_item": file
+        "set cur_tab_item": index
     }
 
 
