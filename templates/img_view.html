@@ -13,7 +13,6 @@
     <script>
         function ping_server() {
             url = "/ping_curr_tablet_item?file={{ src }}"
-            console.log(url)
             $.getJSON(
                 url,
                 function(data) {
@@ -21,7 +20,7 @@
                 })
         }
 
-        // setInterval(ping_server, 1000);
+        setInterval(ping_server, 1000);
 
     </script>
     <img src="{{src}}" class="tablet_img">

@@ -31,7 +31,8 @@ app = Flask(__name__)
 # helper for knowing what is on the tablet
 global tablet_state
 tablet_state = {
-    "showing": None
+    "showing": None,
+    "video_or_website": False
 }
 
 
@@ -166,7 +167,9 @@ def tts_callback(value):
 
 def onVidEnd():
     # TODO: get IP dynamicaly
-    show_default_img_or_hide()
+    # show_default_img_or_hide()
+    tablet_state["video_or_website"] = False
+    pass
 
 
 def touchDown_callback(x, y, msg):
@@ -407,9 +410,10 @@ def show_default_img_or_hide():
     Depending on whether a default image is given in the config, either shows that or resets the tablet to the default
     animation gif.
     """
-    for item in config["tablet_items"]:
+    for index, item in enumerate(config["tablet_items"]):
         if "is_default_img" in item.keys():
             url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
+
             print("URL:", url)
             tablet_srv.showWebview(url)
             tablet_state["showing"] = item["file_name"]
@@ -464,16 +468,18 @@ def stop_sound_play():
 
 @app.route("/show_tablet_item/<index>")
 def show_tablet_item(index):
-    # very hacky, but this is the only way I got this to work... 
-    # Think we have to do it this way, because we don't want the image to be rendered in the main browser, but dispatch it to pepper's tablet
     file = config["tablet_items"][int(index)]["file_name"]
     print(distinguish_path(file))
+
+    global tablet_state
 
     if distinguish_path(file) == "is_url" and not is_video(file):
         # show website
         tablet_srv.enableWifi()
         tablet_srv.showWebview(file)
         tablet_state["curr_tab_item"] = file
+        tablet_state["showing"] = file
+        tablet_state["video_or_website"] = True
 
     elif is_video(file):
         if distinguish_path(file) == "is_url":
@@ -484,18 +490,17 @@ def show_tablet_item(index):
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
         tablet_state["curr_tab_item"] = path
+        tablet_state["showing"] = path
+        tablet_state["video_or_website"] = True
 
     else:
         # TODO: get IP dynamicaly
         tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + file)
 
-        # this works as well...:
-        # js_code = """
-        #    var audio = new Audio('https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav'); 
-        #    audio.volume = 0.1;
-        #    audio.play();"""
+        tablet_state["showing"] = file
+        tablet_state["curr_tab_item"] = file
+        tablet_state["video_or_website"] = False
 
-    tablet_state["showing"] = file
     return {
         "status": "ok",
         "file": file
