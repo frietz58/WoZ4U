@@ -30,7 +30,7 @@ autonomous_life_config:
 # example flag: key_comb: ["ctrl", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
 # ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
 
-tablet_root_location: /static/tablet_items/  # place image or video files here, on host machine
+tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
   -
     title: Timeline

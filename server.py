@@ -17,6 +17,7 @@ from utils import PIL_to_JPEG_BYTEARRAY
 from utils import is_video
 from utils import is_image
 from utils import is_external_path
+import socket
 
 from simple_sound_stream import SpeechRecognitionModule
 
@@ -35,7 +36,6 @@ tablet_state = {
     "video_or_website": False
 }
 
-
 global camera_tab_closed
 camera_tab_closed = True
 
@@ -53,6 +53,20 @@ touchmove_ind = 1
 
 global latest_touchmove_used
 latest_touchmove_used = 0
+
+global SAVE_IMGS
+SAVE_IMGS = False
+
+global RECORD_AUDIO
+RECORD_AUDIO = False
+
+global motion_vector
+motion_vector = [0, 0, 0]
+
+# Tablet needs to know where server is running
+HOST_IP = socket.gethostbyname(socket.gethostname())
+FLASK_PORT = 5000
+FLASK_HOME = "http://" + HOST_IP + ":" + str(FLASK_PORT) + "/"
 
 
 @app.route('/')
@@ -166,8 +180,6 @@ def tts_callback(value):
 
 
 def onVidEnd():
-    # TODO: get IP dynamicaly
-    # show_default_img_or_hide()
     tablet_state["video_or_website"] = False
     pass
 
@@ -412,7 +424,7 @@ def show_default_img_or_hide():
     """
     for index, item in enumerate(config["tablet_items"]):
         if "is_default_img" in item.keys():
-            url = "http://130.239.183.189:5000/show_img_page/" + item["file_name"]
+            url = FLASK_HOME + "show_img_page/" + item["file_name"]
             tablet_state["index"] = index
 
             print("URL:", url)
@@ -485,7 +497,7 @@ def show_tablet_item(index):
         if distinguish_path(file) == "is_url":
             path = file
         else:
-            path = "http://130.239.183.189:5000" + config["tablet_root_location"] + file
+            path = FLASK_HOME + config["tablet_root_location"] + file
 
         tablet_srv.enableWifi()
         tablet_srv.playVideo(path)
@@ -494,8 +506,7 @@ def show_tablet_item(index):
         tablet_state["video_or_website"] = True
 
     else:
-        # TODO: get IP dynamicaly
-        tablet_srv.showWebview("http://130.239.183.189:5000/show_img_page/" + file)
+        tablet_srv.showWebview(FLASK_HOME + "show_img_page/" + file)
 
         tablet_state["index"] = index
         tablet_state["curr_tab_item"] = file
@@ -509,10 +520,9 @@ def show_tablet_item(index):
 
 @app.route("/show_img_page/<img_name>")
 def show_img_page(img_name):
-    img_path = config["tablet_root_location"] + img_name
-    print(img_path)
+    img_path = "/" + config["tablet_root_location"] + img_name  # FIXME: Make nicer?
     tablet_state["curr_tab_item"] = img_path
-    return render_template("img_view.html", src=img_path)  # WORKS!
+    return render_template("img_view.html", src=img_path)
 
 
 @app.route("/clear_tablet")
@@ -528,7 +538,6 @@ def clear_tablet():
 
 @app.route("/ping_curr_tablet_item")
 def ping_curr_tablet_item():
-    # this works for locally images, but not for anything else, need to find more, TODO!!!
     file = request.args.get('file', type=str)
     tablet_state["curr_tab_item"] = file
     tablet_state["last_ping"] = timer()
@@ -780,34 +789,29 @@ def video_feed():
 
 def stream_generator():
     counter = 0
-    try:
-        while True:
-            # frame = camera.get_frame()
-            global imgClient
-            alImage = video_srv.getImageRemote(imgClient)
-            if alImage is not None:
-                pil_img = alImage_to_PIL(alImage)
+    while True:
+        # frame = camera.get_frame()
+        global imgClient
+        alImage = video_srv.getImageRemote(imgClient)
+        if alImage is not None:
+            pil_img = alImage_to_PIL(alImage)
 
-                timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
-                filename = timestamp + ".jpg"
-                save_path = os.path.join(config["camera_save_dir"], filename)
-                if SAVE_IMGS:
-                    pil_img.save(save_path, "JPEG")
+            # TODO: make image smaller? Might greatly decrease latency
 
-                jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
+            timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
+            filename = timestamp + ".jpg"
+            save_path = os.path.join(config["camera_save_dir"], filename)
+            if SAVE_IMGS:
+                pil_img.save(save_path, "JPEG")
 
-                counter += 1
+            jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
 
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
+            counter += 1
 
-            time.sleep(0.01)
-    except IOError:  # ideally this would catch the error when tab is closed, but it doesnt :/ TODO
-        print("removing listener...")
-        # see if there are any old subscribers...
-        if video_srv.getSubscribers():
-            for subscriber in video_srv.getSubscribers():
-                video_srv.unsubscribe(subscriber)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
+
+        time.sleep(0.01)
 
 
 @app.route("/toggle_img_save")
@@ -846,50 +850,6 @@ def start_audio_recording():
         "pepper_save_dir": config["audio_save_dir"],
         "filename": filename
     }
-
-
-# TODO doesn't appear to detect faces even in perfect lighting (?)
-@app.route("/face")
-def face():
-    return face_detect_stream()
-
-
-def face_detect_stream():
-    memValue = "FaceDetected"
-
-    val = mem_srv.getData(memValue, 0)
-    counter = 0
-
-    while True:
-        counter += 1
-        time.sleep(0.5)
-
-        result = {
-            "alpha": None,
-            "beta": None,
-            "width": None,
-            "height": None
-        }
-
-        val = mem_srv.getData(memValue, 0)
-        print(val, counter)
-
-        if (val and isinstance(val, list) and len(val) == 2):
-            timeStamp = val[0]
-            faceInfoArray = val[1]
-
-            for faceInfo in faceInfoArray:
-                faceShapeInfo = faceInfo[0]
-                faceExtraInfo = faceInfo[1]
-
-                result = {
-                    "alpha": faceShapeInfo[1],
-                    "beta": faceShapeInfo[2],
-                    "width": faceShapeInfo[3],
-                    "height": faceShapeInfo[4]
-                }
-
-        print(result)
 
 
 @app.route("/set_led_intensity")
@@ -1001,10 +961,6 @@ def get_touch_data():
     }
 
 
-def get_tablet_state():
-    return tablet_state
-
-
 def read_config():
     global config
     with open("config.yaml", "r") as f:
@@ -1035,16 +991,7 @@ def pretty_print_shortcut(raw_string):
 if __name__ == '__main__':
     read_config()
 
-    global SAVE_IMGS
-    SAVE_IMGS = False
-    RECORD_AUDIO = False
-
-    global motion_vector
-    motion_vector = [0, 0, 0]
-
     # register custom filter for jinja2, so that we can use it in the frontend
-    # env = Environment()
-    # env.filters['prettyshortcut'] = pretty_print_shortcut
     jinja2.filters.FILTERS['prettyshortcut'] = pretty_print_shortcut
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=FLASK_PORT, debug=True)
