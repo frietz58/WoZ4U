@@ -1,1751 +1,1763 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>WoZ4U</title>
-<link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico">
-<link rel="stylesheet" type="text/css" href="../static/style.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
-<script type=text/javascript>
+    <title>WoZ4U</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../static/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
+    <script type=text/javascript>
 
-  var keyboard_shortcuts = {};
-  var session_is_connected = false;
-  var motion_blocking = false;
+        var keyboard_shortcuts = {};
+        var session_is_connected = false;
+        var motion_blocking = false;
 
-  //applies styling to a toggle button, depending on the value it should take
-  function toggle_btn_handle(identifier, bool, onText="ON", offText="OFF"){
-    if (bool) {
-      $(identifier).addClass("example_c_green");
-      $(identifier).removeClass("example_c_red");
-      $(identifier).removeClass("example_c_ongoing");
-      $(identifier).html(onText)
-    } else {
-      $(identifier).addClass("example_c_red");
-      $(identifier).removeClass("example_c_green");
-      $(identifier).removeClass("example_c_ongoing");
-      $(identifier).html(offText)
-    }
-  }
-
-  function update_states() {
-    /*
-    Gets states from Pepper and updates UI elements to reflect querried state
-    */
-    $.getJSON(
-      "/querry_states",
-      function(data) {
-        // console.log(data)
-        if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
-          disable_all();
-          // $("*").removeClass("example_c_ongoing");
-          $("#connect_btn").removeClass("example_c_green");
-          $("#connect_btn").html("CONNECT");
-          $("*").each(function(index) {
-            $(this).removeClass("example_c_ongoing");
-            if(typeof $(this).attr("default_text") !== "undefined") {
-              // if this is an element with the 'default_text' attribute, its a btn with a keyboard shortcut
-              // so we reset all to their default text, because we can't know right now which is the once that should be active
-              $(this).html($(this).attr("default_text"))
+        //applies styling to a toggle button, depending on the value it should take
+        function toggle_btn_handle(identifier, bool, onText = "ON", offText = "OFF") {
+            if (bool) {
+                $(identifier).addClass("example_c_green");
+                $(identifier).removeClass("example_c_red");
+                $(identifier).removeClass("example_c_ongoing");
+                $(identifier).html(onText)
+            } else {
+                $(identifier).addClass("example_c_red");
+                $(identifier).removeClass("example_c_green");
+                $(identifier).removeClass("example_c_ongoing");
+                $(identifier).html(offText)
             }
-          });
-          window.session_is_connected = false;
-          console.log("session not connected");
-          return
         }
-        Object.keys(data).forEach(key => {
-          //console.log(key, data[key]);
-          //console.log(key)
-          //console.log($(key).get(0).nodeName)
-          if (key == "tablet_state") { // handling this is different from the actual html elements
-            // iterate over image btns
-            $("[id^=image_btn_]").each(function(index){
-              const id = "#image_btn_" + index;
-              /*
-                if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
-                    console.log("file attr: " + $(id).attr("file") + "\ntablet_state[curr_tab_item]: " + data[key]["curr_tab_item"])
-                    console.log("curr_ts: " + data["timestamp"] + "\nlast tablet ping: " + data[key]["last_ping"])
 
-                    if (data["timestamp"] > data[key]["last_ping"] + 5) {
-                        console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!")
-                        $.getJSON(
-                          "/show_tablet_item/" + index,
-                          function(data) {
-                            console.log(data);
-                              }).done(function() {
-                            $(id).html("HIDE"); // set btn text
-                            $(id).addClass("example_c_ongoing");
-                          }
-                        );
-                        $.getJSON("ping_curr_tablet_item?file=" + $(id).attr("file") )
+        function update_states() {
+            /*
+            Gets states from Pepper and updates UI elements to reflect querried state
+            */
+            $.getJSON(
+                "/querry_states",
+                function (data) {
+                    // console.log(data)
+                    if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
+                        disable_all();
+                        // $("*").removeClass("example_c_ongoing");
+                        $("#connect_btn").removeClass("example_c_green");
+                        $("#connect_btn").html("CONNECT");
+                        $("*").each(function (index) {
+                            $(this).removeClass("example_c_ongoing");
+                            if (typeof $(this).attr("default_text") !== "undefined") {
+                                // if this is an element with the 'default_text' attribute, its a btn with a keyboard shortcut
+                                // so we reset all to their default text, because we can't know right now which is the once that should be active
+                                $(this).html($(this).attr("default_text"))
+                            }
+                        });
+                        window.session_is_connected = false;
+                        console.log("session not connected");
+                        return
                     }
-                  // TODO what do here? The pinging approach does not work for videos or external websites...
+                    Object.keys(data).forEach(key => {
+                        //console.log(key, data[key]);
+                        //console.log(key)
+                        //console.log($(key).get(0).nodeName)
+                        if (key == "tablet_state") { // handling this is different from the actual html elements
+                            // iterate over image btns
+                            $("[id^=image_btn_]").each(function (index) {
+                                const id = "#image_btn_" + index;
+                                /*
+                                  if (data[key]["curr_tab_item"].includes($(id).attr("file"))) {
+                                      console.log("file attr: " + $(id).attr("file") + "\ntablet_state[curr_tab_item]: " + data[key]["curr_tab_item"])
+                                      console.log("curr_ts: " + data["timestamp"] + "\nlast tablet ping: " + data[key]["last_ping"])
 
+                                      if (data["timestamp"] > data[key]["last_ping"] + 5) {
+                                          console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!")
+                                          $.getJSON(
+                                            "/show_tablet_item/" + index,
+                                            function(data) {
+                                              console.log(data);
+                                                }).done(function() {
+                                              $(id).html("HIDE"); // set btn text
+                                              $(id).addClass("example_c_ongoing");
+                                            }
+                                          );
+                                          $.getJSON("ping_curr_tablet_item?file=" + $(id).attr("file") )
+                                      }
+                                    // TODO what do here? The pinging approach does not work for videos or external websites...
+
+                                  }
+
+                                if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
+                                  $(id).html("HIDE");
+                                  $(id).addClass("example_c_ongoing")
+                                }
+                                else {
+                                  // if another btn in front still indicates being active, reset that
+                                  $(id).html($(id).attr("default_text")); // set btn text
+                                  $(id).removeClass("example_c_ongoing")
+                                }
+                              })
+                                */
+                            })
+                        } else if (key == "timestamp") {
+                            // just to avoid error, we need the timestamp but don't do anything frontend related with it
+                        }
+                        else {
+                            if ($(key).get(0).nodeName == "BUTTON") {
+                                toggle_btn_handle(key, data[key])
+                            }
+                            else if ($(key).get(0).nodeName == "SPAN") {
+                                // motion vector
+                                $(key).text("[" + data[key].toString() + "]")
+                            }
+                            else if ($(key).get(0).nodeName == "INPUT") {
+                                if ($(key).attr("type") == "range") {
+                                    if (key != "#voice_speed_input") {
+                                        // volume and pitch must be multiplied by 100 to so that we get a proper range...
+                                        data[key] *= 100
+                                    }
+                                    $(key).val(data[key])
+                                } else if ($(key).attr("type") == "text") {
+                                    // collision ranges...
+                                    if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
+                                        $(key).val(data[key])
+                                    }
+                                }
+                            }
+                            else if ($(key).get(0).nodeName == "SELECT") {
+                                // engagment and autonomous state
+                                // console.log(key, data[key])
+                                $(key).val(data[key])
+                            }
+                            else if ($(key).get(0).nodeName == "DIV") {
+                                // querried color div
+                                // console.log(key, data[key]);
+                                // set color of "querried" block to querried val
+                                $(key).css("background", "rgba(" + data[key][0] * 255 + ", " + data[key][1] * 255 + ", " + data[key][2] * 255 + ")");
+
+                                // see if the querried color matches one of the defined colors
+                                {% for color in config["colors"] %}
+                                    color_identifier = "#eye_colo_btn_{{ color["title"] }}";
+                                    color_array = [
+                                        Math.round(({{ color["red"] }} +Number.EPSILON) * 100) / 100,
+                                        Math.round(({{ color["green"] }} +Number.EPSILON) * 100) / 100,
+                                        Math.round(({{ color["blue"] }} +Number.EPSILON) * 100) / 100
+                                    ];
+
+                                    // if it matches, set that btn to ON, to indicate the eye color begin shown
+                                    if (arraysEqual(data[key], color_array)) {
+                                        $(color_identifier).addClass("example_c_ongoing");
+                                        $(color_identifier).removeClass("example_c_green");
+                                        $(color_identifier).removeClass("example_c_red");
+                                        $(color_identifier).html("ACTIVE")
+                                    }
+                                    else {
+                                        $(color_identifier).removeClass("example_c_green");
+                                        $(color_identifier).removeClass("example_c_red");
+                                        $(color_identifier).removeClass("example_c_ongoing");
+                                        $(color_identifier).html($(color_identifier).attr("default_text"));
+                                    }
+                                {% endfor%}
+                            }
+                        }
+                    });
                 }
+            )
+        }
 
-              if ($(id).attr("file") == data[key]["showing"]) { // the one that shows the current file gets the highlight
-                $(id).html("HIDE");
-                $(id).addClass("example_c_ongoing")
-              }
-              else {
-                // if another btn in front still indicates being active, reset that
-                $(id).html($(id).attr("default_text")); // set btn text
-                $(id).removeClass("example_c_ongoing")
-              }
-            })
-              */
-            })
-          } else if (key == "timestamp") {
-                // just to avoid error, we need the timestamp but don't do anything frontend related with it
+        function connect_robot(ip = "") {
+            var robot_ip;
+            if (ip == "") {  // depends on reconnect or not whether parameter is set...
+                robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
+            } else {
+                robot_ip = ip
             }
-          else {
-            if ($(key).get(0).nodeName == "BUTTON") {
-                toggle_btn_handle(key, data[key])
-              }
-            else  if ($(key).get(0).nodeName == "SPAN"){
-                // motion vector
-                $(key).text("[" + data[key].toString() + "]")
-              }
-            else if ($(key).get(0).nodeName == "INPUT") {
-                if ($(key).attr("type") == "range") {
-                  if (key != "#voice_speed_input"){
-                    // volume and pitch must be multiplied by 100 to so that we get a proper range...
-                    data[key] *= 100
-                  }
-                  $(key).val(data[key])
-                } else if ($(key).attr("type") == "text") {
-                  // collision ranges...
-                  if (!$(key).prop("has_uncommited_state")) { // we only overwrite the values if it is not currently being edited
-                    $(key).val(data[key])
-                  }
-                }
-              }
-            else if ($(key).get(0).nodeName == "SELECT") {
-                // engagment and autonomous state
-                // console.log(key, data[key])
-                $(key).val(data[key])
-              }
-            else if ($(key).get(0).nodeName == "DIV") {
-              // querried color div
-              // console.log(key, data[key]);
-              // set color of "querried" block to querried val
-              $(key).css("background", "rgba(" + data[key][0] * 255 + ", " + data[key][1] * 255 + ", " + data[key][2] * 255 + ")");
 
-              // see if the querried color matches one of the defined colors
-              {% for color in config["colors"] %}
-                color_identifier = "#eye_colo_btn_{{ color["title"] }}";
-                color_array = [
-                  Math.round(({{ color["red"] }} + Number.EPSILON) * 100) / 100,
-                  Math.round(({{ color["green"] }} + Number.EPSILON) * 100) / 100,
-                  Math.round(({{ color["blue"] }} + Number.EPSILON) * 100) / 100
-                ];
+            const identifier = "#connect_btn";
 
-                // if it matches, set that btn to ON, to indicate the eye color begin shown
-                if (arraysEqual(data[key], color_array)) {
-                  $(color_identifier).addClass("example_c_ongoing");
-                  $(color_identifier).removeClass("example_c_green");
-                  $(color_identifier).removeClass("example_c_red");
-                  $(color_identifier).html("ACTIVE")
+            $(identifier).html("..."); // set btn text to ...
+            $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
+            $.getJSON( // async call flask function with arguments
+                "/connect_robot?ip=" + robot_ip,
+                function (data) {
+                    console.log(data)
+
+                }).done(function () {
+                update_states(); // set all the dynamic values on the UI
+
+                $(identifier).html("Connected"); // set btn text
+                $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+                $(identifier).addClass("example_c_green"); // give class for succes
+
+                $(":button").prop('disabled', false); // enable all btns on successful connect
+                $(":input").prop('disabled', false); // enable all the inputs
+
+                // periodically querry all states
+                setInterval(update_states, 1000);
+
+                window.session_is_connected = true;
+
+            }).fail(function () {
+                $(identifier).html("FAILURE"); // set btn text to ...
+                $(identifier).removeClass("example_c_ongoing");
+                $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
+            })
+        }
+
+        function set_autonomous_state() {
+            state = document.getElementById("autonomous_states").value;
+
+            $.getJSON( // async call flask function with arguments
+                "/set_autonomous_state?state=" + state,
+                function (data) {
+                    console.log(data);
+                }).done(function () {
+                update_states()
+            }).fail(function () {
+                update_states()
+            })
+        }
+
+        function toggle_setting(setting) {
+            const identifier = "#toggle_btn_" + setting;
+            $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
+            $(identifier).removeClass("example_c_green"); // remove class for ongoing
+            $(identifier).removeClass("example_c_red"); // remove class for ongoing
+            $(identifier).html("...");
+
+            const url = "/toggle_setting?setting=" + setting;
+            console.log(url);
+            $.getJSON( // async call flask function with arguments
+                url,
+                function (data) {
+                    console.log(data);
+                    toggle_btn_handle(identifier, data["new_state"]);
+                    if (setting == "blinking" && data["new_state"]) {
+                        if (document.getElementById("autonomous_states").value != "interactive") {
+                            alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
+                        }
+                    }
+                }).done(function () {
+                update_states()
+            })
+        }
+
+        function say_custom_text() {
+            let text = $("#custom_text_msg").val();
+
+            $("#custom_text_btn").html("..."); // set btn text to ...
+            $("#custom_text_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+
+            $.getJSON(
+                "/say_text?msg=" + text,
+                function (data) {
+                    console.log(data);
                 }
-                else {
-                  $(color_identifier).removeClass("example_c_green");
-                  $(color_identifier).removeClass("example_c_red");
-                  $(color_identifier).removeClass("example_c_ongoing");
-                  $(color_identifier).html($(color_identifier).attr("default_text"));
-                }
-              {% endfor%}
+            ).done(function () {
+                $("#custom_text_btn").html("Say it");
+                $("#custom_text_btn").removeClass("example_c_ongoing");
+                update_states()
+            })
+        }
+
+        function play_audio(name, index) {
+            // depending on value of btn we either start playing audio or interrupt it
+            // console.log($("#audio_file_"+index).text())
+
+            const id = "#audio_file_" + index;
+
+            if ($(id).prop("disabled")) {
+                return
             }
-          }
+
+            if ($(id).text() == "STOP") {
+                // clearing the tablet removes the browser context though which the js audio signal is being played...
+                $.getJSON(
+                    "/stop_sound_play",
+                    function (data) {
+                        console.log(data)
+                    }
+                ).done(function () {
+                    // console.log($(id).attr("default_text"))
+                    $(id).html($(id).attr("default_text"));
+                    $(id).removeClass("example_c_ongoing");
+                    $("[id^=image_btn_]").prop('disabled', false);
+                    $("[id^=audio_file_]").prop('disabled', false);
+                    update_states()
+                })
+            } else {
+                // play audio
+                $(id).html("STOP");
+                $(id).addClass("example_c_ongoing");
+
+                $("[id^=audio_file_]").prop('disabled', true); // also disable all the other sounds btns...
+                $(id).prop("disabled", false);
+
+                $.getJSON(
+                    "/play_audio?index=" + index,
+                    function (data) {
+                        console.log(data);
+                    }).done(function () {
+                    $(id).html($(id).attr("default_text"));
+                    $(id).removeClass("example_c_ongoing");
+                    $("[id^=image_btn_]").prop('disabled', false);
+                    $("[id^=audio_file_]").prop('disabled', false);
+                    update_states()
+                })
+            }
+        }
+
+        function show_img(img_name, index) {
+            const id = "#image_btn_" + index;
+            //depending on the state of the button, we either want to show or hide an image...
+            if ($(id).text() == "HIDE") {
+                // clear the image from the tablet
+                $.getJSON(
+                    "/clear_tablet",
+                    function (data) {
+                        console.log(data)
+                    }).done(function () {
+                    $(id).html($(id).attr("default_text")); // set btn text
+                    $(id).removeClass("example_c_ongoing");
+                    update_states()
+                })
+            } else {
+                // show the image on the tablet
+                //const url = "show_tablet_item?item=" + img_name;
+                // const url = "show_tablet_item?index=" + index;
+                // console.log(url);
+
+                $.getJSON(
+                    "/show_tablet_item/" + index,
+                    function (data) {
+                        console.log(data);
+                    }).done(function () {
+                    $(id).html("HIDE"); // set btn text
+                    $(id).addClass("example_c_ongoing");
+                    update_states()
+                })
+            }
+
+            $("[id^=image_btn_]").each(function (iter_ind) {
+                let iter_id = "#image_btn_" + iter_ind;
+                if (iter_ind != index) {
+                    $(iter_id).html($(iter_id).attr("default_text"));
+                    $(iter_id).removeClass("example_c_ongoing")
+                }
+
+            });
+        }
+
+        function set_engagement_state() {
+            mode = document.getElementById("engagement_states").value;
+            $.getJSON( // async call flask function with arguments
+                "/set_engagement_mode?mode=" + mode,
+                function (data) {
+                    console.log(data);
+                }
+            ).done(function () {
+                update_states()
+            }).fail(function () {
+                update_states()
+            })
+        }
+
+        function setVolume(reset = false) {
+            if (reset) {
+                target_volume = 10;
+                $("#volume_slider").val(10)
+            } else {
+                target_volume = $("#volume_slider").val()
+            }
+            $.getJSON(
+                "/adjust_volume?volume=" + target_volume,
+                function (data) {
+                    console.log(data);
+                }
+            );
+        }
+
+        function exec_anim_speech(name, index) {
+            const id = "#anim_speech_btn_" + index;
+
+            if ($(id).prop("disabled")) {
+                // make sure nothing else is currently being said
+                return
+            }
+
+            $("[id^=anim_speech_btn_]").prop("disabled", true);
+            $("[id^=custom_text_btn]").prop("disabled", true);
+
+            $(id).html("...");
+            $(id).addClass("example_c_ongoing");
+            $.getJSON(
+                "exec_anim_speech?index=" + index,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                $(id).html($(id).attr("default_text"));
+                $(id).removeClass("example_c_ongoing");
+                $("[id^=anim_speech_btn_]").prop("disabled", false);
+                $("[id^=custom_text_btn]").prop("disabled", false);
+
+                update_states()
+            });
+        }
+
+        function exec_gesture(name, index) {
+            const id = "#gesture_btn_" + index;
+
+            if ($(id).prop("disabled")) {
+                return
+            }
+
+            $(id).html("...");
+            $(id).addClass("example_c_ongoing");
+            $("[id^=gesture_btn_]").prop("disabled", true);
+            $("[id^=custom_gesture_btn]").prop("disabled", true);
+
+            $.getJSON(
+                "exec_gesture?index=" + index,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                $(id).html($(id).attr("default_text"));
+                $(id).removeClass("example_c_ongoing");
+                $("[id^=gesture_btn_]").prop("disabled", false);
+                $("[id^=custom_gesture_btn]").prop("disabled", false);
+
+                update_states()
+            });
+        }
+
+        function exec_custom_gesture() {
+            $("#custom_gesture_btn").html("...");
+            $("#custom_gesture_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+
+            let gesture_string = $("#custom_gesture_string").val();
+            gesture_string = gesture_string.trim();
+
+            gesture_string = encodeURIComponent(gesture_string);
+
+            console.log(gesture_string);
+
+            $.getJSON(
+                "exec_custom_gesture?string=" + gesture_string,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                $("#custom_gesture_btn").html("EXECUTE");
+                $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
+                update_states()
+            });
+        }
+
+        function set_tts_param(param, reset = false) {
+            if (param == "speed") {
+                if (reset) {
+                    target_val = 100;
+                    $("#voice_speed_input").val(100);
+                } else {
+                    target_val = $("#voice_speed_input").val();
+                }
+            } else {
+                if (reset) {
+                    target_val = 100;
+                    $("#voice_pitch_input").val(100);
+
+                } else {
+                    target_val = $("#voice_pitch_input").val();
+                }
+            }
+            $.getJSON(
+                "/set_tts_param?param=" + param + "&value=" + target_val,
+                function (data) {
+                    console.log(data);
+                }
+            );
+        }
+
+        function add_ongoing(identifier) {
+            $(identifier).removeClass("example_c_green");
+            $(identifier).addClass("example_c_ongoing")
+        }
+
+        function add_uncommited_flag(identifier) {
+            console.log("adding uncommited flag", identifier);
+            $(identifier).prop("has_uncommited_state", true)
+        }
+
+        function set_collision_avoidance(type) {
+            // let is fine aswell, can only be accessed in this code block. const can not be reassigned a value...
+            let bt_identifier = "";
+            let input_identifier = "";
+            let value = 0;
+            let payload = "";
+            if (type == "tangential") {
+                input_identifier = "#tangential_collision";
+                value = $(input_identifier).val();
+                payload = "?param=Tangential&value="
+            } else {
+                input_identifier = "#orthogonal_collision";
+                value = $(input_identifier).val();
+                payload = "?param=Orthogonal&value="
+            }
+
+            value = value / 100;  // values is given in CM, expects m
+            payload += value;
+
+            url = "/set_collision_radius" + payload;
+            console.log(url);
+
+            $.getJSON(
+                url,
+                function (data) {
+                    console.log(data);
+                }).done(function () {
+                $(input_identifier).prop("has_uncommited_state", false);
+                update_states()
+            });
+        }
+
+        function enter_resting_pos() {
+            $.getJSON(
+                "/resting_position",
+                function (data) {
+                    console.log(data);
+                }
+            )
+        }
+
+        function netural_stand_position() {
+            $.getJSON(
+                "/netural_stand_position",
+                function (data) {
+                    console.log(data);
+                }
+            )
+        }
+
+        function show_camera_stream() {
+            $.getJSON(
+                "/camera_view"
+            )
+        }
+
+        function setLedIntensity(reset = false) {
+            group = "FaceLeds";
+
+            if (reset) {
+                intensity = 100
+            } else {
+                intensity = $("#intensity_slider").val()
+            }
+
+            url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity;
+
+            if ($("#toggle_btn_blinking").html() == "ON") {
+                alert("Blinking resets intensity, consider disabling the setting!")
+            }
+
+            $.getJSON(
+                url,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                update_states()
+            })
+        }
+
+        function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+
+        function rgbToHex(r, g, b) {
+            r = r * 255;
+            g = g * 255;
+            b = b * 255;
+            return "#" + componentToHex(Math.round(r)) + componentToHex(Math.round(g)) + componentToHex(Math.round(b));
+        }
+
+        function hexToRGB(hex) {
+            if (hex.length != 6) {
+                throw "Only six-digit hex colors are allowed.";
+            }
+
+            var aRgbHex = hex.match(/.{1,2}/g);
+            var aRgb = [
+                parseInt(aRgbHex[0], 16),
+                parseInt(aRgbHex[1], 16),
+                parseInt(aRgbHex[2], 16)
+            ];
+            return aRgb;
+        }
+
+        function set_eye_led_color(color) {
+            group = "FaceLeds";
+            // $("[id^=eye_colo_btn_]").removeClass("example_c_ongoing")
+
+            url = "/set_led_color?color=" + color;
+            $.getJSON(
+                url,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                // $("#eye_led_color_btn").removeClass("example_c_ongoing")
+                $("#eye_colo_btn_" + color).addClass("example_c_ongoing");
+                $("#eye_colo_btn_" + color).html("ACTIVE");
+                update_states()
+
+            })
+        }
+
+        function exec_eye_anim(anim) {
+            duration = document.getElementById(anim + "_anim_duration").value;
+            color = document.getElementById("colors_select").value;
+            console.log(color);
+            console.log(anim);
+            if (anim == "rotateEyes" && color == "White") {
+                alert("Please select a color other than white for the eye rotation");
+                return ""
+            }
+            const id = "#" + anim + "_anim_btn";
+
+            // make sure there isn't any other anim currently playing...
+            if ($(id).prop("disabled")) {
+                return
+            }
+
+            $("[id$=_anim_btn]").prop("disabled", true);
+
+            $(id).addClass("example_c_ongoing");
+            $(id).html("...");
+
+            url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration;
+            $.getJSON(
+                url,
+                function (data) {
+                    console.log(data)
+                }
+            ).done(function () {
+                $(id).removeClass("example_c_ongoing");
+                $(id).html($(id).attr("default_text"));
+                $("[id$=_anim_btn]").prop("disabled", false);
+                update_states()
+
+            })
+        }
+
+        function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (a == null || b == null) return false;
+            if (a.length !== b.length) return false;
+
+            for (var i = 0; i < a.length; ++i) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        function degrees_to_radians(degrees) {
+            var pi = Math.PI;
+            return degrees * (pi / 180);
+        }
+
+        function add_keyboard_shortcut(key_list, id) {
+            /*
+            Binds a specific UI buttons to keyboard shortcuts
+            @param key_list: List containing all the Mousetrap key values for the shortcut
+            */
+            for (const [key, value] of Object.entries(keyboard_shortcuts)) {
+                //console.log(`${key}: ${value}`);
+                if (arraysEqual(value, key_list)) {
+                    console.log("EQ:", value, key_list);
+                    msg = "Dublicate shortcut detected!\n";
+                    msg += "1) #" + key + ": " + value.join("+") + "\n";
+                    msg += "2) #" + id + ": " + key_list.join("+") + " (is now bound)\n\n";
+                    msg += "Change this in the YAML config file.";
+                    alert(msg)
+                }
+            }
+            Mousetrap.bind(
+                key_list.join("+"), function () {
+                    $("#" + id).click();
+                }
+            );
+            keyboard_shortcuts[id] = key_list
+        }
+
+
+        //keyboard listener for keyboard control of pepper motors
+        document.addEventListener('keydown', function (event) {
+            if (!window.session_is_connected) {
+                console.log("Session isn't connected");
+                return
+            }
+
+            // MOVE HEAD:
+            Mousetrap.bind("down", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HeadPitch&val=+0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            Mousetrap.bind("up", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HeadPitch&val=-0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            Mousetrap.bind("left", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HeadYaw&val=+0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+            Mousetrap.bind("right", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HeadYaw&val=-0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            // DRIVING
+            Mousetrap.bind("alt+up", function () {
+                x = $("#drive_distance_input").val();
+                if (x == "") {
+                    alert("Please enter a valid value for move distance");
+                    document.getElementById("drive_distance_input").focus();
+                    return
+                }
+                x = x / 100;
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+
+                    $.getJSON(
+                        "/move_to?x=" + x + "&y=0&theta=0",
+                        function (data) {
+                            console.log(data);
+                            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            Mousetrap.bind("alt+down", function () {
+                x = $("#drive_distance_input").val();
+                if (x == "") {
+                    alert("Please enter a valid value for move distance");
+                    document.getElementById("drive_distance_input").focus();
+                    return
+                }
+                x = x * -1;
+                x = x / 100;
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+
+                    $.getJSON(
+                        "/move_to?x=" + x + "&y=0&theta=0",
+                        function (data) {
+                            console.log(data);
+                            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            Mousetrap.bind("alt+left", function () {
+                theta = $("#rotation_degree_input").val();
+                if (theta == "") {
+                    alert("Please enter a valid value for rotation degrees");
+                    document.getElementById("rotation_degree_input").focus();
+                    return
+                }
+                theta = (degrees_to_radians(theta));
+
+
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+
+                    $.getJSON(
+                        "/move_to?x=0&y=0&theta=" + theta,
+                        function (data) {
+                            console.log(data);
+                            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            Mousetrap.bind("alt+right", function () {
+                theta = $("#rotation_degree_input").val();
+                if (theta == "") {
+                    alert("Please enter a valid value for rotation degrees");
+                    document.getElementById("rotation_degree_input").focus();
+                    return
+                }
+                theta = theta * -1;
+                theta = (degrees_to_radians(theta));
+
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+
+                    $.getJSON(
+                        "/move_to?x=0&y=0&theta=" + theta,
+                        function (data) {
+                            console.log(data);
+                            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
+            // PANIC STOP BTN
+            Mousetrap.bind("escape", function () {
+                $.getJSON(
+                    "/stop_motion",
+                    function (data) {
+                        console.log(data);
+                        $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
+                    })
+            });
+
+            // HIP MOVEMENT
+            Mousetrap.bind("shift+down", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HipPitch&val=+0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+            Mousetrap.bind("shift+up", function () {
+                $.getJSON(
+                    "/move_joint?axis=HipPitch&val=-0.2",
+                    function (data) {
+                        console.log(data);
+                    })
+            });
+            Mousetrap.bind("shift+left", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HipRoll&val=+0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+            Mousetrap.bind("shift+right", function () {
+                if (!motion_blocking) {
+                    motion_blocking = true;
+                    $("#drive_distance_input").prop('disabled', true);
+                    $("#rotation_degree_input").prop('disabled', true);
+                    $.getJSON(
+                        "/move_joint?axis=HipRoll&val=-0.2",
+                        function (data) {
+                            console.log(data);
+                        }).done(function () {
+                        motion_blocking = false;
+                        $("#drive_distance_input").prop('disabled', false);
+                        $("#rotation_degree_input").prop('disabled', false);
+                    })
+                }
+            });
+
         });
-      }
-    )
-  }
 
-  function connect_robot(ip=""){
-    if (ip=="") {  // depends on reconnect or not whether parameter is set...
-      robot_ip = document.getElementById("pepper_select_ips").value; // get ip from select option
-    } else {
-      robot_ip = ip
-    }
+        // for reconnecting upon reload of site
+        {% if reconnect_ip != "" %}
+            console.log("reconnecting to", '{{reconnect_ip}}');
+            connect_robot(ip = '{{reconnect_ip}}');
+        {% endif %}
 
-    const identifier = "#connect_btn";
+        function disable_all() {
+            $(":button").prop('disabled', true); // Disable all the buttons
+            $(":input").prop('disabled', true); // Disable all the inputs
+            $("#connect_btn").prop("disabled", false); // enable connect btn
+            $("#pepper_select_ips").prop("disabled", false) // enable pepper dropdown
 
-    $(identifier).html("..."); // set btn text to ...
-    $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
-    $.getJSON( // async call flask function with arguments
-      "/connect_robot?ip=" + robot_ip,
-      function(data) {
-        console.log(data)
-
-      }).done(function() {
-        update_states(); // set all the dynamic values on the UI
-
-        $(identifier).html("Connected"); // set btn text
-        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-        $(identifier).addClass("example_c_green"); // give class for succes
-
-        $(":button").prop('disabled', false); // enable all btns on successful connect
-        $(":input").prop('disabled', false); // enable all the inputs
-
-        // periodically querry all states
-        setInterval(update_states, 1000);
-
-        window.session_is_connected = true;
-
-    }).fail(function() {
-      $(identifier).html("FAILURE"); // set btn text to ...
-      $(identifier).removeClass("example_c_ongoing");
-      $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
-    })
-  }
-  function set_autonomous_state(){
-    state = document.getElementById("autonomous_states").value;
-
-    $.getJSON( // async call flask function with arguments
-      "/set_autonomous_state?state=" + state,
-      function(data) {
-        console.log(data);
-    }).done(function() {
-        update_states()
-    }).fail(function() {
-        update_states()
-    })
-  }
-
-  function toggle_setting(setting){
-    const identifier = "#toggle_btn_" + setting;
-    $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
-    $(identifier).removeClass("example_c_green"); // remove class for ongoing
-    $(identifier).removeClass("example_c_red"); // remove class for ongoing
-    $(identifier).html("...");
-
-    const url = "/toggle_setting?setting=" + setting;
-    console.log(url);
-    $.getJSON( // async call flask function with arguments
-      url,
-      function(data) {
-        console.log(data);
-        toggle_btn_handle(identifier, data["new_state"]);
-        if (setting == "blinking" && data["new_state"]) {
-          if (document.getElementById("autonomous_states").value != "interactive") {
-              alert("Pepper only blinks when autonomous state is set to 'Interactive'!")
-            }
         }
-      }).done(function() {
-        update_states()
-      })
-  }
 
-  function say_custom_text() {
-    let text = $("#custom_text_msg").val();
+        //disable all elements on load
+        window.onload = disable_all;
 
-    $("#custom_text_btn").html("..."); // set btn text to ...
-    $("#custom_text_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
-
-    $.getJSON(
-      "/say_text?msg=" + text,
-      function(data) {
-        console.log(data);
-      }
-    ).done(function() {
-      $("#custom_text_btn").html("Say it");
-      $("#custom_text_btn").removeClass("example_c_ongoing");
-      update_states()
-    })
-  }
-
-  function play_audio(name, index) {
-    // depending on value of btn we either start playing audio or interrupt it
-    // console.log($("#audio_file_"+index).text())
-
-    const id = "#audio_file_"+index;
-
-    if ($(id).prop("disabled")) {
-      return
-    }
-
-    if ($(id).text() == "STOP") {
-            // clearing the tablet removes the browser context though which the js audio signal is being played...
-      $.getJSON(
-        "/stop_sound_play",
-        function(data) {
-          console.log(data)
-        }
-      ).done(function() {
-        // console.log($(id).attr("default_text"))
-        $(id).html($(id).attr("default_text"));
-        $(id).removeClass("example_c_ongoing");
-        $("[id^=image_btn_]").prop('disabled', false);
-        $("[id^=audio_file_]").prop('disabled', false);
-        update_states()
-      })
-    } else {
-      // play audio
-      $(id).html("STOP");
-      $(id).addClass("example_c_ongoing");
-
-      $("[id^=audio_file_]").prop('disabled', true); // also disable all the other sounds btns...
-      $(id).prop("disabled", false);
-
-      $.getJSON(
-      "/play_audio?index=" + index,
-      function(data) {
-        console.log(data);
-      }).done(function() {
-      $(id).html($(id).attr("default_text"));
-      $(id).removeClass("example_c_ongoing");
-      $("[id^=image_btn_]").prop('disabled', false);
-      $("[id^=audio_file_]").prop('disabled', false);
-      update_states()
-      })
-    }
-  }
-
-  function show_img(img_name, index) {
-    const id = "#image_btn_"+index;
-    //depending on the state of the button, we either want to show or hide an image...
-    if ($(id).text() == "HIDE") {
-      // clear the image from the tablet
-      $.getJSON(
-        "/clear_tablet",
-        function(data) {
-          console.log(data)
-        }).done(function() {
-      $(id).html($(id).attr("default_text")); // set btn text
-          $(id).removeClass("example_c_ongoing");
-          update_states()
-      })
-    } else {
-      // show the image on the tablet
-        //const url = "show_tablet_item?item=" + img_name;
-        // const url = "show_tablet_item?index=" + index;
-        // console.log(url);
-
-      $.getJSON(
-      "/show_tablet_item/" + index,
-      function(data) {
-        console.log(data);
-      }).done(function() {
-        $(id).html("HIDE"); // set btn text
-        $(id).addClass("example_c_ongoing");
-        update_states()
-      })
-    }
-
-    $("[id^=image_btn_]").each(function( iter_ind ) {
-        let iter_id = "#image_btn_"+iter_ind;
-      if (iter_ind != index) {
-        $(iter_id).html($(iter_id).attr("default_text"));
-        $(iter_id).removeClass("example_c_ongoing")
-      }
-
-  });
-  }
-
-  function set_engagement_state() {
-    mode = document.getElementById("engagement_states").value;
-    $.getJSON( // async call flask function with arguments
-      "/set_engagement_mode?mode=" + mode,
-      function(data) {
-        console.log(data);
-      }
-    ).done(function() {
-        update_states()
-    }).fail(function() {
-        update_states()
-    })
-  }
-
-  function setVolume(reset=false) {
-    if (reset) {
-      target_volume = 10;
-      $("#volume_slider").val(10)
-    } else {
-      target_volume = $("#volume_slider").val()
-    }
-    $.getJSON(
-      "/adjust_volume?volume=" + target_volume,
-      function(data){
-        console.log(data);
-      }
-    );
-  }
-
-  function exec_anim_speech(name, index) {
-    const id = "#anim_speech_btn_" + index;
-
-    if ($(id).prop("disabled")) {
-      // make sure nothing else is currently being said
-      return
-    }
-
-    $("[id^=anim_speech_btn_]").prop("disabled", true);
-    $("[id^=custom_text_btn]").prop("disabled", true);
-
-    $(id).html("...");
-    $(id).addClass("example_c_ongoing");
-    $.getJSON(
-      "exec_anim_speech?index=" + index,
-      function(data){
-        console.log(data)
-      }
-    ).done(function() {
-      $(id).html($(id).attr("default_text"));
-      $(id).removeClass("example_c_ongoing");
-      $("[id^=anim_speech_btn_]").prop("disabled", false);
-      $("[id^=custom_text_btn]").prop("disabled", false);
-
-      update_states()
-    });
-  }
-
-  function exec_gesture(name, index) {
-    const id = "#gesture_btn_" + index;
-
-    if ($(id).prop("disabled")) {
-      return
-    }
-
-    $(id).html("...");
-    $(id).addClass("example_c_ongoing");
-    $("[id^=gesture_btn_]").prop("disabled", true);
-    $("[id^=custom_gesture_btn]").prop("disabled", true);
-
-    $.getJSON(
-      "exec_gesture?index=" + index,
-      function(data){
-        console.log(data)
-      }
-    ).done(function() {
-      $(id).html($(id).attr("default_text"));
-      $(id).removeClass("example_c_ongoing");
-      $("[id^=gesture_btn_]").prop("disabled", false);
-      $("[id^=custom_gesture_btn]").prop("disabled", false);
-
-      update_states()
-    });
-  }
-
-  function exec_custom_gesture() {
-    $("#custom_gesture_btn").html("...");
-    $("#custom_gesture_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
-
-    let gesture_string = $("#custom_gesture_string").val();
-    gesture_string = gesture_string.trim();
-
-    gesture_string = encodeURIComponent(gesture_string);
-
-    console.log(gesture_string);
-
-    $.getJSON(
-      "exec_custom_gesture?string=" + gesture_string,
-      function(data){
-        console.log(data)
-      }
-    ).done(function() {
-      $("#custom_gesture_btn").html("EXECUTE");
-      $("#custom_gesture_btn").removeClass("example_c_ongoing"); // remove class for ongoing
-      update_states()
-    });
-  }
-
-  function set_tts_param(param, reset=false) {
-    if (param == "speed") {
-      if (reset){
-        target_val = 100;
-        $("#voice_speed_input").val(100);
-      } else {
-        target_val = $("#voice_speed_input").val();
-      }
-    } else {
-      if (reset) {
-        target_val = 100;
-        $("#voice_pitch_input").val(100);
-
-      } else {
-        target_val = $("#voice_pitch_input").val();
-      }
-    }
-    $.getJSON(
-      "/set_tts_param?param=" + param + "&value=" + target_val,
-      function(data){
-        console.log(data);
-      }
-    );
-  }
-
-  function add_ongoing(identifier) {
-    $(identifier).removeClass("example_c_green");
-    $(identifier).addClass("example_c_ongoing")
-  }
-
-  function add_uncommited_flag(identifier) {
-    console.log("adding uncommited flag", identifier);
-    $(identifier).prop("has_uncommited_state", true)
-  }
-
-  function set_collision_avoidance(type) {
-    // let is fine aswell, can only be accessed in this code block. const can not be reassigned a value...
-    let bt_identifier = "";
-    let input_identifier = "";
-    let value = 0;
-    let payload = "";
-    if (type == "tangential") {
-      input_identifier = "#tangential_collision";
-      value = $(input_identifier).val();
-      payload = "?param=Tangential&value="
-    } else {
-      input_identifier = "#orthogonal_collision";
-      value = $(input_identifier).val();
-      payload = "?param=Orthogonal&value="
-    }
-
-    value = value / 100;  // values is given in CM, expects m
-    payload += value;
-
-    url = "/set_collision_radius" + payload;
-    console.log(url);
-
-    $.getJSON(
-      url,
-      function(data){
-        console.log(data);
-      }).done(function() {
-      $(input_identifier).prop("has_uncommited_state", false);
-      update_states()
-    });
-  }
-
-  function enter_resting_pos() {
-    $.getJSON(
-      "/resting_position",
-      function(data){
-        console.log(data);
-      }
-    )
-  }
-
-  function netural_stand_position() {
-    $.getJSON(
-      "/netural_stand_position",
-      function(data){
-        console.log(data);
-      }
-    )
-  }
-
-  function show_camera_stream() {
-    $.getJSON(
-      "/camera_view"
-    )
-  }
-
-  function setLedIntensity(reset=false) {
-    group = "FaceLeds";
-
-    if (reset) {
-      intensity = 100
-    } else {
-      intensity = $("#intensity_slider").val()
-    }
-
-    url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity;
-
-    if ($("#toggle_btn_blinking").html() == "ON") {
-              alert("Blinking resets intensity, consider disabling the setting!")
-    }
-
-    $.getJSON(
-      url,
-      function(data) {
-        console.log(data)
-      }
-    ).done(function(){
-      update_states()
-    })
-  }
-
-  function componentToHex(c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
-  }
-
-  function rgbToHex(r, g, b) {
-    r = r * 255;
-    g = g * 255;
-    b = b * 255;
-    return "#" + componentToHex(Math.round(r)) + componentToHex(Math.round(g)) + componentToHex(Math.round(b));
-  }
-
-function hexToRGB (hex){
-    if(hex.length != 6){
-        throw "Only six-digit hex colors are allowed.";
-    }
-
-    var aRgbHex = hex.match(/.{1,2}/g);
-    var aRgb = [
-        parseInt(aRgbHex[0], 16),
-        parseInt(aRgbHex[1], 16),
-        parseInt(aRgbHex[2], 16)
-    ];
-    return aRgb;
-}
-
-  function set_eye_led_color(color) {
-    group = "FaceLeds";
-    // $("[id^=eye_colo_btn_]").removeClass("example_c_ongoing")
-
-    url = "/set_led_color?color=" + color;
-    $.getJSON(
-      url,
-      function(data) {
-        console.log(data)
-      }
-    ).done(function() {
-      // $("#eye_led_color_btn").removeClass("example_c_ongoing")
-      $("#eye_colo_btn_"+color).addClass("example_c_ongoing");
-      $("#eye_colo_btn_"+color).html("ACTIVE");
-      update_states()
-
-    })
-  }
-
-  function exec_eye_anim(anim) {
-    duration = document.getElementById(anim + "_anim_duration").value;
-    color = document.getElementById("colors_select").value;
-    console.log(color);
-    console.log(anim);
-    if (anim == "rotateEyes" && color == "White") {
-      alert("Please select a color other than white for the eye rotation");
-      return ""
-    }
-    const id = "#" + anim + "_anim_btn";
-
-    // make sure there isn't any other anim currently playing...
-    if ($(id).prop("disabled")) {
-      return
-    }
-
-    $("[id$=_anim_btn]").prop("disabled", true);
-
-    $(id).addClass("example_c_ongoing");
-    $(id).html("...");
-
-    url = "/exec_eye_anim?anim=" + anim + "&color=" + color + "&secs=" + duration;
-    $.getJSON(
-      url,
-      function(data) {
-        console.log(data)
-      }
-    ).done(function() {
-      $(id).removeClass("example_c_ongoing");
-      $(id).html($(id).attr("default_text"));
-      $("[id$=_anim_btn]").prop("disabled", false);
-      update_states()
-
-    })
-  }
-
-  function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length !== b.length) return false;
-
-  for (var i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
-  function degrees_to_radians(degrees) {
-      var pi = Math.PI;
-      return degrees * (pi/180);
-  }
-
-  function add_keyboard_shortcut(key_list, id) {
-    /*
-    Binds a specific UI buttons to keyboard shortcuts
-    @param key_list: List containing all the Mousetrap key values for the shortcut
-    */
-    for (const [key, value] of Object.entries(keyboard_shortcuts)) {
-      //console.log(`${key}: ${value}`);
-      if (arraysEqual(value, key_list)) {
-        console.log("EQ:", value, key_list);
-        msg = "Dublicate shortcut detected!\n";
-        msg += "1) #" + key + ": " + value.join("+") + "\n";
-        msg += "2) #" + id + ": " + key_list.join("+") + " (is now bound)\n\n";
-        msg += "Change this in the YAML config file.";
-        alert(msg)
-      }
-    }
-    Mousetrap.bind(
-      key_list.join("+"), function() {
-        $("#"+id).click();
-      }
-    );
-    keyboard_shortcuts[id] = key_list
-  }
-
-
-  //keyboard listener for keyboard control of pepper motors
-  document.addEventListener('keydown', function(event) {
-    if (!window.session_is_connected) {
-      console.log("Session isn't connected");
-      return
-    }
-
-    // MOVE HEAD:
-    Mousetrap.bind("down", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HeadPitch&val=+0.2",
-                function (data) {
-                console.log(data);
-            }).done(function () {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-            })
-        }
-    });
-
-    Mousetrap.bind("up", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HeadPitch&val=-0.2",
-                function (data) {
-                    console.log(data);
-            }).done(function () {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-            })
-        }
-    });
-
-    Mousetrap.bind("left", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HeadYaw&val=+0.2",
-                function(data){
-                console.log(data);
-            }).done(function () {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-            })
-        }
-    });
-    Mousetrap.bind("right", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HeadYaw&val=-0.2",
-                function(data){
-                console.log(data);
-            }).done(function () {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-            })
-        }
-    });
-
-    // DRIVING
-    Mousetrap.bind("alt+up", function() {
-      x = $("#drive_distance_input").val();
-      if (x  == "") {
-        alert("Please enter a valid value for move distance");
-        document.getElementById("drive_distance_input").focus();
-        return
-      }
-      x = x / 100;
-      if (!motion_blocking) {
-        motion_blocking = true;
-        $("#drive_distance_input").prop('disabled', true);
-        $("#rotation_degree_input").prop('disabled', true);
-
-        $.getJSON(
-        "/move_to?x=" + x + "&y=0&theta=0",
-        function(data){
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        }).done(function() {
-          motion_blocking = false;
-          $("#drive_distance_input").prop('disabled', false);
-          $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-
-    Mousetrap.bind("alt+down", function() {
-      x = $("#drive_distance_input").val();
-      if (x  == "") {
-        alert("Please enter a valid value for move distance");
-        document.getElementById("drive_distance_input").focus();
-        return
-      }
-      x = x *-1;
-      x = x / 100;
-      if (!motion_blocking) {
-        motion_blocking = true;
-        $("#drive_distance_input").prop('disabled', true);
-        $("#rotation_degree_input").prop('disabled', true);
-
-        $.getJSON(
-          "/move_to?x=" + x + "&y=0&theta=0",
-          function(data){
-            console.log(data);
-            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-          }).done(function() {
-          motion_blocking = false;
-          $("#drive_distance_input").prop('disabled', false);
-          $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-
-    Mousetrap.bind("alt+left", function() {
-      theta = $("#rotation_degree_input").val();
-      if (theta  == "") {
-        alert("Please enter a valid value for rotation degrees");
-        document.getElementById("rotation_degree_input").focus();
-        return
-      }
-      theta = (degrees_to_radians(theta));
-
-
-      if (!motion_blocking) {
-        motion_blocking = true;
-        $("#drive_distance_input").prop('disabled', true);
-        $("#rotation_degree_input").prop('disabled', true);
-
-        $.getJSON(
-          "/move_to?x=0&y=0&theta=" + theta,
-          function(data){
-            console.log(data);
-            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-          }).done(function() {
-          motion_blocking = false;
-          $("#drive_distance_input").prop('disabled', false);
-          $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-
-    Mousetrap.bind("alt+right", function() {
-      theta = $("#rotation_degree_input").val();
-      if (theta  == "") {
-        alert("Please enter a valid value for rotation degrees");
-        document.getElementById("rotation_degree_input").focus();
-        return
-      }
-      theta = theta *-1;
-      theta = (degrees_to_radians(theta));
-
-      if (!motion_blocking) {
-        motion_blocking = true;
-        $("#drive_distance_input").prop('disabled', true);
-        $("#rotation_degree_input").prop('disabled', true);
-
-        $.getJSON(
-          "/move_to?x=0&y=0&theta=" + theta,
-          function(data){
-            console.log(data);
-            $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-          }).done(function() {
-          motion_blocking = false;
-          $("#drive_distance_input").prop('disabled', false);
-          $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-
-    // PANIC STOP BTN
-    Mousetrap.bind("escape", function() {
-      $.getJSON(
-        "/stop_motion",
-        function(data) {
-          console.log(data);
-          $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
-        })
-    });
-
-    // HIP MOVEMENT
-    Mousetrap.bind("shift+down", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HipPitch&val=+0.2",
-                function(data){
-                console.log(data);
-            }).done(function() {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-    Mousetrap.bind("shift+up", function() {
-      $.getJSON(
-        "/move_joint?axis=HipPitch&val=-0.2",
-        function(data){
-          console.log(data);
-        })
-    });
-    Mousetrap.bind("shift+left", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HipRoll&val=+0.2",
-                function(data){
-                    console.log(data);
-            }).done(function() {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-    Mousetrap.bind("shift+right", function() {
-        if (!motion_blocking) {
-            motion_blocking = true;
-            $("#drive_distance_input").prop('disabled', true);
-            $("#rotation_degree_input").prop('disabled', true);
-            $.getJSON(
-                "/move_joint?axis=HipRoll&val=-0.2",
-                function(data){
-                console.log(data);
-            }).done(function() {
-                motion_blocking = false;
-                $("#drive_distance_input").prop('disabled', false);
-                $("#rotation_degree_input").prop('disabled', false);
-        })
-      }
-    });
-
-  });
-
-  // for reconnecting upon reload of site
-  {% if reconnect_ip != "" %}
-    console.log("reconnecting to", '{{reconnect_ip}}');
-    connect_robot(ip='{{reconnect_ip}}');
-  {% endif %}
-
-  function disable_all() {
-    $(":button").prop('disabled', true); // Disable all the buttons
-    $(":input").prop('disabled', true); // Disable all the inputs
-    $("#connect_btn").prop("disabled", false); // enable connect btn
-    $("#pepper_select_ips").prop("disabled", false) // enable pepper dropdown
-
-  }
-
-  //disable all elements on load
-  window.onload = disable_all;
-
-</script>
+    </script>
 </head>
 <body>
 
 <div class="grid-container">
-  <!-- Pepper  select -->
-  <div class="pepper_select">
-    <h2>Select robot</h2>
-    <div class="row">
-      <select name="pepper_ips" id="pepper_select_ips">
-        {%for ip in config["pepper_ips"]%}
-          <option value="{{ip}}">{{ip}}</option>
-        {%endfor%}
-      </select>
-      <br>
-      <br>
-    </div>
-
-
-      <div class="row">
-        <a href="#" onclick="connect_robot(ip='')">
-          <button class="example_c" id="connect_btn">Connect</button>
-        </a>
-      </div>
-      <br>
-
-      <div class="row">
-        <a href="/camera_view" target="_blank">
-          <button class="example_c" id="view_camera_stream">Camera & Microphone</button>
-        </a>
-      </div>
-      <br>
-
-      <div class="row">
-        <a href="/tablet_drawer" target="_blank">
-          <button class="example_c" id="view_camera_stream">Tablet activity</button>
-        </a>
-      </div>
-      <br>
-
-  </div>
-
-  <div class="tablet">
-    <h2>Pepper tablet</h2>
-
-    {%for img in config["tablet_items"]%}
-      <!-- Here, we iterate over all the messages and create labels and buttons for each-->
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{img["title"]}}</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button class="example_c capitalize"
-          id="image_btn_{{loop.index0}}"
-          file="{{img['file_name']}}"
-          onclick="show_img('{{img["file_name"]}}', {{loop.index0}})"
-          default_text="
-          {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-            {{ img["key_comb"]|safe|prettyshortcut }}
-          {% else %}
-            SHOW
-          {% endif %}">
-          {% if (img["key_comb"] is defined) and  img["key_comb"] %}
-              {{ img["key_comb"]|safe|prettyshortcut }}
-          {% else %}
-            SHOW
-          {% endif %}
-          </button>
-        </div>
-      </div>
-      <br>
-
-      <!-- add the keyboard shortcut to the button, if the flag has been given -->
-      {% if (img["key_comb"] is defined) and img["key_comb"] %}
-        <script>
-          add_keyboard_shortcut({{ img["key_comb"]|safe }}, "image_btn_{{loop.index0}}" )
-        </script>
-      {% endif %}
-
-      {%endfor%}
-
-  </div>
-
-
-  <!-- Pepper  settings -->
-  <div class="autonomous_life_settings">
-    <h2>Autonomous life settings</h2>
-
-    <!-- <div style="width: 50%; float: left;"> -->
-    <div style="width: 100%; float: left;">
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/ref/life/state_machine_management.html#autonomouslife-states#states" target="blank">
-            Autonomous state:
-          </a>
+    <!-- Pepper  select -->
+    <div class="pepper_select">
+        <h2>Select robot</h2>
+        <div class="row">
+            <select name="pepper_ips" id="pepper_select_ips">
+                {% for ip in config["pepper_ips"] %}
+                    <option value="{{ ip }}">{{ ip }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
         </div>
 
-        <div class="btn_wrapper">
-          <select
-            name="pepper_ips"
-            id="autonomous_states"
-            oninput="add_uncommited_flag('#autonomous_states')"
-            onchange="set_autonomous_state()"
-            style="margin-left: 10px;">
-            <option value="interactive">Interactive</option>
-            <option value="solitary">Solitary</option>
-            <option value="safeguard">Safeguard</option>
-            <option value="disabled">Disabled</option>
-          </select>
-        </div>
 
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision.html#pepp-pepper" target="blank">
-            Tangential collision avoidance:
-          </a>
+        <div class="row">
+            <a href="#" onclick="connect_robot(ip='')">
+                <button class="example_c" id="connect_btn">Connect</button>
+            </a>
         </div>
-        <input
-        type="text"
-        placeholder="10"
-        id="tangential_collision"
-        style="width: 10%; float: left; margin-left: 10px;"
-        oninput="add_uncommited_flag('#tangential_collision')"
-        onchange="set_collision_avoidance('tangential')">
-        <span style="float:left; margin-left: 10px">cm</span>
         <br>
-      </div>
-      <br>
 
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision.html#pepp-pepper" target="blank">
-            Orthogonal collision avoidance:
-          </a>
+        <div class="row">
+            <a href="/camera_view" target="_blank">
+                <button class="example_c" id="view_camera_stream">Camera & Microphone</button>
+            </a>
         </div>
-        <input
-        type="text"
-        placeholder="10"
-        id="orthogonal_collision"
-        style="width: 10%; float: left; margin-left: 10px;"
-        oninput="add_uncommited_flag('#orthogonal_collision')"
-        onchange="set_collision_avoidance('orthogonal')">
-        <span style="float:left; margin-left: 10px">cm</span>
         <br>
-      </div>
-      <br>
 
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/alautonomousblinking.html#alautonomousblinking" target=blank>
-            Toggle blinking:
-          </a>
+        <div class="row">
+            <a href="/tablet_drawer" target="_blank">
+                <button class="example_c" id="view_camera_stream">Tablet activity</button>
+            </a>
         </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_blinking"
-          onclick="toggle_setting('blinking')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement" target=blank>
-            Toggle listening movements:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_listening"
-          onclick="toggle_setting('listening')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement" target=blank>
-            Toggle speaking movements:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_speaking"
-          onclick="toggle_setting('speaking')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/alspeakingmovement.html#alspeakingmovement" target=blank>
-            Toggle basic awareness:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_basic_awareness"
-          onclick="toggle_setting('basic_awareness')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row" style="position: relative;">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/albasicawareness.html#engagement-modes" target=blank>
-            Engagement mode:
-          </a>
-        </div>
-
-        <div class="btn_wrapper">
-          <select
-          name="engagement_state"
-          id="engagement_states"
-          oninput="add_uncommited_flag('#engagement_states')"
-          onchange="set_engagement_state()"
-          style="margin-left: 10px;">
-            <option value="Unengaged">Unengaged</option>
-            <option value="SemiEngaged">SemiEngaged</option>
-            <option value="FullyEngaged">FullyEngaged</option>
-          </select>
-        </div>
-
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Head breathing:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_head_breathing"
-          onclick="toggle_setting('head_breathing')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target=blank>
-            Arms breathing:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_arms_breathing"
-          onclick="toggle_setting('arms_breathing')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Body breathing:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_body_breathing"
-          onclick="toggle_setting('body_breathing')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
-
-      <div class="row">
-        <div class="btn_label_wrapper">
-          <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
-            Legs breathing:
-          </a>
-        </div>
-        <div class="btn_wrapper">
-          <button
-          id="toggle_btn_legs_breathing"
-          onclick="toggle_setting('legs_breathing')"
-          class="example_c"
-          title="Current status">
-          On
-        </button>
-        </div>
-      </div>
-      <br>
+        <br>
 
     </div>
 
-  </div>
+    <div class="tablet">
+        <h2>Pepper tablet</h2>
 
-  <!-- Pepper  speech commands -->
-  <div class="pepper_speech">
-    <h2>Pepper speech</h2>
-
-    <table style="width:100%">
-      <tr>
-        <td>Adjust volume</td>
-        <td>
-          <input
-          id="volume_slider"
-          type="range"
-          min="1" max="100" value="50"
-          onchange="setVolume()"
-          style="width: 100%;">
-        </td>
-        <td>
-          <button class="example_c" onclick="setVolume('speed', reset=true)">RESET</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Voice speed</td>
-        <td>
-          <input
-          id="voice_speed_input"
-          type="range"
-          min="50" max="400" value="100"
-          onchange="set_tts_param('speed')"
-          style="width: 100%;">
-        </td>
-        <td>
-          <button class="example_c" onclick="set_tts_param('speed', reset=true)">RESET</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Voice pitch</td>
-        <td>
-          <input
-          id="voice_pitch_input"
-          type="range"
-          min="1" max="400" value="100"
-          onchange="set_tts_param('pitchShift')"
-          style="width: 100%;">
-        </td>
-        <td>
-          <button class="example_c" onclick="set_tts_param('pitchShift', reset=true)">RESET</button>
-        </td>
-      </tr>
-    </table>
-
-    <!-- COLUMN 1: SPEECH-->
-    <div style="width: 50%; float: left;">
-
-      <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-        <h3 style="margin-bottom: 5px;">Animated speech</h3>
-      </a>
-
-      {%for anim_speech in config["animated_speech"]%}
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{anim_speech["title"]}}</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button
-            title="{{anim_speech['tooltip']}}"
-            class="example_c capitalize"
-            id="anim_speech_btn_{{loop.index0}}"
-            default_text="
-              {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-                EXECUTE
-              {% endif %}"
-            onclick="exec_anim_speech('{{anim_speech["title"]}}', {{loop.index0}})">
-            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-              {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-            {% else %}
-              EXECUTE
-            {% endif %}
-          </button>
-        </div>
-      </div>
-      <br>
-
-        <!-- add the keyboard shortcut to the button, if the flag has been given-->
-        {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-          <script>
-            // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
-            // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-            add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}" )
-          </script>
-        {% endif %}
-      {%endfor%}
-
-      <div class="row">
-        <span>Direct message:</span>
-        <input type="text" placeholder="Type custom message here..." id="custom_text_msg" class="text_input">
-        <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
-      </div>
-      <br>
-
-    </div>
-
-  <!-- COLUMN 2: Audio files-->
-  <div style="width: 50%; float: left;">
-
-    <h3>Audio files</h3>
-
-    {%for audio in config["audio_files"]%}
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>{{audio["title"]}}</span>
-        </div>
-        <div class="speech_btn_wrapper">
-          <button
-            title="{{audio['location']}}"
-            class="example_c capitalize"
-            id="audio_file_{{loop.index0}}"
-            onclick="play_audio('{{audio["title"]}}', {{loop.index0}})"
-            default_text="
-            {% if (audio["key_comb"] is defined) and audio["key_comb"] %}
-              {{ audio["key_comb"]|safe|prettyshortcut }}
-            {% else %}
-              SHOW
-            {% endif %}">
-            {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
-              {{ audio["key_comb"]|safe|prettyshortcut }}
-            {% else %}
-              PLAY
-            {% endif %}
-            </button>
-        </div>
-      </div>
-      <br>
-
-      <!-- add the keyboard shortcut to the button, if the flag has been given -->
-      {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
-        <script>
-          add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}" )
-        </script>
-      {% endif %}
-
-      {%endfor%}
-
-  </div>
-
-  </div>
-
-  <!-- Camera stream  -->
-  <!--
-  <div class="camera">
-    <h2>Camera</h2>
-    <img src="../static/imgs/umea_logo.png" style="max-width: 400px">
-  </div>
-  -->
-
-  <!-- Pepper  motion comands -->
-  <div class="pepper_motion">
-    <h2>Pepper motion</h2>
-
-    <div class="row">
-      <!--
-      <img src="../static/tablet_items/arrow_keys.png" style="max-height:80px;">
-      -->
-      <table style="width:100%; border-collapse: collapse;" id="movement_control_table">
-        <tr class="table_row_line">
-          <td style="text-align: right;">Move head</td>
-          <td style="text-align: left;">: Arrow keys</td>
-          <td></td>
-        </tr>
-        <tr class="table_row_line">
-          <td style="text-align: right;">Move base</td>
-          <td style="text-align: left;">: Alt + Arrow keys</td>
-          <td>
-            <div class="speech_lbl_wrapper">
-              <label for="drive_distance_input">Move (cm)</label>
+        {% for img in config["tablet_items"] %}
+            <!-- Here, we iterate over all the messages and create labels and buttons for each-->
+            <div class="row">
+                <div class="speech_lbl_wrapper">
+                    <span>{{ img["title"] }}</span>
+                </div>
+                <div class="speech_btn_wrapper">
+                    <button class="example_c capitalize"
+                            id="image_btn_{{ loop.index0 }}"
+                            file="{{ img['file_name'] }}"
+                            onclick="show_img('{{ img["file_name"] }}', {{ loop.index0 }})"
+                            default_text="
+                                {% if (img["key_comb"] is defined) and  img["key_comb"] %}
+                                    {{ img["key_comb"]|safe|prettyshortcut }}
+                                {% else %}
+                                    SHOW
+                                {% endif %}">
+                        {% if (img["key_comb"] is defined) and  img["key_comb"] %}
+                            {{ img["key_comb"]|safe|prettyshortcut }}
+                        {% else %}
+                            SHOW
+                        {% endif %}
+                    </button>
+                </div>
             </div>
-            <input
-              type="text"
-              id="drive_distance_input"
-              style="width: 20%; float: left; margin-left: 10px;"
-              placeholder="20"
-              value="20">
             <br>
 
-            <div class="speech_lbl_wrapper">
-              <label for="rotation_degree_input">Rotate (degree)</label>
-            </div>
-            <input
-              type="text"
-              id="rotation_degree_input"
-              style="width: 20%; float: left; margin-left: 10px;"
-              placeholder="45"
-              value="45">
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Move Hip</td>
-          <td style="text-align: left;">: Shift + Arrow keys</td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right;">Escape</td>
-          <td style="text-align: left;">: Stop driving</td>
-          <td></td>
-        </tr>
-      </table>
-
-      <button
-        title="Put pepper in resting position"
-        class="example_c"
-        id="resting_pos_btn"
-        onclick="enter_resting_pos()">
-        Resting position
-      </button>
-      <button
-        title="Put pepper in netral stand position"
-        class="example_c"
-        id="resting_pos_btn"
-        onclick="netural_stand_position()">
-       Neutral stand position
-      </button>
-      <br><br>
-      <span>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></span>
-
-    </div>
-    <br>
-
-    <!-- COLUMN 1: EYE LEDS-->
-    <div style="width: 50%; float: left;">
-      <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
-        <h3>Eye Colors</h3>
-      </a>
-
-
-      <div class="row">
-        <div class="speech_lbl_wrapper">
-          <span>Current color: </span>
-        </div>
-        <div class="small-color-box" id="querried_color"></div>
-      </div>
-      <br>
-      <br>
-
-
-      {%for color in config["colors"]%}
-        <div class="row">
-          <div class="speech_lbl_wrapper">
-            <span>{{color["title"]}}</span>
-          </div>
-          <div class="small-color-box" id="color_box_{{ color["title"] }}"></div>
-            <script>
-              // console.log(rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}))
-              $("#color_box_{{ color["title"] }}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
-            </script>
-          <button
-          class="example_c capitalize"
-          onclick="set_eye_led_color('{{color["title"]}}')"
-          default_text="
-            {% if (color["key_comb"] is defined) and color["key_comb"] %}
-              {{ color["key_comb"]|safe|prettyshortcut }}
-            {% else %}
-              OFF
-            {% endif %}"
-          id="eye_colo_btn_{{color["title"]}}">
-            {% if (color["key_comb"] is defined) and color["key_comb"] %}
-              {{ color["key_comb"]|safe|prettyshortcut }}
-            {% else %}
-              OFF
+            <!-- add the keyboard shortcut to the button, if the flag has been given -->
+            {% if (img["key_comb"] is defined) and img["key_comb"] %}
+                <script>
+                    add_keyboard_shortcut({{ img["key_comb"]|safe }}, "image_btn_{{loop.index0}}")
+                </script>
             {% endif %}
-          </button>
 
-          <!-- add the keyboard shortcut to the button, if the flag has been given -->
-          {% if (color["key_comb"] is defined) and  color["key_comb"] %}
-            <script>
-              add_keyboard_shortcut({{ color["key_comb"]|safe }}, "eye_colo_btn_{{color["title"]}}" )
-            </script>
-          {% endif %}
-        </div>
-        <br>
-      {% endfor %}
+        {% endfor %}
+
     </div>
 
-    <!-- COLUMN 2: GESTURES-->
-    <div style="width: 50%; float: left;">
-      <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
-        <h3>Gestures</h3>
-      </a>
 
-      {%for gesture in config["gestures"]%}
+    <!-- Pepper  settings -->
+    <div class="autonomous_life_settings">
+        <h2>Autonomous life settings</h2>
+
+        <!-- <div style="width: 50%; float: left;"> -->
+        <div style="width: 100%; float: left;">
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/ref/life/state_machine_management.html#autonomouslife-states#states"
+                       target="blank">
+                        Autonomous state:
+                    </a>
+                </div>
+
+                <div class="btn_wrapper">
+                    <select
+                            name="pepper_ips"
+                            id="autonomous_states"
+                            oninput="add_uncommited_flag('#autonomous_states')"
+                            onchange="set_autonomous_state()"
+                            style="margin-left: 10px;">
+                        <option value="interactive">Interactive</option>
+                        <option value="solitary">Solitary</option>
+                        <option value="safeguard">Safeguard</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                </div>
+
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision.html#pepp-pepper"
+                       target="blank">
+                        Tangential collision avoidance:
+                    </a>
+                </div>
+                <input
+                        type="text"
+                        placeholder="10"
+                        id="tangential_collision"
+                        style="width: 10%; float: left; margin-left: 10px;"
+                        oninput="add_uncommited_flag('#tangential_collision')"
+                        onchange="set_collision_avoidance('tangential')">
+                <span style="float:left; margin-left: 10px">cm</span>
+                <br>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision.html#pepp-pepper"
+                       target="blank">
+                        Orthogonal collision avoidance:
+                    </a>
+                </div>
+                <input
+                        type="text"
+                        placeholder="10"
+                        id="orthogonal_collision"
+                        style="width: 10%; float: left; margin-left: 10px;"
+                        oninput="add_uncommited_flag('#orthogonal_collision')"
+                        onchange="set_collision_avoidance('orthogonal')">
+                <span style="float:left; margin-left: 10px">cm</span>
+                <br>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/alautonomousblinking.html#alautonomousblinking"
+                       target=blank>
+                        Toggle blinking:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_blinking"
+                            onclick="toggle_setting('blinking')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement"
+                       target=blank>
+                        Toggle listening movements:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_listening"
+                            onclick="toggle_setting('listening')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/allisteningmovement.html#allisteningmovement"
+                       target=blank>
+                        Toggle speaking movements:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_speaking"
+                            onclick="toggle_setting('speaking')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/alspeakingmovement.html#alspeakingmovement"
+                       target=blank>
+                        Toggle basic awareness:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_basic_awareness"
+                            onclick="toggle_setting('basic_awareness')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row" style="position: relative;">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-4/naoqi/interaction/autonomousabilities/albasicawareness.html#engagement-modes"
+                       target=blank>
+                        Engagement mode:
+                    </a>
+                </div>
+
+                <div class="btn_wrapper">
+                    <select
+                            name="engagement_state"
+                            id="engagement_states"
+                            oninput="add_uncommited_flag('#engagement_states')"
+                            onchange="set_engagement_state()"
+                            style="margin-left: 10px;">
+                        <option value="Unengaged">Unengaged</option>
+                        <option value="SemiEngaged">SemiEngaged</option>
+                        <option value="FullyEngaged">FullyEngaged</option>
+                    </select>
+                </div>
+
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
+                        Head breathing:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_head_breathing"
+                            onclick="toggle_setting('head_breathing')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target=blank>
+                        Arms breathing:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_arms_breathing"
+                            onclick="toggle_setting('arms_breathing')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
+                        Body breathing:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_body_breathing"
+                            onclick="toggle_setting('body_breathing')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="btn_label_wrapper">
+                    <a href="http://doc.aldebaran.com/2-1/naoqi/motion/idle.html#breath-configuration" target="blank">
+                        Legs breathing:
+                    </a>
+                </div>
+                <div class="btn_wrapper">
+                    <button
+                            id="toggle_btn_legs_breathing"
+                            onclick="toggle_setting('legs_breathing')"
+                            class="example_c"
+                            title="Current status">
+                        On
+                    </button>
+                </div>
+            </div>
+            <br>
+
+        </div>
+
+    </div>
+
+    <!-- Pepper  speech commands -->
+    <div class="pepper_speech">
+        <h2>Pepper speech</h2>
+
+        <table style="width:100%">
+            <tr>
+                <td>Adjust volume</td>
+                <td>
+                    <input
+                            id="volume_slider"
+                            type="range"
+                            min="1" max="100" value="50"
+                            onchange="setVolume()"
+                            style="width: 100%;">
+                </td>
+                <td>
+                    <button class="example_c" onclick="setVolume('speed', reset=true)">RESET</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Voice speed</td>
+                <td>
+                    <input
+                            id="voice_speed_input"
+                            type="range"
+                            min="50" max="400" value="100"
+                            onchange="set_tts_param('speed')"
+                            style="width: 100%;">
+                </td>
+                <td>
+                    <button class="example_c" onclick="set_tts_param('speed', reset=true)">RESET</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Voice pitch</td>
+                <td>
+                    <input
+                            id="voice_pitch_input"
+                            type="range"
+                            min="1" max="400" value="100"
+                            onchange="set_tts_param('pitchShift')"
+                            style="width: 100%;">
+                </td>
+                <td>
+                    <button class="example_c" onclick="set_tts_param('pitchShift', reset=true)">RESET</button>
+                </td>
+            </tr>
+        </table>
+
+        <!-- COLUMN 1: SPEECH-->
+        <div style="width: 50%; float: left;">
+
+            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
+                <h3 style="margin-bottom: 5px;">Animated speech</h3>
+            </a>
+
+            {% for anim_speech in config["animated_speech"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ anim_speech["title"] }}</span>
+                    </div>
+                    <div class="speech_btn_wrapper">
+                        <button
+                                title="{{ anim_speech['tooltip'] }}"
+                                class="example_c capitalize"
+                                id="anim_speech_btn_{{ loop.index0 }}"
+                                default_text="
+                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                                    {% else %}
+                                        EXECUTE
+                                    {% endif %}"
+                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
+                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                            {% else %}
+                                EXECUTE
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <br>
+
+                <!-- add the keyboard shortcut to the button, if the flag has been given-->
+                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                    <script>
+                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
+                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
+                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
+                    </script>
+                {% endif %}
+            {% endfor %}
+
+            <div class="row">
+                <span>Direct message:</span>
+                <input type="text" placeholder="Type custom message here..." id="custom_text_msg" class="text_input">
+                <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+            </div>
+            <br>
+
+        </div>
+
+        <!-- COLUMN 2: Audio files-->
+        <div style="width: 50%; float: left;">
+
+            <h3>Audio files</h3>
+
+            {% for audio in config["audio_files"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ audio["title"] }}</span>
+                    </div>
+                    <div class="speech_btn_wrapper">
+                        <button
+                                title="{{ audio['location'] }}"
+                                class="example_c capitalize"
+                                id="audio_file_{{ loop.index0 }}"
+                                onclick="play_audio('{{ audio["title"] }}', {{ loop.index0 }})"
+                                default_text="
+                                    {% if (audio["key_comb"] is defined) and audio["key_comb"] %}
+                                        {{ audio["key_comb"]|safe|prettyshortcut }}
+                                    {% else %}
+                                        SHOW
+                                    {% endif %}">
+                            {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
+                                {{ audio["key_comb"]|safe|prettyshortcut }}
+                            {% else %}
+                                PLAY
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <br>
+
+                <!-- add the keyboard shortcut to the button, if the flag has been given -->
+                {% if (audio["key_comb"] is defined) and  audio["key_comb"] %}
+                    <script>
+                        add_keyboard_shortcut({{ audio["key_comb"]|safe }}, "audio_file_{{loop.index0}}")
+                    </script>
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Camera stream  -->
+    <!--
+    <div class="camera">
+      <h2>Camera</h2>
+      <img src="../static/imgs/umea_logo.png" style="max-width: 400px">
+    </div>
+    -->
+
+    <!-- Pepper  motion comands -->
+    <div class="pepper_motion">
+        <h2>Pepper motion</h2>
+
         <div class="row">
-          <div class="speech_lbl_wrapper">
-            <span>{{gesture["title"]}}</span>
-          </div>
-          <div class="speech_btn_wrapper">
+            <!--
+            <img src="../static/tablet_items/arrow_keys.png" style="max-height:80px;">
+            -->
+            <table style="width:100%; border-collapse: collapse;" id="movement_control_table">
+                <tr class="table_row_line">
+                    <td style="text-align: right;">Move head</td>
+                    <td style="text-align: left;">: Arrow keys</td>
+                    <td></td>
+                </tr>
+                <tr class="table_row_line">
+                    <td style="text-align: right;">Move base</td>
+                    <td style="text-align: left;">: Alt + Arrow keys</td>
+                    <td>
+                        <div class="speech_lbl_wrapper">
+                            <label for="drive_distance_input">Move (cm)</label>
+                        </div>
+                        <input
+                                type="text"
+                                id="drive_distance_input"
+                                style="width: 20%; float: left; margin-left: 10px;"
+                                placeholder="20"
+                                value="20">
+                        <br>
+
+                        <div class="speech_lbl_wrapper">
+                            <label for="rotation_degree_input">Rotate (degree)</label>
+                        </div>
+                        <input
+                                type="text"
+                                id="rotation_degree_input"
+                                style="width: 20%; float: left; margin-left: 10px;"
+                                placeholder="45"
+                                value="45">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Move Hip</td>
+                    <td style="text-align: left;">: Shift + Arrow keys</td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Escape</td>
+                    <td style="text-align: left;">: Stop driving</td>
+                    <td></td>
+                </tr>
+            </table>
+
             <button
-              title="{{gesture['tooltip']}}"
-              class="example_c capitalize"
-              id="gesture_btn_{{loop.index0}}"
-              default_text="
-              {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
-                {{ gesture["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-                EXECUTE
-              {% endif %}"
-              onclick="exec_gesture('{{gesture["title"]}}', {{loop.index0}})">
-              {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
-                {{ gesture["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-              EXECUTE
-              {% endif %}
+                    title="Put pepper in resting position"
+                    class="example_c"
+                    id="resting_pos_btn"
+                    onclick="enter_resting_pos()">
+                Resting position
             </button>
-          </div>
+            <button
+                    title="Put pepper in netral stand position"
+                    class="example_c"
+                    id="resting_pos_btn"
+                    onclick="netural_stand_position()">
+                Neutral stand position
+            </button>
+            <br><br>
+            <span>Motion Vector: <span id="motion_vector">[0, 0, 0]</span></span>
+
         </div>
         <br>
-        <!-- add the keyboard shortcut to the button, if the flag has been given -->
-        {% if (gesture["key_comb"] is defined) and gesture["key_comb"] %}
-          <script>
-            add_keyboard_shortcut({{ gesture["key_comb"]|safe }}, "gesture_btn_{{loop.index0}}" )
-          </script>
-        {% endif %}
-        {%endfor%}
+
+        <!-- COLUMN 1: EYE LEDS-->
+        <div style="width: 50%; float: left;">
+            <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
+                <h3>Eye Colors</h3>
+            </a>
+
+
+            <div class="row">
+                <div class="speech_lbl_wrapper">
+                    <span>Current color: </span>
+                </div>
+                <div class="small-color-box" id="querried_color"></div>
+            </div>
+            <br>
+            <br>
+
+
+            {% for color in config["colors"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ color["title"] }}</span>
+                    </div>
+                    <div class="small-color-box" id="color_box_{{ color["title"] }}"></div>
+                    <script>
+                        // console.log(rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}))
+                        $("#color_box_{{ color["title"] }}").css("background", rgbToHex({{color.red}}, {{color.green}}, {{color.blue}}));
+                    </script>
+                    <button
+                            class="example_c capitalize"
+                            onclick="set_eye_led_color('{{ color["title"] }}')"
+                            default_text="
+                                {% if (color["key_comb"] is defined) and color["key_comb"] %}
+                                    {{ color["key_comb"]|safe|prettyshortcut }}
+                                {% else %}
+                                    OFF
+                                {% endif %}"
+                            id="eye_colo_btn_{{ color["title"] }}">
+                        {% if (color["key_comb"] is defined) and color["key_comb"] %}
+                            {{ color["key_comb"]|safe|prettyshortcut }}
+                        {% else %}
+                            OFF
+                        {% endif %}
+                    </button>
+
+                    <!-- add the keyboard shortcut to the button, if the flag has been given -->
+                    {% if (color["key_comb"] is defined) and  color["key_comb"] %}
+                        <script>
+                            add_keyboard_shortcut({{ color["key_comb"]|safe }}, "eye_colo_btn_{{color["title"]}}")
+                        </script>
+                    {% endif %}
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+
+        <!-- COLUMN 2: GESTURES-->
+        <div style="width: 50%; float: left;">
+            <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
+                <h3>Gestures</h3>
+            </a>
+
+            {% for gesture in config["gestures"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ gesture["title"] }}</span>
+                    </div>
+                    <div class="speech_btn_wrapper">
+                        <button
+                                title="{{ gesture['tooltip'] }}"
+                                class="example_c capitalize"
+                                id="gesture_btn_{{ loop.index0 }}"
+                                default_text="
+                                    {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
+                                        {{ gesture["key_comb"]|safe|prettyshortcut }}
+                                    {% else %}
+                                        EXECUTE
+                                    {% endif %}"
+                                onclick="exec_gesture('{{ gesture["title"] }}', {{ loop.index0 }})">
+                            {% if (gesture["key_comb"] is defined) and  gesture["key_comb"] %}
+                                {{ gesture["key_comb"]|safe|prettyshortcut }}
+                            {% else %}
+                                EXECUTE
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <!-- add the keyboard shortcut to the button, if the flag has been given -->
+                {% if (gesture["key_comb"] is defined) and gesture["key_comb"] %}
+                    <script>
+                        add_keyboard_shortcut({{ gesture["key_comb"]|safe }}, "gesture_btn_{{loop.index0}}")
+                    </script>
+                {% endif %}
+            {% endfor %}
+
+            <div class="row">
+                <span>Direct execution:</span>
+                <br>
+                <input type="text" placeholder="animations/Stand/Gestures/Hey_1" value="animations/Stand/Gestures/Hey_1"
+                       id="custom_gesture_string" class="text_input"><br>
+                <button class="example_c" onclick="exec_custom_gesture()" id="custom_gesture_btn">EXECUTE</button>
+            </div>
+            <br>
+
+        </div>
+
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <h2>Eye control</h2>
 
         <div class="row">
-          <span>Direct execution:</span>
-          <br>
-          <input type="text" placeholder="animations/Stand/Gestures/Hey_1" value="animations/Stand/Gestures/Hey_1" id="custom_gesture_string" class="text_input"><br>
-          <button class="example_c" onclick="exec_custom_gesture()" id="custom_gesture_btn">EXECUTE</button>
-        </div>
-        <br>
-
-      </div>
-
-
-
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <h2>Eye control</h2>
-
-    <div class="row">
       <span>
         <a href="http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#ALLedsProxy::rasta__floatCR" target="blank">
           Rasta animation:
         </a>
       </span>
-    <input
-      type="text"
-      value="{{ config["rasta_anim"]["duration"] }}"
-      placeholder="5 seconds"
-      id="rasta_anim_duration"
-      style="width: 50px; margin-left: 10px;">
-      <span>Duraction (s)</span>
+            <input
+                    type="text"
+                    value="{{ config["rasta_anim"]["duration"] }}"
+                    placeholder="5 seconds"
+                    id="rasta_anim_duration"
+                    style="width: 50px; margin-left: 10px;">
+            <span>Duraction (s)</span>
 
-    <button
-        id="rasta_anim_btn"
-        class="example_c"
-        onclick="exec_eye_anim('rasta')"
-        default_text="
-              {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
-                {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-                EXECUTE
-              {% endif %}">
-        {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
-            {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
-        {% else %}
-            EXECUTE
-        {% endif %}
-    </button>
+            <button
+                    id="rasta_anim_btn"
+                    class="example_c"
+                    onclick="exec_eye_anim('rasta')"
+                    default_text="
+                        {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
+                            {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
+                        {% else %}
+                            EXECUTE
+                        {% endif %}">
+                {% if (config["rasta_anim"]["key_comb"] is defined) and  config["rasta_anim"]["key_comb"] %}
+                    {{ config["rasta_anim"]["key_comb"]|safe|prettyshortcut }}
+                {% else %}
+                    EXECUTE
+                {% endif %}
+            </button>
 
-    {% if (config["rasta_anim"]["key_comb"] is defined) and config["rasta_anim"]["key_comb"] %}
-      <script>
-        add_keyboard_shortcut({{ config["rasta_anim"]["key_comb"]|safe }}, "rasta_anim_btn")
-      </script>
-    {% endif %}
+            {% if (config["rasta_anim"]["key_comb"] is defined) and config["rasta_anim"]["key_comb"] %}
+                <script>
+                    add_keyboard_shortcut({{ config["rasta_anim"]["key_comb"]|safe }}, "rasta_anim_btn")
+                </script>
+            {% endif %}
 
-    </div>
-    <br>
+        </div>
+        <br>
 
-    <div class="row">
+        <div class="row">
       <span>
-        <a href="http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#ALLedsProxy::randomEyes__floatCR" target="blank">
+        <a href="http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#ALLedsProxy::randomEyes__floatCR"
+           target="blank">
           Random animation:
         </a>
       </span>
-    <input
-      type="text"
-      value="{{ config["random_anim"]["duration"] }}"
-      placeholder="5 seconds"
-      id="randomEyes_anim_duration"
-      style="width: 50px; margin-left: 10px;">
-    <span>Duraction (s)</span>
+            <input
+                    type="text"
+                    value="{{ config["random_anim"]["duration"] }}"
+                    placeholder="5 seconds"
+                    id="randomEyes_anim_duration"
+                    style="width: 50px; margin-left: 10px;">
+            <span>Duraction (s)</span>
 
-    <button
-        id="randomEyes_anim_btn"
-        class="example_c"
-        onclick="exec_eye_anim('randomEyes')"
-        default_text="
-              {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
-                {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-                EXECUTE
-              {% endif %}">
-        {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
-            {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
-        {% else %}
-            EXECUTE
-        {% endif %}
-    </button>
+            <button
+                    id="randomEyes_anim_btn"
+                    class="example_c"
+                    onclick="exec_eye_anim('randomEyes')"
+                    default_text="
+                        {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
+                            {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
+                        {% else %}
+                            EXECUTE
+                        {% endif %}">
+                {% if (config["random_anim"]["key_comb"] is defined) and  config["random_anim"]["key_comb"] %}
+                    {{ config["random_anim"]["key_comb"]|safe|prettyshortcut }}
+                {% else %}
+                    EXECUTE
+                {% endif %}
+            </button>
 
-    {% if (config["random_anim"]["key_comb"] is defined) and config["random_anim"]["key_comb"] %}
-      <script>
-        add_keyboard_shortcut({{ config["random_anim"]["key_comb"]|safe }}, "randomEyes_anim_btn")
-      </script>
-    {% endif %}
+            {% if (config["random_anim"]["key_comb"] is defined) and config["random_anim"]["key_comb"] %}
+                <script>
+                    add_keyboard_shortcut({{ config["random_anim"]["key_comb"]|safe }}, "randomEyes_anim_btn")
+                </script>
+            {% endif %}
 
-    </div>
-    <br>
+        </div>
+        <br>
 
-    <div class="row">
+        <div class="row">
       <span>
-        <a href="http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#ALLedsProxy::rotateEyes__iCR.floatCR.floatCR" target="blank">
+        <a href="http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#ALLedsProxy::rotateEyes__iCR.floatCR.floatCR"
+           target="blank">
           Rotate Eyes:
         </a>
       </span>
-    <input
-      type="text"
-      value="{{ config["rotate_anim"]["duration"] }}"
-      placeholder="5 seconds"
-      id="rotateEyes_anim_duration"
-      style="width: 50px; margin-left: 10px;">
-    <span>Duraction (s), </span>
+            <input
+                    type="text"
+                    value="{{ config["rotate_anim"]["duration"] }}"
+                    placeholder="5 seconds"
+                    id="rotateEyes_anim_duration"
+                    style="width: 50px; margin-left: 10px;">
+            <span>Duraction (s), </span>
 
-    <select id="colors_select">
-        {%for color in config["colors"]%}
-          <option value="{{color.title}}">{{color.title}}</option>
-        {%endfor%}
-    </select>
-    <span>Color</span>
+            <select id="colors_select">
+                {% for color in config["colors"] %}
+                    <option value="{{ color.title }}">{{ color.title }}</option>
+                {% endfor %}
+            </select>
+            <span>Color</span>
 
-    <button
-        id="rotateEyes_anim_btn"
-        class="example_c"
-        onclick="exec_eye_anim('rotateEyes')"
-        default_text="
-              {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
-                {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
-              {% else %}
-                EXECUTE
-              {% endif %}">
-        {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
-            {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
-        {% else %}
-            EXECUTE
-        {% endif %}
-    </button>
+            <button
+                    id="rotateEyes_anim_btn"
+                    class="example_c"
+                    onclick="exec_eye_anim('rotateEyes')"
+                    default_text="
+                        {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
+                            {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
+                        {% else %}
+                            EXECUTE
+                        {% endif %}">
+                {% if (config["rotate_anim"]["key_comb"] is defined) and  config["rotate_anim"]["key_comb"] %}
+                    {{ config["rotate_anim"]["key_comb"]|safe|prettyshortcut }}
+                {% else %}
+                    EXECUTE
+                {% endif %}
+            </button>
 
-    {% if (config["rotate_anim"]["key_comb"] is defined) and config["rotate_anim"]["key_comb"] %}
-      <script>
-        add_keyboard_shortcut({{ config["rotate_anim"]["key_comb"]|safe }}, "rotateEyes_anim_btn")
-      </script>
-    {% endif %}
+            {% if (config["rotate_anim"]["key_comb"] is defined) and config["rotate_anim"]["key_comb"] %}
+                <script>
+                    add_keyboard_shortcut({{ config["rotate_anim"]["key_comb"]|safe }}, "rotateEyes_anim_btn")
+                </script>
+            {% endif %}
 
 
+        </div>
     </div>
-  </div>
 </div>
 
 </body>
