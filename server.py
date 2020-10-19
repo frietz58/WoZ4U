@@ -756,7 +756,7 @@ def camera_view():
     resolution = vision_definitions.kQVGA  # 320 * 240
     colorSpace = vision_definitions.kRGBColorSpace
     global imgClient
-    imgClient = video_srv.subscribe("CameraStream", resolution, colorSpace, 5)
+    imgClient = video_srv.subscribe("CameraStream", resolution, colorSpace, 30)
 
     global camera_tab_closed
     camera_tab_closed = False
