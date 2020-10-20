@@ -187,9 +187,9 @@
                 function () {
                     update_states(); // set all the dynamic values on the UI
 
-                    $(identifier).html("Connected"); // set btn text
+                    $(identifier).html("RESET ROBOT STATE"); // set btn text
                     $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-                    $(identifier).addClass("example_c_green"); // give class for succes
+                    $(identifier).removeClass("example_c_green"); // give class for succes
 
                     $(":button").prop('disabled', false); // enable all btns on successful connect
                     $(":input").prop('disabled', false); // enable all the inputs
