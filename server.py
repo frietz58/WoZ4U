@@ -539,12 +539,23 @@ def clear_tablet():
 @app.route("/ping_curr_tablet_item")
 def ping_curr_tablet_item():
     index = request.args.get('index', type=str)
-    TABLET_STATE["last_ping"] = timer()
-    TABLET_STATE["index"] = index
 
-    return {
-        "set cur_tab_item": index
-    }
+    if not TABLET_STATE["video_or_website"]:
+        TABLET_STATE["last_ping"] = timer()
+        TABLET_STATE["index"] = index
+
+        return {
+            "set cur_tab_item": index
+        }
+
+    else:
+        print("Got image tab ping, but ignored it because website or video is currently on tablet...")
+
+        return {
+            "ignered ping for cur_tab_item": index
+        }
+
+
 
 
 @app.route("/adjust_volume")
