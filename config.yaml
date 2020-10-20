@@ -154,7 +154,6 @@ gestures: # Buttons will be created for every item in the list
     gesture: "animations/Stand/Gestures/Hey_3"
     tooltip: "Hey_3 gesture"
     key_comb: ["shift", "3"]
-
   -
     title: "Me"
     gesture: "animations/Stand/Gestures/Me_1"
