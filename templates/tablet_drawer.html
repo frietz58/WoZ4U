@@ -19,11 +19,9 @@
                 <div class="row">
             <div>
             <div class="row">
-                <!--
-                <button class="example_c" onclick=clear_canvas()>
+                <button class="example_c" onclick=clear_touch_data()>
                     Clear
                 </button>
-                -->
                 <br>
                 <br>
             </div>
@@ -33,6 +31,15 @@
     <script type=text/javascript>
 
 
+    function clear_touch_data() {
+        $.getJSON(
+            "/clear_touch_hist",
+            function(data) {
+                console.log(data);
+                clear_canvas()
+            }
+        )
+    }
 
 
     function get_touch_data() {
@@ -66,9 +73,7 @@
                     draw_touchdown_line(item, color=color_str);
 
                     })
-
                 }
-
             }
         )
     }

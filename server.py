@@ -972,6 +972,26 @@ def get_touch_data():
     }
 
 
+@app.route("/clear_touch_hist")
+def cleat_touch_hist():
+    global touchmove_hist
+    touchmove_hist = []
+
+    global touchdown_hist
+    touchdown_hist = []
+
+    global touchmove_ind
+    touchmove_ind = 1
+
+    global latest_touchmove_used
+    latest_touchmove_used = 0
+
+    return {
+        "state": "reset all touch data to initial values"
+    }
+
+
+
 def read_config():
     global config
     with open("config.yaml", "r") as f:
