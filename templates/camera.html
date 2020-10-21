@@ -15,9 +15,11 @@
                 if (data["SAVE_IMGS"]) { // if true means it is recording, so btn says stop recording
                     $("#video_recording_btn").html("STOP RECORDING");
                     $("#video_recording_btn").addClass("example_c_ongoing");
+                    $("#camera_record_p").html("")
                 } else {
                     $("#video_recording_btn").html("START RECORDING");
                     $("#video_recording_btn").removeClass("example_c_ongoing");
+                    $("#camera_record_p").html("Images saved at folder specified in config at <strong>'camera_save_dir'</strong>.")
                 }
             }
         )
@@ -31,9 +33,11 @@
                 if (data["now_recording_audio"]) { // if true means it is recording, so btn says stop recording
                     $("#audio_recording_btn").html("STOP RECORDING");
                     $("#audio_recording_btn").addClass("example_c_ongoing");
+                    $("#audio_record_p").html("");
                 } else {
                     $("#audio_recording_btn").html("START RECORDING");
                     $("#audio_recording_btn").removeClass("example_c_ongoing");
+                    $("#audio_record_p").html("Audio recording saved <strong>on PEPPER</strong> at folder specified in config at <strong>'audio_save_dir'</strong>.");
                 }
             }
         )
@@ -60,11 +64,16 @@
                 <h1>Pepper camera stream</h1>
                 <img id="bg" src="{{ url_for('video_feed') }}" style="width: 60%;">
             </div>
+            <br>
             <div class="row">
                 <button class="example_c" id="video_recording_btn" onclick="toggle_video_recording()">START VIDEO RECORDING</button>
                 <button class="example_c" id="audio_recording_btn" onclick="toggle_audio_recording()">START AUDIO RECORDING</button>
-                <!-- <button class="example_c" id="face_detection_toggle" onclick="toggle_face_detection()">START FACE DETECTION</button> -->
+            </div>
+            <br>
 
+            <div class="row">
+                <p id="camera_record_p"></p>
+                <p id="audio_record_p"></p>
             </div>
             <br>
             

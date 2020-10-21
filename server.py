@@ -831,7 +831,8 @@ def toggle_img_save():
     SAVE_IMGS = not SAVE_IMGS
 
     return {
-        "SAVE_IMGS": SAVE_IMGS
+        "SAVE_IMGS": SAVE_IMGS,
+        "save_dir": config["camera_save_dir"]
     }
 
 
