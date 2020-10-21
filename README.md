@@ -55,7 +55,7 @@ WoZ4U needs to know where to find the API on your machine. We do this via the sc
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/LIB/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
     ```
-In order to be able to execute the script, make it executable: `chmode +x set_paths.sh`
+In order to be able to execute the script, make it executable: `chmod +x set_paths.sh`
 
 Now, everytime you want to use WoZ4U (in a new terminal session), first `source` the `set_paths.sh` script in the same 
 session. Doing that adds the requires libraries to your `PATH`, so that they can be found by Python later. See section 
