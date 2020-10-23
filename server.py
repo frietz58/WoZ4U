@@ -781,6 +781,7 @@ def camera_view():
 
     return render_template("camera.html")
 
+
 @app.route("/camera_tab_keep_alive")
 def camera_tab_keep_alive():
     global camera_tab_timestamp
@@ -789,6 +790,20 @@ def camera_tab_keep_alive():
     return {
         "set keep alive timestamp": camera_tab_timestamp
     }
+
+
+@app.route("/toggle_audio_mute")
+def mute_audio():
+    global SpeechRecognition
+    if SpeechRecognition.isStarted:
+        SpeechRecognition.stop()
+    else:
+        SpeechRecognition.start()
+
+    return {
+        "audio_running": SpeechRecognition.isStarted
+    }
+
 
 
 @app.route("/video_feed")

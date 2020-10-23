@@ -6,6 +6,7 @@
 """
 
 import sounddevice as sd
+from sounddevice import PortAudioError
 import time
 import numpy as np
 
@@ -77,8 +78,15 @@ class SpeechRecognitionModule(naoqi.ALModule):
         self.audio.subscribe(self.getName())
 
         # also start the sounddevice stream so that we can write data on it
-        self.stream.start()
-        self.isStarted = True
+        try:
+            self.stream.start()
+            self.isStarted = True
+            # print "SD STREAM ACTIVE: ", self.stream.active
+        except PortAudioError:
+            # when stream has been closed, pointer become invalid, so we have to make a new stream
+            self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16)
+            self.stream.start()
+            self.isStarted = True
 
     def stop(self):
         if not self.isStarted:
