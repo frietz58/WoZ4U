@@ -1,4 +1,4 @@
-Table of Contents:
+# Table of Contents:
 + [WoZ4U - What is this?](#woz4u---what-is-this)
 + [Installation](#installation)
     + [Download WoZ4U](#download-woz4u)
@@ -232,7 +232,7 @@ to make up a shortcut, that will be assigned to the button in the frontend.
 If you use WoZ4U, please cite our work:
 ```
 @article{rietzwoz4u,
-  title = {WoZ4U: An Open Source Wizard-of-OzInterface for the Pepper robot},
+  title = {WoZ4U: An Open Source Wizard-of-Oz Interface for the Pepper robot},
   author = {Rietz, Finn and Sutherland, Alexander and Bensch, Suna and Wermter, Stefan and Hellström, Thomas},
   journal = {TBA},
   volume = {TBA},
