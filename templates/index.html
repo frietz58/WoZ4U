@@ -390,11 +390,33 @@
                 return
             }
 
+            console.log($(id).html())
+            if ($(id).html() == "...") {
+                // something is being said, cancel it on second click
+                console.log("stopping TTS!")
+                $.getJSON(
+                    "/stop_tts",
+                    function (data) {
+                    console.log(data)
+                    }
+                ).done(function () {
+                    $(id).html($(id).attr("default_text"));
+                    $(id).removeClass("example_c_ongoing");
+                    $("[id^=anim_speech_btn_]").prop("disabled", false);
+                    $("[id^=custom_text_btn]").prop("disabled", false);
+                })
+                return
+            }
+
             $("[id^=anim_speech_btn_]").prop("disabled", true);
             $("[id^=custom_text_btn]").prop("disabled", true);
 
+
+
             $(id).html("...");
             $(id).addClass("example_c_ongoing");
+            $(id).prop("disabled", false);
+
             $.getJSON(
                 "exec_anim_speech?index=" + index,
                 function (data) {

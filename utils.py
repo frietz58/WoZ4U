@@ -21,6 +21,11 @@ def is_image(path):
         return False
 
 
+def is_txt_file(path):
+    ext = path.split(".")[-1]
+    return True if ext == "txt" else False
+
+
 def is_external_path(path):
     if "http" == path[:4]:
         return True

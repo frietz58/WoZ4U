@@ -14,6 +14,7 @@ from utils import PIL_to_JPEG_BYTEARRAY
 from utils import is_video
 from utils import is_image
 from utils import is_external_path
+from utils import is_txt_file
 import socket
 
 from simple_sound_stream import SpeechRecognitionModule
@@ -575,12 +576,26 @@ def adjust_volume():
     }
 
 
+@app.route("/stop_tts")
+def stop_tts():
+    tts_srv.stopAll()
+    tts_srv.say("")
+
+    return {
+        "status": "stopped TTS msg!"
+    }
+
+
 @app.route("/exec_anim_speech")
 def exec_anim_speech():
     index = request.args.get('index', type=int)
     print(index)
 
     annotated_text = config["animated_speech"][index]["string"]
+
+    if is_txt_file(annotated_text):
+        with open(annotated_text, "r") as f:
+            annotated_text = f.read()
 
     as_srv.say(annotated_text)
 
@@ -756,8 +771,6 @@ def move_joint():
 
 @app.route("/camera_view")
 def camera_view():
-
-
     # see if there are any old video subscribers...
     if video_srv.getSubscribers():
         for subscriber in video_srv.getSubscribers():
