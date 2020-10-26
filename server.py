@@ -61,6 +61,8 @@ RECORD_AUDIO = False
 global motion_vector
 motion_vector = [0, 0, 0]
 
+CONFIG_FILE = "config_videos.yaml"
+
 # Tablet needs to know where server is running
 HOST_IP = socket.gethostbyname(socket.gethostname())
 FLASK_PORT = 5000
@@ -117,7 +119,7 @@ def connect_robot():
     tts_srv.setVolume(config["volume"])
     tts_srv.setParameter("pitchShift", config["voice_pitch"])
     tts_srv.setParameter("speed", config["voice_speed"])
-    tts_srv.say("Connected")
+    # tts_srv.say("Connected")
 
     # iterate over autonomous life configuration and set values...
     for key in config["autonomous_life_config"].keys():
@@ -1020,10 +1022,9 @@ def cleat_touch_hist():
     }
 
 
-
 def read_config():
     global config
-    with open("config.yaml", "r") as f:
+    with open(CONFIG_FILE, "r") as f:
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         config = yaml.safe_load(f)

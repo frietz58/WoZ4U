@@ -1,0 +1,97 @@
+pepper_ips:  # Entry in dropdown menu will be create for every list item
+  - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
+  - 192.168.10.2
+  - 192.168.10.3
+  - 192.168.10.4
+
+camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
+audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+
+# AUTONOMOUS LIFE SETTINGS
+# Leave as empty string to not leave value as is on connection to robot
+# values must be valid for respective set methods in naoqi API...
+autonomous_life_config:
+  autonomous_state: "solitary"
+  tangential_collision: ""
+  orthogonal_collision: ""
+  blinking: True  # can interfere with manual eye control...
+  basic_awareness: True  # gets enabled by default if pepper enters solitary or interactive state...
+  engagement_mode: ""
+  head_breathing: False  # I would advise always having this disabled, conflicts with manual head control...
+  arms_breathing: True
+  body_breathing: True
+  legs_breathing: True
+  listening_movement: True
+  speaking_movement: False
+
+# ALL CONCRETE ACTIONS (BUTTONS IN THE UI) CAN GET THE "key_comb" FIELD.
+# PROVIDING A LIST WILL BIND THE KEYS IN THAT LAST TO THE CONCRETE ACTION TO EXECUTE
+# SPECIAL KEYS CAN BE: "ctrl", "shift", "alt" etc, full list here: https://craig.is/killing/mice#keys
+# example flag: key_comb: ["ctrl", "1"]  <-- Binds Control + 1 keyboard shortcut to an action
+# ARROW KEY MAY NOT BE USED, AS THEY ARE ALREADY IN USE TO DRIVE PEPPER AND CONTROL THE HEAD AND HIP!!
+
+tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
+tablet_items:
+  -
+    title: Umea logo
+    is_default_img: True  # image with this flag will be displayed on connect
+    file_name: umea_logo.png
+    key_comb: ["ctrl", "shift", 3]
+
+
+animated_speech:
+    # Avoid special characters in messages, this can break the backend.
+    # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
+  -
+    title: Hey  # This will be shown in the GUI
+    string: "Hey there! ^start(animations/Stand/Gestures/Hey_3) ^wait(animations/Stand/Gestures/Hey_3)"  # message pepper will say
+    tooltip: ""  # tooltip for the button in UI
+    key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
+  -
+    title: Can I help?  # This will be shown in the GUI
+    string: "Can I help you?"  # message pepper will say
+    tooltip: ""  # tooltip for the button in UI
+    key_comb: ["ctrl", "2"]  # keyboard shortcut for this action
+  -
+    title: Over there
+    string: "Head over that direction ^start(animations/Stand/Gestures/Far_1) ^wait(animations/Stand/Gestures/Far_1)"
+    tooltip: "Point"
+    key_comb: ["ctrl", "3"]
+  -
+    title: Bye
+    string: "You're welcome, ^start(animations/Stand/Gestures/Hey_3) bye. ^wait(animations/Stand/Gestures/Hey_3)"
+    tooltip: "Bye wave"
+    key_comb: ["ctrl", "4"]
+
+
+volume: 0.8  # range: [0.0 - 1.0], default = 1
+voice_speed: 100  # range [50 - 400], default = 100
+voice_pitch: 1 # range [1.0 - 4.0], default = 1, 0 disables effect
+
+audio_files:
+  # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
+  # Button will be created for every item in the list
+  []
+
+gestures: # Buttons will be created for every item in the list
+  []
+
+colors:
+  # Color values for eye leds that should be accessable from the interface
+  # one color may have the 'is_default: true' flag, which will then be set as color for the eye leds once interface connects to robot
+  # Values will be rounded to two decimals places...
+  []
+
+# Eye animation configuration
+# these are further configurable, because there are only those three animations available
+rasta_anim:
+  duration: 3
+  key_comb: ["ctrl", "alt", 1]
+
+random_anim:
+  duration: 6
+  key_comb: ["ctrl", "alt", 2]
+
+rotate_anim:
+  duration: 4
+  key_comb: ["ctrl", "alt", 3]
