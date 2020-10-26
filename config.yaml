@@ -24,6 +24,9 @@ autonomous_life_config:
   listening_movement: False
   speaking_movement: True
 
+default_turn_deg: 90  # turn increment
+default_drive_dist : 10  # move increment
+
 # ALL CONCRETE ACTIONS (BUTTONS IN THE UI) CAN GET THE "key_comb" FIELD.
 # PROVIDING A LIST WILL BIND THE KEYS IN THAT LAST TO THE CONCRETE ACTION TO EXECUTE
 # SPECIAL KEYS CAN BE: "ctrl", "shift", "alt" etc, full list here: https://craig.is/killing/mice#keys
