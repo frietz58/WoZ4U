@@ -1,11 +1,26 @@
 pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
-  - 192.168.10.2
+  - 130.239.182.10
   - 192.168.10.3
   - 192.168.10.4
 
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
 audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+
+# LOCK INTERFACE
+# If you don't want all sections to be accessible, you can lock them, in which case they will be disabled for all input
+# Can be useful if you don't fully trust the wizard and or when you just want to make sure not to mess with some settings
+# on accident.
+# Set 'true' and 'false' (JavaScript) as value, not Pythons True or False...
+lock_autonomous_life_section: "false"
+lock_movement_control_section: "false"
+lock_tablet_section: "true"
+lock_anim_speech_section: "false"
+lock_volume_section: "true"
+lock_audio_section: "true"
+lock_gesture_section: "true"
+lock_color_section: "true"
+lock_eye_anim_section: "true"
 
 # AUTONOMOUS LIFE SETTINGS
 # Leave as empty string to not leave value as is on connection to robot
@@ -36,10 +51,42 @@ default_drive_dist : 10  # move increment
 tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
   -
+    title: Timeline
+    file_name: climate_change.jpg
+    key_comb: ["ctrl", "shift", 1]  # example for more complex shortcut
+  -
+    title: Landscape
+    file_name: landscape.jpg
+    key_comb: ["ctrl", "shift", 2]
+  -
     title: Umea logo
     is_default_img: True  # image with this flag will be displayed on connect
     file_name: umea_logo.png
     key_comb: ["ctrl", "shift", 3]
+  -
+    title: Arrow keys
+    file_name: arrow_keys.png
+    key_comb: ["ctrl", "shift", 4]
+  -
+    title: Sound playing
+    file_name: sound_playing.png
+    key_comb: ["ctrl", "shift", 5]
+  -
+    title: Local video  # Videos can also be played
+    file_name: mov_bbb.mp4  # file stored on host machine
+    key_comb: ["ctrl", "shift", 6]
+  -
+    title: Remote video
+    file_name: http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4  # Remote file also possible, just put URL here
+    key_comb: ["ctrl", "shift", 7]
+  -
+    title: Website  # We can also show a website on Pepper's tablet
+    file_name: https://www.google.com/  # Also just put URL to website here
+    key_comb: ["ctrl", "shift", 8]
+  -
+    title: Confused cat
+    file_name: https://i.kym-cdn.com/photos/images/facebook/001/564/773/6cf.jpg
+    key_comb: ["ctrl", "shift", 9]
 
 
 animated_speech:
@@ -67,23 +114,128 @@ animated_speech:
     key_comb: ["ctrl", "4"]
 
 
+
 volume: 0.8  # range: [0.0 - 1.0], default = 1
 voice_speed: 100  # range [50 - 400], default = 100
 voice_pitch: 1 # range [1.0 - 4.0], default = 1, 0 disables effect
 
+
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
   # Button will be created for every item in the list
-  []
+  -
+    title: Imperial March  # This will be shown in the GUI
+    location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
+    key_comb: ["alt", "1"]
+  -
+    title: Cantina band
+    location: /home/nao/sound_files/CantinaBand60.wav
+    key_comb: ["alt", "2"]
+  -
+    title: Star Wars
+    location: /home/nao/sound_files/StarWars60.wav
+    key_comb: ["alt", "3"]
+  -
+    title: Pink Panther
+    location: /home/nao/sound_files/PinkPanther60.wav
+    key_comb: ["alt", "4"]
+  -
+    title: Elephant walking
+    location: /home/nao/sound
+
 
 gestures: # Buttons will be created for every item in the list
-  []
+  -
+    title: "Yes"  # This will be shown in the GUI
+    gesture: "animations/Stand/Gestures/Yes_1"  # Gesture to execute
+    tooltip: "Yes_1 gesture"  # Tooltip for buton
+    key_comb: ["shift", "1"]
+  -
+    title: "No"
+    gesture: "animations/Stand/Gestures/No_1"
+    tooltip: "No_1 gesture"
+    key_comb: ["shift", "2"]
+  -
+    title: "Wave"
+    gesture: "animations/Stand/Gestures/Hey_3"
+    tooltip: "Hey_3 gesture"
+    key_comb: ["shift", "3"]
+  -
+    title: "Me"
+    gesture: "animations/Stand/Gestures/Me_1"
+    tooltip: "Me_1 gestzre"
+    key_comb: ["shift", "4"]
+  -
+    title: "You"
+    gesture: "animations/Stand/Gestures/You_1"
+    tooltip: "You_1 gesture"
+    key_comb: ["shift", "5"]
+  -
+    title: "Embarrassed"
+    gesture: "animations/Stand/Emotions/Neutral/Embarrassed_1"
+    tooltip: "Embarrassed_1 gesture"
+    key_comb: ["shift", "6"]
+
+  -
+    title: "Happy"
+    gesture: "animations/Stand/Emotions/Positive/Happy_4"
+    tooltip: "blah"
+    key_comb: ["shift", "7"]
+
 
 colors:
   # Color values for eye leds that should be accessable from the interface
   # one color may have the 'is_default: true' flag, which will then be set as color for the eye leds once interface connects to robot
   # Values will be rounded to two decimals places...
-  []
+  -
+    title: Red  # will be shown in UI, alongside small box that takes given RGB value
+    red: 1.0
+    green: 0
+    blue: 0
+    key_comb: ["c", "r"]
+  -
+    title: Yellow
+    red: 1.0
+    green: 1.0
+    blue: 0
+    key_comb: ["c", "y"]
+  -
+    title: Orange
+    red: 1.0
+    green: 0.7
+    blue: 0
+    key_comb: ["c", "o"]
+  -
+    title: Green
+    red: 0
+    green: 1.0
+    blue: 0
+    key_comb: ["c", "g"]
+    is_default: True  # default color will be set on connect
+  -
+    title: Aqua
+    red: 0
+    green: 1.0
+    blue: 1.0
+    key_comb: ["c", "a"]
+  -
+    title: Blue
+    red: 0
+    green: 0
+    blue: 1.0
+    key_comb: ["c", "b"]
+  -
+    title: Magenta
+    red: 1.0
+    green: 0
+    blue: 1.0
+    key_comb: ["c", "m"]
+  -
+    title: White
+    red: 1.0
+    green: 1.0
+    blue: 1.0
+    key_comb: ["c", "w"]
 
 # Eye animation configuration
 # these are further configurable, because there are only those three animations available

@@ -4,8 +4,26 @@ pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 192.168.10.3
   - 192.168.10.4
 
+
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
 audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+
+
+# LOCK INTERFACE
+# If you don't want all sections to be accessible, you can lock them, in which case they will be disabled for all input
+# Can be useful if you don't fully trust the wizard and or when you just want to make sure not to mess with some settings
+# on accident.
+# Set 'true' and 'false' (JavaScript) as value, not Pythons True or False...
+lock_autonomous_life_section: "false"
+lock_movement_control_section: "false"
+lock_tablet_section: "true"
+lock_anim_speech_section: "false"
+lock_volume_section: "true"
+lock_audio_section: "true"
+lock_gesture_section: "true"
+lock_color_section: "true"
+lock_eye_anim_section: "true"
+
 
 # AUTONOMOUS LIFE SETTINGS
 # Leave as empty string to not leave value as is on connection to robot
