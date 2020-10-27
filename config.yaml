@@ -1,6 +1,6 @@
 pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
-  - 192.168.10.2
+  - 130.239.182.10
   - 192.168.10.3
   - 192.168.10.4
 
@@ -16,13 +16,13 @@ audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it f
 # Set 'true' and 'false' (JavaScript) as value, not Pythons True or False...
 lock_autonomous_life_section: "false"
 lock_movement_control_section: "false"
-lock_tablet_section: "true"
+lock_tablet_section: "false"
 lock_anim_speech_section: "false"
-lock_volume_section: "true"
-lock_audio_section: "true"
-lock_gesture_section: "true"
-lock_color_section: "true"
-lock_eye_anim_section: "true"
+lock_volume_section: "false"
+lock_audio_section: "false"
+lock_gesture_section: "false"
+lock_color_section: "false"
+lock_eye_anim_section: "false"
 
 
 # AUTONOMOUS LIFE SETTINGS
