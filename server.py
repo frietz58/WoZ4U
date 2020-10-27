@@ -8,6 +8,8 @@ import os
 import matplotlib
 from timeit import default_timer as timer
 import jinja2
+import sys
+import signal
 
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
@@ -94,82 +96,93 @@ def connect_robot():
     read_config()  # update the config in case it has been edited in the meantime, nice for developing ^
 
     global QI_SESSION
-    QI_SESSION = qi.Session()
 
-    try:
-        QI_SESSION.connect(str("tcp://" + str(ip) + ":" + str(port)))
-    except RuntimeError as msg:
-        print("qi session connect error!:")
-        print(msg)
+    if QI_SESSION is not None and QI_SESSION.isConnected():
+        # connect btn has been pressed while robot was already connect --> it is the disconnedt btn...
+        QI_SESSION = qi.Session()  # we make a new sess but don't connect it to anything --> essentially disconnect
 
-    get_all_services()
+        return {
+            "status": "disconnected"
+        }
 
-    # almemory event subscribers
-    # global tts_sub
-    # tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
-    # tts_sub.signal.connect(tts_callback)
-    tablet_srv.onTouchDownRatio.connect(touchDown_callback)  # on touch down, aka one "click"
-    tablet_srv.onTouchMove.connect(touchMove_callback)  # finger slides on tablet
-    tablet_srv.onTouchUp.connect(touchUp_callback)
-
-    global vid_finished_signal
-    vid_finished_signal = tablet_srv.videoFinished
-    vid_finished_signal.connect(onVidEnd)
-
-    tts_srv.setVolume(config["volume"])
-    tts_srv.setParameter("pitchShift", config["voice_pitch"])
-    tts_srv.setParameter("speed", config["voice_speed"])
-    # tts_srv.say("Connected")
-
-    # iterate over autonomous life configuration and set values...
-    for key in config["autonomous_life_config"].keys():
-        if config["autonomous_life_config"][key] == "":
-            continue
-        else:
-            if key == "autonomous_state":
-                al_srv.setState(config["autonomous_life_config"][key])
-            elif key == "tangential_collision":
-                motion_srv.setTangentialSecurityDistance(config["autonomous_life_config"][key])
-            elif key == "orthogonal_collision":
-                motion_srv.setOrthogonalSecurityDistance(config["autonomous_life_config"][key])
-            elif key == "blinking":
-                ab_srv.setEnabled(config["autonomous_life_config"][key])
-            elif key == "engagement_mode":
-                ba_srv.setEngagementMode(config["autonomous_life_config"][key])
-            elif key == "head_breathing":
-                motion_srv.setBreathEnabled("Head", config["autonomous_life_config"][key])
-            elif key == "arms_breathing":
-                motion_srv.setBreathEnabled("Arms", config["autonomous_life_config"][key])
-            elif key == "body_breathing":
-                motion_srv.setBreathEnabled("Body", config["autonomous_life_config"][key])
-            elif key == "legs_breathing":
-                motion_srv.setBreathEnabled("Legs", config["autonomous_life_config"][key])
-            elif key == "basic_awareness":
-                ba_srv.setEnabled(config["autonomous_life_config"][key])
-            elif key == "listening_movement":
-                lm_srv.setEnabled(config["autonomous_life_config"][key])
-            elif key == "speaking_movement":
-                sm_srv.setEnabled(config["autonomous_life_config"][key])
-
-    # show default image if given
-    show_default_img_or_hide()
-
-    for color in config["colors"]:
+    else:
+        print "connecting interface to new robot session"
+        # normal connect, we make a new session and connect ot it
+        QI_SESSION = qi.Session()
         try:
-            if color["is_default"]:
-                r = color["red"]
-                g = color["green"]
-                b = color["blue"]
+            QI_SESSION.connect(str("tcp://" + str(ip) + ":" + str(port)))
+        except RuntimeError as msg:
+            print("qi session connect error!:")
+            print(msg)
 
-                led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
+        get_all_services()
 
-        except KeyError:  # only one of the elements should have the flag...
-            pass
+        # almemory event subscribers
+        # global tts_sub
+        # tts_sub = mem_srv.subscriber("ALTextToSpeech/TextStarted")
+        # tts_sub.signal.connect(tts_callback)
+        tablet_srv.onTouchDownRatio.connect(touchDown_callback)  # on touch down, aka one "click"
+        tablet_srv.onTouchMove.connect(touchMove_callback)  # finger slides on tablet
+        tablet_srv.onTouchUp.connect(touchUp_callback)
 
-    return {
-        "status": "ok",
-        "ip": ip,
-    }
+        global vid_finished_signal
+        vid_finished_signal = tablet_srv.videoFinished
+        vid_finished_signal.connect(onVidEnd)
+
+        tts_srv.setVolume(config["volume"])
+        tts_srv.setParameter("pitchShift", config["voice_pitch"])
+        tts_srv.setParameter("speed", config["voice_speed"])
+        # tts_srv.say("Connected")
+
+        # iterate over autonomous life configuration and set values...
+        for key in config["autonomous_life_config"].keys():
+            if config["autonomous_life_config"][key] == "":
+                continue
+            else:
+                if key == "autonomous_state":
+                    al_srv.setState(config["autonomous_life_config"][key])
+                elif key == "tangential_collision":
+                    motion_srv.setTangentialSecurityDistance(config["autonomous_life_config"][key])
+                elif key == "orthogonal_collision":
+                    motion_srv.setOrthogonalSecurityDistance(config["autonomous_life_config"][key])
+                elif key == "blinking":
+                    ab_srv.setEnabled(config["autonomous_life_config"][key])
+                elif key == "engagement_mode":
+                    ba_srv.setEngagementMode(config["autonomous_life_config"][key])
+                elif key == "head_breathing":
+                    motion_srv.setBreathEnabled("Head", config["autonomous_life_config"][key])
+                elif key == "arms_breathing":
+                    motion_srv.setBreathEnabled("Arms", config["autonomous_life_config"][key])
+                elif key == "body_breathing":
+                    motion_srv.setBreathEnabled("Body", config["autonomous_life_config"][key])
+                elif key == "legs_breathing":
+                    motion_srv.setBreathEnabled("Legs", config["autonomous_life_config"][key])
+                elif key == "basic_awareness":
+                    ba_srv.setEnabled(config["autonomous_life_config"][key])
+                elif key == "listening_movement":
+                    lm_srv.setEnabled(config["autonomous_life_config"][key])
+                elif key == "speaking_movement":
+                    sm_srv.setEnabled(config["autonomous_life_config"][key])
+
+        # show default image if given
+        show_default_img_or_hide()
+
+        for color in config["colors"]:
+            try:
+                if color["is_default"]:
+                    r = color["red"]
+                    g = color["green"]
+                    b = color["blue"]
+
+                    led_srv.fadeRGB("FaceLeds", r, g, b, 0.5)
+
+            except KeyError:  # only one of the elements should have the flag...
+                pass
+
+        return {
+            "status": "ok",
+            "ip": ip,
+        }
 
 
 def tts_callback(value):
@@ -280,7 +293,6 @@ def querry_states():
     @return: A dict with ids from the frontend, with the value being what that element should represent
     """
     try:
-
         # see if audio transmission is running even though camera tab is closed...
         try:
             now = timer()
@@ -319,7 +331,7 @@ def querry_states():
             "#querried_color": get_eye_colors(),
             "timestamp": timer()
         }
-    except NameError:
+    except (NameError, RuntimeError):
         return {"STATE_QUERRY_ERR": "SESSION NOT AVAILABLE"}
 
 

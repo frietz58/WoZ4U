@@ -175,33 +175,38 @@
             }
 
             const identifier = "#connect_btn";
-
             $(identifier).html("..."); // set btn text to ...
             $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
             $.getJSON( // async call flask function with arguments
                 "/connect_robot?ip=" + robot_ip,
                 function (data) {
                     console.log(data)
-                }
-            ).done(
-                function () {
-                    update_states(); // set all the dynamic values on the UI
+                    if (data["status"] == "ok") {
+                        update_states(); // set all the dynamic values on the UI
 
-                    $(identifier).html("RESET ROBOT STATE"); // set btn text
-                    $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-                    $(identifier).removeClass("example_c_green"); // give class for succes
+                        $(identifier).html("DISCONNECT"); // set btn text
+                        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+                        $(identifier).removeClass("example_c_green"); // give class for succes
 
-                    $(":button").prop('disabled', false); // enable all btns on successful connect
-                    $(":input").prop('disabled', false); // enable all the inputs
+                        $(":button").prop('disabled', false); // enable all btns on successful connect
+                        $(":input").prop('disabled', false); // enable all the inputs
 
-                    // lock parts of interface based on config
-                    lock_interface_sections()
+                        // lock parts of interface based on config
+                        lock_interface_sections()
 
-                    // periodically querry all states
-                    setInterval(update_states, 1000);
+                        // periodically querry all states
+                        setInterval(update_states, 1000);
 
-                    window.session_is_connected = true;
+                        window.session_is_connected = true;
+                    }
+                    else if (data["status"] == "disconnected") {
+                        disable_all();
 
+                        $(identifier).html("CONNECT"); // set btn text
+                        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+                        $(identifier).removeClass("example_c_green"); // give class for succes
+
+                    }
                 }
             ).fail(
                 function () {
@@ -1054,6 +1059,13 @@
         <br>
 
         <div class="row">
+            <a href="#" onclick="">
+                <button class="example_c" id="connect_btn">Reset robot state</button>
+            </a>
+        </div>
+        <br>
+
+        <div class="row">
             <a href="/camera_view" target="_blank">
                 <button class="example_c" id="view_camera_stream">Camera & Microphone</button>
             </a>
@@ -1824,6 +1836,7 @@
 
 
         </div>
+        <br>
     </div>
 </div>
 
