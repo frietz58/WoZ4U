@@ -194,6 +194,9 @@
                     $(":button").prop('disabled', false); // enable all btns on successful connect
                     $(":input").prop('disabled', false); // enable all the inputs
 
+                    // lock parts of interface based on config
+                    lock_interface_sections()
+
                     // periodically querry all states
                     setInterval(update_states, 1000);
 
@@ -208,6 +211,35 @@
                 }
             )
         }
+
+        function lock_interface_sections() {
+            if ({{ config["lock_autonomous_life_section"] }}) {
+                $(".autonomous_life_settings *").prop("disabled", true);
+            }
+            if ({{ config["lock_movement_control_section"] }}) {
+                $("#movement_control *").prop("disabled", true);
+            }
+            if ({{ config["lock_anim_speech_section"] }}) {
+                $("#animated_speech_div *").prop("disabled", true);
+            }
+            if ({{ config["lock_tablet_section"] }}) {
+                $(".tablet *").prop("disabled", true);
+            }
+            if ({{ config["lock_audio_section"] }}) {
+                $("#audio_files_div *").prop("disabled", true);
+            }
+            if ({{ config["lock_gesture_section"] }}) {
+                $("#gesture_div *").prop("disabled", true);
+            }
+            if ({{ config["lock_color_section"] }}) {
+                $("#colors_div *").prop("disabled", true);
+            }
+            if ({{ config["lock_eye_anim_section"] }}) {
+                $(".footer *").prop("disabled", true);
+            }
+
+        }
+
 
         function set_autonomous_state() {
             state = document.getElementById("autonomous_states").value;
@@ -1373,7 +1405,7 @@
         </table>
 
         <!-- COLUMN 1: SPEECH-->
-        <div style="width: 50%; float: left;">
+        <div style="width: 50%; float: left;" id="animated_speech_div">
 
             <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
                 <h3 style="margin-bottom: 5px;">Animated speech</h3>
@@ -1426,7 +1458,7 @@
         </div>
 
         <!-- COLUMN 2: Audio files-->
-        <div style="width: 50%; float: left;">
+        <div style="width: 50%; float: left;" id="audio_files_div">
 
             <h3>Audio files</h3>
 
@@ -1482,7 +1514,7 @@
     <div class="pepper_motion">
         <h2>Pepper motion</h2>
 
-        <div class="row">
+        <div class="row" id="movement_control">
             <!--
             <img src="../static/tablet_items/arrow_keys.png" style="max-height:80px;">
             -->
@@ -1552,7 +1584,7 @@
         <br>
 
         <!-- COLUMN 1: EYE LEDS-->
-        <div style="width: 50%; float: left;">
+        <div style="width: 50%; float: left;" id="colors_div">
             <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
                 <h3>Eye Colors</h3>
             </a>
@@ -1607,7 +1639,7 @@
         </div>
 
         <!-- COLUMN 2: GESTURES-->
-        <div style="width: 50%; float: left;">
+        <div style="width: 50%; float: left;" id="gesture_div">
             <a href="http://doc.aldebaran.com/2-4/naoqi/motion/alanimationplayer.html" target="blank">
                 <h3>Gestures</h3>
             </a>
