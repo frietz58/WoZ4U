@@ -61,7 +61,7 @@ RECORD_AUDIO = False
 global motion_vector
 motion_vector = [0, 0, 0]
 
-CONFIG_FILE = "config_videos.yaml"
+CONFIG_FILE = "config.yaml"
 
 # Tablet needs to know where server is running
 HOST_IP = socket.gethostbyname(socket.gethostname())
@@ -74,7 +74,7 @@ def index():
 
     read_config()
 
-    if QI_SESSION is not None:  # if session already exists, fronted was just reloaded...
+    if QI_SESSION is not None and QI_SESSION.isConnected():  # if session already exists, fronted was just reloaded...
         global ip
         return render_template("index.html", config=config, reconnect_ip=ip)
     else:
@@ -1022,13 +1022,14 @@ def cleat_touch_hist():
     }
 
 
-def read_config():
+def read_config(verbose=False):
     global config
     with open(CONFIG_FILE, "r") as f:
         # The FullLoader parameter handles the conversion from YAML
         # scalar values to Python the dictionary format
         config = yaml.safe_load(f)
-        print(config)
+        if verbose:
+            print(config)
 
 
 def pretty_print_shortcut(raw_string):
