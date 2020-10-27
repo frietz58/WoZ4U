@@ -166,6 +166,27 @@
             )
         }
 
+        function unlock_connected_interface() {
+            // enable UI elements and start querrying because there is
+            update_states(); // set all the dynamic values on the UI
+
+            const identifier = "#connect_btn";
+            $(identifier).html("DISCONNECT"); // set btn text
+            $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+            $(identifier).removeClass("example_c_green"); // give class for succes
+
+            $(":button").prop('disabled', false); // enable all btns on successful connect
+            $(":input").prop('disabled', false); // enable all the inputs
+
+            // lock parts of interface based on config
+            lock_interface_sections()
+
+            // periodically querry all states
+            setInterval(update_states, 1000);
+
+            window.session_is_connected = true;
+        }
+
         function connect_robot(ip = "") {
             var robot_ip;
             if (ip == "") {  // depends on reconnect or not whether parameter is set...
@@ -182,25 +203,12 @@
                 function (data) {
                     console.log(data)
                     if (data["status"] == "ok") {
-                        update_states(); // set all the dynamic values on the UI
-
-                        $(identifier).html("DISCONNECT"); // set btn text
-                        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-                        $(identifier).removeClass("example_c_green"); // give class for succes
-
-                        $(":button").prop('disabled', false); // enable all btns on successful connect
-                        $(":input").prop('disabled', false); // enable all the inputs
-
-                        // lock parts of interface based on config
-                        lock_interface_sections()
-
-                        // periodically querry all states
-                        setInterval(update_states, 1000);
-
-                        window.session_is_connected = true;
+                        unlock_connected_interface()
                     }
                     else if (data["status"] == "disconnected") {
                         disable_all();
+
+                        // TODO stop the periodic querrying!
 
                         $(identifier).html("CONNECT"); // set btn text
                         $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
@@ -1024,11 +1032,11 @@
         // for reconnecting upon reload of site
         {% if reconnect_ip != "" %}
             console.log("reconnecting to", '{{reconnect_ip}}');
-            connect_robot(ip = '{{reconnect_ip}}', true);
             $( document ).ready(function() {
-                // Handler for .ready() called.
                 $("#connect_btn").html("RECONNECTING..."); // set btn text to ...
                 $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
+                unlock_connected_interface();
+                $("#pepper_select_ips").val('{{ reconnect_ip }}');
             });
         {% endif %}
 
