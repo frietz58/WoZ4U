@@ -100,21 +100,40 @@ def connect_robot():
     if QI_SESSION is not None and QI_SESSION.isConnected():
         # connect btn has been pressed while robot was already connect --> it is the disconnedt btn...
         QI_SESSION = qi.Session()  # we make a new sess but don't connect it to anything --> essentially disconnect
-
+        print("disconnecting interface by terminating session.")
         return {
             "status": "disconnected"
         }
 
     else:
         print "connecting interface to new robot session"
-        # normal connect, we make a new session and connect ot it
+
+        # normal connect, we make a new session and connect to it
+        try:
+            # TODO doesn't solve the problem that session might still be trying to connect to invalid IP...
+            print "attempting close and del session"
+            QI_SESSION.close()
+            del QI_SESSION
+            time.sleep(1)
+        except AttributeError:
+            print "close attribute excaption pass..."
+            # if the prev session is still trying to connect...
+            pass
+
+        QI_SESSION = None
         QI_SESSION = qi.Session()
         try:
+
+
             QI_SESSION.connect(str("tcp://" + str(ip) + ":" + str(port)))
         except RuntimeError as msg:
             print("qi session connect error!:")
             print(msg)
 
+            QI_SESSION = None
+            raise Exception("Couldn't connect session")
+
+        print "past exception!"
         get_all_services()
 
         # almemory event subscribers

@@ -6,6 +6,11 @@
     <link rel="stylesheet" type="text/css" href="../static/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/ccampbell/mousetrap/825ce50c/mousetrap.min.js"></script>
+
+    <script src="/static/js/alertifyjs/alertify.min.js"></script>
+    <link rel="stylesheet" href="static/js/alertifyjs/css/alertify.css"/>
+    <link rel="stylesheet" href="/static/js/alertifyjs/css/themes/default.css"/>
+
     <script type=text/javascript>
 
         var keyboard_shortcuts = {};
@@ -68,7 +73,7 @@
                                     // we cant nice display them via a website
                                     if (!data["tablet_state"]["video_or_website"]) {
                                         if (data["timestamp"] > data[key]["last_ping"] + 3) {
-                                            console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!")
+                                            console.log("TABLET IMAGE TAB APPEARS TO BE DEAD!");
                                             $.getJSON(
                                                 "/show_tablet_item/" + index,
                                                 function (data) {
@@ -166,20 +171,20 @@
             )
         }
 
-        function unlock_connected_interface() {
+        function unlock_connected_interface(ip) {
             // enable UI elements and start querrying because there is
             update_states(); // set all the dynamic values on the UI
 
             const identifier = "#connect_btn";
-            $(identifier).html("DISCONNECT"); // set btn text
+            $(identifier).html("DISCONNECT " + ip); // set btn text
             $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
-            $(identifier).removeClass("example_c_green"); // give class for succes
+            $(identifier).removeClass("example_c_green"); // give class for success
 
             $(":button").prop('disabled', false); // enable all btns on successful connect
             $(":input").prop('disabled', false); // enable all the inputs
 
             // lock parts of interface based on config
-            lock_interface_sections()
+            lock_interface_sections();
 
             // periodically querry all states
             setInterval(update_states, 1000);
@@ -198,10 +203,41 @@
             const identifier = "#connect_btn";
             $(identifier).html("..."); // set btn text to ...
             $(identifier).addClass("example_c_ongoing"); // give it the css class for "processing"
+
+            let url = "/connect_robot?ip=" + robot_ip;
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function(data) {
+                    if (data["status"] == "ok") {
+                        const identifier = "#connect_btn";
+
+                        unlock_connected_interface(robot_ip)
+                    }
+                    else if (data["status"] == "disconnected") {
+                        disable_all();
+
+                        // TODO stop the periodic querrying!
+
+                        $(identifier).html("CONNECT"); // set btn text
+                        $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
+                        $(identifier).removeClass("example_c_green"); // give class for succes
+
+                    }
+                },
+                timeout: 10000, //10 second timeout,
+                error: function (jqXHR, status, errorThrown) {   //the status returned will be "timeout"
+                    alertify.error("Couldn't connect to " + robot_ip);
+                    $(identifier).html("CONNECT"); // set btn text to ...
+                    $(identifier).removeClass("example_c_ongoing");
+                }
+            });
+
+            /*
             $.getJSON( // async call flask function with arguments
                 "/connect_robot?ip=" + robot_ip,
                 function (data) {
-                    console.log(data)
+                    console.log(data);
                     if (data["status"] == "ok") {
                         unlock_connected_interface()
                     }
@@ -218,11 +254,10 @@
                 }
             ).fail(
                 function () {
-                    $(identifier).html("FAILURE, TRY AGAIN?"); // set btn text to ...
-                    $(identifier).removeClass("example_c_ongoing");
-                    $(identifier).css("background-color", "#E76F51"); // set color of button to red on fail  });
+
                 }
             )
+            */
         }
 
         function lock_interface_sections() {
@@ -441,27 +476,26 @@
                 return
             }
 
-            console.log($(id).html())
+            console.log($(id).html());
             if ($(id).html() == "...") {
                 // something is being said, cancel it on second click
-                console.log("stopping TTS!")
+                console.log("stopping TTS!");
                 $.getJSON(
                     "/stop_tts",
                     function (data) {
-                    console.log(data)
+                        console.log(data)
                     }
                 ).done(function () {
                     $(id).html($(id).attr("default_text"));
                     $(id).removeClass("example_c_ongoing");
                     $("[id^=anim_speech_btn_]").prop("disabled", false);
                     $("[id^=custom_text_btn]").prop("disabled", false);
-                })
+                });
                 return
             }
 
             $("[id^=anim_speech_btn_]").prop("disabled", true);
             $("[id^=custom_text_btn]").prop("disabled", true);
-
 
 
             $(id).html("...");
@@ -545,7 +579,6 @@
                 if (reset) {
                     target_val = 100;
                     $("#voice_pitch_input").val(100);
-
                 } else {
                     target_val = $("#voice_pitch_input").val();
                 }
@@ -1044,13 +1077,15 @@
             $(document).ready(function () {
                 $("#connect_btn").html("RECONNECTING..."); // set btn text to ...
                 $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
-                unlock_connected_interface();
+
+                unlock_connected_interface('{{reconnect_ip}}');
+
                 $("#pepper_select_ips").val('{{ reconnect_ip }}');
             });
         {% endif %}
 
 
-        function unfocus_and_click(event, unfocus_elem, click_elem="") {
+        function unfocus_and_click(event, unfocus_elem, click_elem = "") {
             // unfocuses the unfocus_elem and optionally click the click_elem
             console.log("unfocus: " + event.keyCode)
             if (event.keyCode === 13) {
@@ -1072,52 +1107,73 @@
         }
 
 
-
         $(document).ready(function () {
             // make input fields submittable via enter key press
 
             document.getElementById("autonomous_states").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "autonomous_states")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "autonomous_states")
+                }
             );
 
             document.getElementById("tangential_collision").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "tangential_collision")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "tangential_collision")
+                }
             );
 
             document.getElementById("orthogonal_collision").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "orthogonal_collision")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "orthogonal_collision")
+                }
             );
 
             document.getElementById("drive_distance_input").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "drive_distance_input")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "drive_distance_input")
+                }
             );
 
             document.getElementById("rotation_degree_input").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "rotation_degree_input")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "rotation_degree_input")
+                }
             );
 
             document.getElementById("rasta_anim_duration").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "rasta_anim_duration", "rasta_anim_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "rasta_anim_duration", "rasta_anim_btn")
+                }
             );
 
             document.getElementById("randomEyes_anim_duration").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "randomEyes_anim_duration", "randomEyes_anim_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "randomEyes_anim_duration", "randomEyes_anim_btn")
+                }
             );
 
             document.getElementById("rotateEyes_anim_duration").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "rotateEyes_anim_duration", "rotateEyes_anim_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "rotateEyes_anim_duration", "rotateEyes_anim_btn")
+                }
             );
 
             document.getElementById("custom_text_msg").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "custom_text_msg", "custom_text_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "custom_text_msg", "custom_text_btn")
+                }
             );
 
             document.getElementById("custom_gesture_string").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "custom_gesture_string", "custom_gesture_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "custom_gesture_string", "custom_gesture_btn")
+                }
             );
 
             document.getElementById("colors_select").addEventListener(
-                "keyup", function(event){unfocus_and_click(event, "colors_select", "rotateEyes_anim_btn")}
+                "keyup", function (event) {
+                    unfocus_and_click(event, "colors_select", "rotateEyes_anim_btn")
+                }
             );
         });
 
@@ -1636,8 +1692,8 @@
                                 type="text"
                                 id="drive_distance_input"
                                 style="width: 20%; float: left; margin-left: 10px;"
-                                placeholder="{{ config["default_drive_dist"]  }}"
-                                value="{{ config["default_drive_dist"]  }}">
+                                placeholder="{{ config["default_drive_dist"] }}"
+                                value="{{ config["default_drive_dist"] }}">
                         <br>
 
                         <div class="speech_lbl_wrapper">
@@ -1647,8 +1703,8 @@
                                 type="text"
                                 id="rotation_degree_input"
                                 style="width: 20%; float: left; margin-left: 10px;"
-                                placeholder="{{ config["default_turn_deg"]  }}"
-                                value="{{ config["default_turn_deg"]  }}">
+                                placeholder="{{ config["default_turn_deg"] }}"
+                                value="{{ config["default_turn_deg"] }}">
                     </td>
                 </tr>
                 <tr>
