@@ -262,9 +262,11 @@
                 function (data) {
                     console.log(data);
                 }).done(function () {
-                update_states()
+                update_states();
+                $("#autonomous_states").blur()
             }).fail(function () {
-                update_states()
+                update_states();
+                $("#autonomous_states").blur()
             })
         }
 
@@ -306,7 +308,8 @@
             ).done(function () {
                 $("#custom_text_btn").html("Say it");
                 $("#custom_text_btn").removeClass("example_c_ongoing");
-                update_states()
+                update_states();
+                $("#custom_text_btn").blur()
             })
         }
 
@@ -406,9 +409,11 @@
                     console.log(data);
                 }
             ).done(function () {
-                update_states()
+                update_states();
+                $("#engagement_states").blur()
             }).fail(function () {
-                update_states()
+                update_states();
+                $("#engagement_states").blur()
             })
         }
 
@@ -423,6 +428,7 @@
                 "/adjust_volume?volume=" + target_volume,
                 function (data) {
                     console.log(data);
+                    $("#volume_slider").blur()
                 }
             );
         }
@@ -550,6 +556,8 @@
                     console.log(data);
                 }
             );
+            $("#voice_pitch_input").blur();
+            $("#voice_speed_input").blur()
         }
 
         function add_ongoing(identifier) {
@@ -590,7 +598,8 @@
                     console.log(data);
                 }).done(function () {
                 $(input_identifier).prop("has_uncommited_state", false);
-                update_states()
+                update_states();
+                $(input_identifier).blur();
             });
         }
 
@@ -1032,13 +1041,85 @@
         // for reconnecting upon reload of site
         {% if reconnect_ip != "" %}
             console.log("reconnecting to", '{{reconnect_ip}}');
-            $( document ).ready(function() {
+            $(document).ready(function () {
                 $("#connect_btn").html("RECONNECTING..."); // set btn text to ...
                 $("#connect_btn").addClass("example_c_ongoing"); // give it the css class for "processing"
                 unlock_connected_interface();
                 $("#pepper_select_ips").val('{{ reconnect_ip }}');
             });
         {% endif %}
+
+
+        function unfocus_and_click(event, unfocus_elem, click_elem="") {
+            // unfocuses the unfocus_elem and optionally click the click_elem
+            console.log("unfocus: " + event.keyCode)
+            if (event.keyCode === 13) {
+                console.log(event.keyCode)
+                console.log("blur: " + unfocus_elem)
+                $("#" + unfocus_elem).blur();
+                /*
+                $("#" + unfocus_elem).keyup(function (event) {
+                        //$("#" + unfocus_elem).change();
+                        //$("#" + unfocus_elem).submit();
+                });
+                */
+
+                if (click_elem !== "") {
+                    console.log("click: " + click_elem)
+                    $("#" + click_elem).click();
+                }
+            }
+        }
+
+
+
+        $(document).ready(function () {
+            // make input fields submittable via enter key press
+
+            document.getElementById("autonomous_states").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "autonomous_states")}
+            );
+
+            document.getElementById("tangential_collision").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "tangential_collision")}
+            );
+
+            document.getElementById("orthogonal_collision").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "orthogonal_collision")}
+            );
+
+            document.getElementById("drive_distance_input").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "drive_distance_input")}
+            );
+
+            document.getElementById("rotation_degree_input").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "rotation_degree_input")}
+            );
+
+            document.getElementById("rasta_anim_duration").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "rasta_anim_duration", "rasta_anim_btn")}
+            );
+
+            document.getElementById("randomEyes_anim_duration").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "randomEyes_anim_duration", "randomEyes_anim_btn")}
+            );
+
+            document.getElementById("rotateEyes_anim_duration").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "rotateEyes_anim_duration", "rotateEyes_anim_btn")}
+            );
+
+            document.getElementById("custom_text_msg").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "custom_text_msg", "custom_text_btn")}
+            );
+
+            document.getElementById("custom_gesture_string").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "custom_gesture_string", "custom_gesture_btn")}
+            );
+
+            document.getElementById("colors_select").addEventListener(
+                "keyup", function(event){unfocus_and_click(event, "colors_select", "rotateEyes_anim_btn")}
+            );
+        });
 
     </script>
 </head>
@@ -1049,7 +1130,7 @@
     <div class="pepper_select">
         <h2>Select robot</h2>
         <div class="row">
-            <select name="pepper_ips" id="pepper_select_ips">
+            <select name="pepper_ips" id="pepper_select_ips" onchange="$('#pepper_select_ips').blur()">
                 {% for ip in config["pepper_ips"] %}
                     <option value="{{ ip }}">{{ ip }}</option>
                 {% endfor %}
@@ -1812,7 +1893,7 @@
                     style="width: 50px; margin-left: 10px;">
             <span>Duraction (s), </span>
 
-            <select id="colors_select">
+            <select id="colors_select" onchange="$('#colors_select').blur()">
                 {% for color in config["colors"] %}
                     <option value="{{ color.title }}">{{ color.title }}</option>
                 {% endfor %}
