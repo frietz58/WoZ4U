@@ -42,6 +42,7 @@ autonomous_life_config:
   listening_movement: False
   speaking_movement: True
 
+default_head_turn_deg: 20 # head turn increment
 default_turn_deg: 90  # turn increment
 default_drive_dist : 10  # move increment
 
