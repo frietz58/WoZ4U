@@ -805,10 +805,16 @@ def move_joint():
 @app.route("/camera_view")
 def camera_view():
     # see if there are any old video subscribers...
-    if video_srv.getSubscribers():
-        for subscriber in video_srv.getSubscribers():
-            if "CameraStream" in subscriber:  # name passed as argument on subscription
-                video_srv.unsubscribe(subscriber)
+    try:
+        if video_srv.getSubscribers():
+            for subscriber in video_srv.getSubscribers():
+                if "CameraStream" in subscriber:  # name passed as argument on subscription
+                    video_srv.unsubscribe(subscriber)
+
+    except NameError:
+        # happens when camera tab is open when there is no server has been restarted?
+        return render_template("camera.html")
+
 
     resolution = vision_definitions.kQVGA  # 320 * 240
     colorSpace = vision_definitions.kRGBColorSpace
@@ -832,9 +838,23 @@ def camera_view():
 def camera_tab_keep_alive():
     global camera_tab_timestamp
     camera_tab_timestamp = timer()
+    connected = False
+    try:
+        if QI_SESSION is not None:
+
+            # print(QI_SESSION.isConnected())
+            # print QI_SESSION.__dict__
+            if QI_SESSION.isConnected():
+                connected = True
+            else:
+                connected = False
+    except NameError:
+        # when QI_SESSION is undefined, happens between connect and reconnect I think
+        pass
 
     return {
-        "set keep alive timestamp": camera_tab_timestamp
+        "set keep alive timestamp": camera_tab_timestamp,
+        "connected": connected
     }
 
 
@@ -1052,6 +1072,10 @@ def cleat_touch_hist():
         "state": "reset all touch data to initial values"
     }
 
+
+@app.route("/alive_test")
+def alive_test():
+    return {"status": "server is alive"}
 
 def read_config(verbose=False):
     global config
