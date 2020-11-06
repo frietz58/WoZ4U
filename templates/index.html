@@ -18,6 +18,7 @@
         var motion_blocking = false;
         var last_successful_querry = Date.now();
         var alerted_server_dead = false;
+        var udpate_states_interval = null;
 
         //applies styling to a toggle button, depending on the value it should take
         function toggle_btn_handle(identifier, bool, onText = "ON", offText = "OFF") {
@@ -190,7 +191,7 @@
             lock_interface_sections();
 
             // periodically querry all states
-            setInterval(update_states, 1000);
+            udpate_states_interval = setInterval(update_states, 1000);
 
             // periodically check whether server is alive
             setInterval(check_server_alive, 1000);
@@ -223,8 +224,9 @@
                     }
                     else if (data["status"] == "disconnected") {
                         disable_all();
+                        udpate_states_interval
+                        clearTimeout(udpate_states_interval);
 
-                        // TODO stop the periodic querrying!
 
                         $(identifier).html("CONNECT"); // set btn text
                         $(identifier).removeClass("example_c_ongoing"); // remove class for ongoing
