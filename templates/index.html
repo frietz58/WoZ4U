@@ -16,6 +16,8 @@
         var keyboard_shortcuts = {};
         var session_is_connected = false;
         var motion_blocking = false;
+        var last_successful_querry = Date.now();
+        var alerted_server_dead = false;
 
         //applies styling to a toggle button, depending on the value it should take
         function toggle_btn_handle(identifier, bool, onText = "ON", offText = "OFF") {
@@ -39,6 +41,7 @@
             $.getJSON(
                 "/querry_states",
                 function (data) {
+                    last_successful_querry = Date.now();
                     // console.log(data)
                     if (data["STATE_QUERRY_ERR"] == "SESSION NOT AVAILABLE") {
                         disable_all();
@@ -189,6 +192,9 @@
             // periodically querry all states
             setInterval(update_states, 1000);
 
+            // periodically check whether server is alive
+            setInterval(check_server_alive, 1000);
+
             window.session_is_connected = true;
         }
 
@@ -210,6 +216,7 @@
                 dataType: 'json',
                 success: function(data) {
                     if (data["status"] == "ok") {
+                        last_successful_querry = Date.now();
                         const identifier = "#connect_btn";
 
                         unlock_connected_interface(robot_ip)
@@ -288,13 +295,13 @@
 
         }
 
-
         function set_autonomous_state() {
             state = document.getElementById("autonomous_states").value;
 
             $.getJSON( // async call flask function with arguments
                 "/set_autonomous_state?state=" + state,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }).done(function () {
                 update_states();
@@ -318,6 +325,7 @@
                 url,
                 function (data) {
                     console.log(data);
+                    last_successful_querry = Date.now();
                     toggle_btn_handle(identifier, data["new_state"]);
                     if (setting == "blinking" && data["new_state"]) {
                         if (document.getElementById("autonomous_states").value != "interactive") {
@@ -338,6 +346,7 @@
             $.getJSON(
                 "/say_text?msg=" + text,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }
             ).done(function () {
@@ -363,6 +372,7 @@
                 $.getJSON(
                     "/stop_sound_play",
                     function (data) {
+                        last_successful_querry = Date.now();
                         console.log(data)
                     }
                 ).done(function () {
@@ -385,6 +395,7 @@
                     "/play_audio?index=" + index,
                     function (data) {
                         console.log(data);
+                        last_successful_querry = Date.now();
                     }).done(function () {
                     $(id).html($(id).attr("default_text"));
                     $(id).removeClass("example_c_ongoing");
@@ -403,6 +414,7 @@
                 $.getJSON(
                     "/clear_tablet",
                     function (data) {
+                        last_successful_querry = Date.now();
                         console.log(data)
                     }).done(function () {
                     $(id).html($(id).attr("default_text")); // set btn text
@@ -441,6 +453,7 @@
             $.getJSON( // async call flask function with arguments
                 "/set_engagement_mode?mode=" + mode,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }
             ).done(function () {
@@ -462,6 +475,7 @@
             $.getJSON(
                 "/adjust_volume?volume=" + target_volume,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                     $("#volume_slider").blur()
                 }
@@ -483,6 +497,7 @@
                 $.getJSON(
                     "/stop_tts",
                     function (data) {
+                        last_successful_querry = Date.now();
                         console.log(data)
                     }
                 ).done(function () {
@@ -532,6 +547,7 @@
             $.getJSON(
                 "exec_gesture?index=" + index,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data)
                 }
             ).done(function () {
@@ -558,6 +574,7 @@
             $.getJSON(
                 "exec_custom_gesture?string=" + gesture_string,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data)
                 }
             ).done(function () {
@@ -586,16 +603,12 @@
             $.getJSON(
                 "/set_tts_param?param=" + param + "&value=" + target_val,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }
             );
             $("#voice_pitch_input").blur();
             $("#voice_speed_input").blur()
-        }
-
-        function add_ongoing(identifier) {
-            $(identifier).removeClass("example_c_green");
-            $(identifier).addClass("example_c_ongoing")
         }
 
         function add_uncommited_flag(identifier) {
@@ -628,6 +641,7 @@
             $.getJSON(
                 url,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }).done(function () {
                 $(input_identifier).prop("has_uncommited_state", false);
@@ -640,6 +654,7 @@
             $.getJSON(
                 "/resting_position",
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }
             )
@@ -649,40 +664,10 @@
             $.getJSON(
                 "/netural_stand_position",
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data);
                 }
             )
-        }
-
-        function show_camera_stream() {
-            $.getJSON(
-                "/camera_view"
-            )
-        }
-
-        function setLedIntensity(reset = false) {
-            group = "FaceLeds";
-
-            if (reset) {
-                intensity = 100
-            } else {
-                intensity = $("#intensity_slider").val()
-            }
-
-            url = "/set_led_intensity?led_group=" + group + "&intensity=" + intensity;
-
-            if ($("#toggle_btn_blinking").html() == "ON") {
-                alert("Blinking resets intensity, consider disabling the setting!")
-            }
-
-            $.getJSON(
-                url,
-                function (data) {
-                    console.log(data)
-                }
-            ).done(function () {
-                update_states()
-            })
         }
 
         function componentToHex(c) {
@@ -719,6 +704,7 @@
             $.getJSON(
                 url,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data)
                 }
             ).done(function () {
@@ -755,6 +741,7 @@
             $.getJSON(
                 url,
                 function (data) {
+                    last_successful_querry = Date.now();
                     console.log(data)
                 }
             ).done(function () {
@@ -806,6 +793,47 @@
             keyboard_shortcuts[id] = key_list
         }
 
+        function check_server_alive() {
+            now = Date.now();
+
+            diff_millis = now - last_successful_querry;
+            diff_s = diff_millis / 1000;
+
+            if (diff_s > 5) {
+                if (!alerted_server_dead) {
+
+                    // make test request to server to ensure its actually dead...
+                    console.log("server appears to be dead, sending test request");
+
+                    $.ajax({
+                        url: "/alive_test",
+                        dataType: 'json',
+                        success: function(data) {
+                            console.log("test rquest worked, resetting timeout");
+                            last_successful_querry = Date.now();
+                            return // if this works, we don't want the confirm dialog
+                        },
+                        error: function(data, status, xhr) {
+                            console.log("test request did not work...");
+                            alerted_server_dead = true;
+                            msg = alertify.confirm(
+                                "Server dead?",
+                                "Server didn't send any reply within five seconds. Consider restarting it via terminal.",
+                                function () {alerted_server_dead = false;},  // construtor needs these...
+                                function () {alerted_server_dead = false;}
+                            )
+                        }
+                    });
+
+                }
+            } else {
+                if (typeof msg != "undefined") {
+                    msg.close();
+                    alerted_server_dead = false;
+                }
+            }
+        }
+
 
         //keyboard listener for keyboard control of pepper motors
        $(document).ready(function () {
@@ -830,6 +858,7 @@
                         "/move_joint?axis=HeadPitch&val=+" + val,
                         function (data) {
                             console.log(data);
+                            last_successful_querry = Date.now();
                         }).done(function () {
                         motion_blocking = false;
                         $("#drive_distance_input").prop('disabled', false);
@@ -856,6 +885,7 @@
                     $.getJSON(
                         "/move_joint?axis=HeadPitch&val=-" + val,
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -883,6 +913,7 @@
                     $.getJSON(
                         "/move_joint?axis=HeadYaw&val=+" + val,
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -909,6 +940,7 @@
                     $.getJSON(
                         "/move_joint?axis=HeadYaw&val=-" + val,
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -935,6 +967,7 @@
                     $.getJSON(
                         "/move_to?x=" + x + "&y=0&theta=0",
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
                         }).done(function () {
@@ -962,6 +995,7 @@
                     $.getJSON(
                         "/move_to?x=" + x + "&y=0&theta=0",
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
                         }).done(function () {
@@ -990,6 +1024,7 @@
                     $.getJSON(
                         "/move_to?x=0&y=0&theta=" + theta,
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
                         }).done(function () {
@@ -1018,6 +1053,7 @@
                     $.getJSON(
                         "/move_to?x=0&y=0&theta=" + theta,
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                             $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
                         }).done(function () {
@@ -1034,6 +1070,7 @@
                     "/stop_motion",
                     function (data) {
                         console.log(data);
+                        last_successful_querry = Date.now();
                         $("#motion_vector").text("[" + data["x_vel"] + ", " + data["y_vel"] + ", " + data["theta_vel"] + "]")
                     })
             });
@@ -1047,6 +1084,7 @@
                     $.getJSON(
                         "/move_joint?axis=HipPitch&val=+0.2",
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -1059,6 +1097,7 @@
                 $.getJSON(
                     "/move_joint?axis=HipPitch&val=-0.2",
                     function (data) {
+                        last_successful_querry = Date.now();
                         console.log(data);
                     })
             });
@@ -1070,6 +1109,7 @@
                     $.getJSON(
                         "/move_joint?axis=HipRoll&val=+0.2",
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -1086,6 +1126,7 @@
                     $.getJSON(
                         "/move_joint?axis=HipRoll&val=-0.2",
                         function (data) {
+                            last_successful_querry = Date.now();
                             console.log(data);
                         }).done(function () {
                         motion_blocking = false;
@@ -1143,8 +1184,8 @@
         }
 
 
+        // make input fields submittable via enter key press
         $(document).ready(function () {
-            // make input fields submittable via enter key press
 
             document.getElementById("autonomous_states").addEventListener(
                 "keyup", function (event) {
@@ -1218,6 +1259,7 @@
                 }
             );
         });
+
 
     </script>
 </head>

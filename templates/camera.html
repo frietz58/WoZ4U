@@ -6,12 +6,23 @@
 <link rel="shortcut icon" href="http://www.example.com/myicon.ico"/>
 <link rel="stylesheet" type="text/css" href="../static/style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="/static/js/alertifyjs/alertify.min.js"></script>
+<link rel="stylesheet" href="static/js/alertifyjs/css/alertify.css"/>
+<link rel="stylesheet" href="/static/js/alertifyjs/css/themes/default.css"/>
+
 <script type=text/javascript>
+    var disconnect_alerted = false;
+    var reload_once_ready = false;
+    var last_successful_querry = Date.now();
+    var alerted_server_dead = false;
+
     function toggle_video_recording() {
         $.getJSON(
             "/toggle_img_save",
             function(data){
                 console.log(data);
+                last_successful_querry = Date.now();
                 if (data["SAVE_IMGS"]) { // if true means it is recording, so btn says stop recording
                     $("#video_recording_btn").html("STOP RECORDING");
                     $("#video_recording_btn").addClass("example_c_ongoing");
@@ -19,7 +30,7 @@
                 } else {
                     $("#video_recording_btn").html("START RECORDING");
                     $("#video_recording_btn").removeClass("example_c_ongoing");
-                    $("#camera_record_p").html("Images saved at folder specified in config at <strong>'camera_save_dir'</strong>.")
+                    alertify.success("Images saved at folder specified in config at <strong>'camera_save_dir'</strong>.");
                 }
             }
         )
@@ -30,6 +41,8 @@
             "/record_audio_data",
             function(data) {
                 console.log(data);
+                last_successful_querry = Date.now();
+
                 if (data["now_recording_audio"]) { // if true means it is recording, so btn says stop recording
                     $("#audio_recording_btn").html("STOP RECORDING");
                     $("#audio_recording_btn").addClass("example_c_ongoing");
@@ -37,7 +50,7 @@
                 } else {
                     $("#audio_recording_btn").html("START RECORDING");
                     $("#audio_recording_btn").removeClass("example_c_ongoing");
-                    $("#audio_record_p").html("Audio recording saved <strong>on PEPPER</strong> at folder specified in config at <strong>'audio_save_dir'</strong>.");
+                    alertify.success("Audio recording saved <strong>on PEPPER</strong> at folder specified in config at <strong>'audio_save_dir'</strong>.");
                 }
             }
         )
@@ -48,6 +61,7 @@
             "/toggle_audio_mute",
             function(data) {
                 console.log(data)
+                last_successful_querry = Date.now();
                 console.log(data["audio_running"]);
                 if (!data["audio_running"]) {
                     $("#audio_mute_btn").html("UNMUTE AUDIO")
@@ -66,10 +80,87 @@
             "/camera_tab_keep_alive",
             function(data) {
                 console.log(data)
-            })
+                last_successful_querry = Date.now();
+                if (!data["connected"]) {
+                    let msg = "Looks like the NAOqi Session has died,\n considered reconnecting the interface to your robot";
+
+                    if (!disconnect_alerted) {
+                    // if (true) {
+                        disconnect_alerted = true;
+                        reload_once_ready = true;
+                        dialog = alertify.confirm(
+                            "NAOqi Session dead?",
+                            msg,
+                            function(){},
+                            function(){});
+
+                    }
+                } else {
+                    disconnect_alerted = false;
+                    if (typeof dialog != "undefined") {
+                        dialog.close()
+                    }
+
+                    if (reload_once_ready) {
+                        reload_once_ready = false;
+                        location.reload();
+                    }
+                }
+            }
+        )
     }
 
+    function check_server_alive() {
+        now = Date.now();
+
+        diff_millis = now - last_successful_querry;
+        diff_s = diff_millis / 1000;
+
+        if (diff_s > 5) {
+            if (!alerted_server_dead) {
+
+                // make test request to server to ensure its actually dead...
+                console.log("server appears to be dead, sending test request");
+
+                $.ajax({
+                    url: "/alive_test",
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("test rquest worked, resetting timeout");
+                        last_successful_querry = Date.now();
+
+                        return // if this works, we don't want the confirm dialog
+                    },
+                    error: function(data, status, xhr) {
+                        console.log("test request did not work...");
+                        alerted_server_dead = true;
+                        msg = alertify.confirm(
+                            "Server dead?",
+                            "Server didn't send any reply within five seconds. Consider restarting it via terminal.",
+                            function () {alerted_server_dead = false;},  // construtor needs these...
+                            function () {alerted_server_dead = false;}
+                        )
+                    }
+                });
+            }
+            // disconnect_alerted = false;
+            //reload_once_ready = true;
+        } else {
+            if (typeof msg != "undefined") {
+                // this doesn't work here :/
+                // alertify can't handle multiple confirm instances, hence calling close here would also close the
+                // dialogue with the NAOqi session from above...
+
+                // msg.close();
+                // alerted_server_dead = false;
+                // disconnect_alerted = false;
+            }
+        }
+    }
+
+
     setInterval(ping_server, 1000);
+    setInterval(check_server_alive, 1000);
 
 
 </script>
@@ -78,7 +169,7 @@
     <div>
         <div class="single_cell_div"> 
             <div class="row">
-                <h1>Pepper camera stream</h1>
+                <h2>Pepper camera stream</h2>
                 <img id="bg" src="{{ url_for('video_feed') }}" style="width: 60%;">
             </div>
             <br>
