@@ -14,7 +14,8 @@
     + [Adding audio files](#adding-audio-files)
     + [Adding LED colors](#adding-led-colors)
     + [Adding gesture animations](#adding-gesture-animations)
-+ [Citation]()
++ [Citation](#citation)
++ [Troubleshooting](#troubleshooting)
 
 # WoZ4U - What is this?
 In this repository, we host WoZ4U, a fully configurable interface for Softbank's Pepper robot. Our main objective is 
@@ -32,55 +33,63 @@ install all requirements there:
 
 ### Download WoZ4U
 For now, just clone this Github Repo to your local machine: `git clone https://github.com/frietz58/WoZ4U.git`
-Change working directory inside the repo folder: `cd WoZ4U`
+
+**Change working directory inside the repo folder**: `cd WoZ4U` <br>
+This is important for the following commands!
 
 ### Download NAOqi API
-1. Download the NAOqi API from Softbank's website:
+1. Download the NAOqi API [from Softbank's website](https://developer.softbankrobotics.com/pepper-naoqi-25):
 ![Softbank download section](readme_imgs/naoqi_download.png)
 From the download page, select the SDK (not Choregraphe), and download the archive. Extract the archive to an arbitrary
-location. 
+location. We propose extracting the API inside the `WoZ4U` directory, so that it is not deleted by accident.
 2. To send requests from WoZ4U's browser interface to the NAOqi API (and ultimately onto the physical Pepper), 
 WoZ4U needs to know where to find the API on your machine. We do this via the script `set_paths.sh`:
-    1. Edit the first line in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
-    folder inside the extracted NAOqi folder:
+    + Edit the first line in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
+    folder inside the extracted NAOqi API folder, that we extracted in the previous step:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/SITE-PACKAGES/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib/python2.7/site-packages
     ``` 
-    2. Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
+    + Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
     `lib` folder inside the extracted NAOqi folder:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/LIB/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
     ```
-In order to be able to execute the script, make it executable: `chmod +x set_paths.sh`
+    
+In order to be able to execute the script, make it executable with the following command: `chmod +x set_paths.sh` <br>
+Note, that we assume that your terminal's working directory is located *insider* thw WoZ4U folder, otherwise adjust the command to point to the location of the `set_paths.sh` script.
 
-Now, every time you want to use WoZ4U (in a new terminal session), first `source` the `set_paths.sh` script in the same session. Doing that adds the requires libraries to your `PATH`, so that they can be found by Python later. See section 
+Now, every time you want to use WoZ4U (in a new terminal session), first `source` the `set_paths.sh` script in that terminal session:`source set_paths.sh`<br>
+Executing that command adds the the NAOqi API to your `PATH`, so that they can be found by Python later. See section 
 [Running WoZ4U](#running-woz4u) for a concrete example. Obviously, you can adjust your `.bashrc` accordingly, the familiar won't need additional instructions ;)
 
 
 ### Setting up the environment
-1. Install Python 2.7, if you don't have it, from here: https://www.python.org/downloads/ . Verify installation by running `python2.7 --version`, which should output `Python 2.7.16` if you have Python 2.7 installed.
-2. Install Python's virtualenv package: `pip install virtualenv`
-3. Make a fresh Python 2.7 virtual environment: `virtualenv -p /usr/bin/python2.7 woz4u_venv`. Pay attention to providing the correct Python (**2.7**) interpreter by setting the correct path to the `-p /path/to/interpreter` argument.
-4. Activate the environment: `source woz4u_venv/bin/activate`. In your terminal, the prompt should now be prefixed with
+1. Install Python 2.7, if you don't have it, from [here](https://www.python.org/downloads/). Verify installation by running `python2.7 --version`, which should output `Python 2.7.16` if you have Python 2.7 installed.
+2. Verify that Pythons package manager, PIP, is available, by typing: `pip` into your terminal. This sould output somethig like `pip 19.3.1 from ...`. If the command is not availabel, install PIP from [here](https://pip.pypa.io/en/stable/installing/).
+3. Install Python's virtualenv package: `pip install virtualenv --user`
+4. Make a fresh Python 2.7 virtual environment: `virtualenv -p /usr/bin/python2.7 woz4u_venv`. <br>Pay attention to providing the correct Python (**2.7**) interpreter by setting the correct path to the `-p /path/to/interpreter` argument.
+5. Activate the environment: `source woz4u_venv/bin/activate`. In your terminal, the prompt should now be prefixed with
 `(woz4u_venv)`, indicating that the environment is active and that requirements will be installed in that environment.
-5. Install WoZ4U's requirements from the `requirements.txt` file in the virtual environment: 
-`pip install -r requirements.txt`. Here, I assume that your current working directory is still set to the main repository folder: `WoZ4U`. If you changed working directories in the meantime, provide the path to the `requirements.txt` file to the `-r` argument of the `pip install` call.
+6. Install WoZ4U's requirements from the `requirements.txt` file in the virtual environment: 
+`pip install -r requirements.txt`. <br>Here, I assume that your current working directory is still set to the main repository folder: `WoZ4U`. If you changed working directories in the meantime, provide the path to the `requirements.txt` file to the `-r` argument of the `pip install` call.
 
 ### Running WoZ4U
-For the main command to work, those conditions must be met:
+Assuming that you followed the instructions to this point, the followings conditions are now met:
 1. Paths to the NAOqi API are set in `set_paths.sh`
 2. Virtual environment is active in the current terminal session (activate with `source woz4u_venv/bin/active`).
-3. Requirements are installed in the environment.
-4. Terminals working directory is set to inside the repositories folder (`cd WoZ4U`) 
+3. Requirements are installed in the virtual environment.
+4. The terminal sessions working directory is set to inside the repositories folder (`WoZ4U`)
 
-Run the WoZ4U Flask server with the following command: 
+If all these conditions are met, you can start the WoZ4U interface with the following command: 
 ```bash
 source set_paths.sh && python server.py
 ```
 
-This executes the script `set_path.sh`, which makes the NAOqi API available to Python, then `python server.py` runs the flask server that hosts the WoZ4U interface. The server will run until you either close the terminal session or kill the process by pressing `CTRL + C`.
+If you are running WoZ4U on a Mac and the operating system does not allow the execution of binaries from unoffical sources, see section [Troubleshooting](#troubleshooting).
+
+This executes the script `set_path.sh`, which makes the NAOqi API available to Python, then exectues `python server.py` runs the flask server that hosts the WoZ4U interface. The server will run until you either close the terminal session or kill the process by pressing `CTRL + C`.
 
 While the server is running, you can assess the interface via your browser of choice (developed with Firefox), via the 
 URL `http://0.0.0.0:5000`.
@@ -220,3 +229,6 @@ If you use WoZ4U, please cite our work:
   publisher = {TBA}
 }
 ```
+
+# Troubleshooting
+With newer versions of the Mac operating systems, binaries from unoffcial source are not executable. Some information on this can be found [here](https://www.howtogeek.com/205393/gatekeeper-101-why-your-mac-only-allows-apple-approved-software-by-default/). To be able to run these binaries, for example from the NAOqi API, execute the following command:<br> `sudo spctl --master-disable`.
