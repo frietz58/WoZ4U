@@ -44,18 +44,19 @@ From the download page, select the SDK (not Choregraphe), and download the archi
 location. We propose extracting the API inside the `WoZ4U` directory, so that it is not deleted by accident.
 2. To send requests from WoZ4U's browser interface to the NAOqi API (and ultimately onto the physical Pepper), 
 WoZ4U needs to know where to find the API on your machine. We do this via the script `set_paths.sh`:
-    1. Edit the first line in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
+    + Edit the first line in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
     folder inside the extracted NAOqi API folder, that we extracted in the previous step:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/SITE-PACKAGES/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib/python2.7/site-packages
     ``` 
-    2. Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
+    + Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
     `lib` folder inside the extracted NAOqi folder:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/LIB/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
     ```
+    
 In order to be able to execute the script, make it executable with the following command: `chmod +x set_paths.sh` <br>
 Note, that we assume that your terminal's working directory is located *insider* thw WoZ4U folder, otherwise adjust the command to point to the location of the `set_paths.sh` script.
 
@@ -65,8 +66,8 @@ Executing that command adds the the NAOqi API to your `PATH`, so that they can b
 
 
 ### Setting up the environment
-1. Install Python 2.7, if you don't have it, from here: https://www.python.org/downloads/ . Verify installation by running `python2.7 --version`, which should output `Python 2.7.16` if you have Python 2.7 installed.
-2. Verify that Pythons package manager, PIP, is available, by typing: `pip` into your terminal. This sould output somethig like `pip 19.3.1 from ...`. If the command is not availabel, install PIP from here: https://pip.pypa.io/en/stable/installing/
+1. Install Python 2.7, if you don't have it, from [here](https://www.python.org/downloads/). Verify installation by running `python2.7 --version`, which should output `Python 2.7.16` if you have Python 2.7 installed.
+2. Verify that Pythons package manager, PIP, is available, by typing: `pip` into your terminal. This sould output somethig like `pip 19.3.1 from ...`. If the command is not availabel, install PIP from [here](https://pip.pypa.io/en/stable/installing/).
 3. Install Python's virtualenv package: `pip install virtualenv --user`
 4. Make a fresh Python 2.7 virtual environment: `virtualenv -p /usr/bin/python2.7 woz4u_venv`. <br>Pay attention to providing the correct Python (**2.7**) interpreter by setting the correct path to the `-p /path/to/interpreter` argument.
 5. Activate the environment: `source woz4u_venv/bin/activate`. In your terminal, the prompt should now be prefixed with
