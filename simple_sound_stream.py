@@ -54,9 +54,11 @@ class SpeechRecognitionModule(naoqi.ALModule):
         # audio buffer
         self.buffer = []
 
+        self.stream_latency = 0.5
+
         # sounddevice stream for audio playback in realtime
         # dtype=np.int16 is very important! This fixes the insane static noises
-        self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16)
+        self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16, latency=self.stream_latency)
 
         self.livestream = True
 
@@ -88,7 +90,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
             # print "SD STREAM ACTIVE: ", self.stream.active
         except PortAudioError:
             # when stream has been closed, pointer become invalid, so we have to make a new stream
-            self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16)
+            self.stream = sd.OutputStream(channels=CHANNELS, samplerate=SAMPLE_RATE, dtype=np.int16, latency=self.stream_latency)
             self.stream.start()
             self.isStarted = True
 
