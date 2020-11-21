@@ -38,7 +38,11 @@ class SpeechRecognitionModule(naoqi.ALModule):
         self.naoPort = noaPort
         self.broker = self.setup_broker()  # setup naoqi broker for module communication
 
-        naoqi.ALModule.__init__(self, strModuleName)  # init module
+        try:
+            naoqi.ALModule.__init__(self, strModuleName)  # init module
+        except RuntimeError:
+            # When module is already registered (eg camera tab has been closed and is now reopened)
+            pass
 
         self.BIND_PYTHON(self.getName(), "callback")  # not sure what this does?
 
@@ -120,6 +124,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
             # write the callback data from ALAudiodevice to sounddevice stream, causing it to be played
             # we need to transpose, because sounddevice expects columns to be channels, and we get rows as channels
             if self.livestream:
+                print np.shape(aSoundData)
                 self.stream.write(aSoundData.T)
 
     def save_buffer(self):

@@ -326,7 +326,10 @@ def querry_states():
         # see if audio transmission is running even though camera tab is closed...
         try:
             now = timer()
-            if now - camera_tab_timestamp > 5:  # if now keep alive ping within 5 seconds...
+
+            # this should be obsolete now, camera calls close method when closed... but having this here doesn't hurt,
+            # so leaving it, just in case
+            if now - camera_tab_timestamp > 3:  # if now keep alive ping within 5 seconds...
                 if SpeechRecognition.isStarted:
                     print("Handling close camera tab!")
                     SpeechRecognition.stop()  # stop the audio transmission
@@ -843,6 +846,24 @@ def camera_view():
     SpeechRecognition.start()
 
     return render_template("camera.html")
+
+
+@app.route("/close_camera_tab")
+def close_camera_tab():
+    try:
+        global SpeechRecognition
+        SpeechRecognition.stop()
+        del SpeechRecognition
+
+        if video_srv.getSubscribers():
+            for subscriber in video_srv.getSubscribers():
+                if "CameraStream" in subscriber:  # name passed as argument on subscription
+                    video_srv.unsubscribe(subscriber)
+
+    except (RuntimeError, NameError):
+        # happens when cameratab is closed after naoqi session has been closed.
+        pass
+
 
 
 @app.route("/camera_tab_keep_alive")

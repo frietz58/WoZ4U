@@ -187,6 +187,18 @@
             
         </div>
     </div>
+
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            // alert("unloading?")
+            $.getJSON(
+                "/close_camera_tab",
+                function(data) {
+                    console.log("sending close tab info to server")
+                }
+            );
+        });
+    </script>
     
 
 </body>
