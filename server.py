@@ -99,8 +99,19 @@ def connect_robot():
 
     if QI_SESSION is not None and QI_SESSION.isConnected():
         # connect btn has been pressed while robot was already connect --> it is the disconnedt btn...
+        del QI_SESSION
+
         QI_SESSION = qi.Session()  # we make a new sess but don't connect it to anything --> essentially disconnect
         print("disconnecting interface by terminating session.")
+
+        try:
+            global SpeechRecognition
+            SpeechRecognition.stop()
+            del SpeechRecognition
+        except (RuntimeError, NameError):
+            # when camera tab is not open
+            pass
+
         return {
             "status": "disconnected"
         }
