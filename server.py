@@ -825,7 +825,7 @@ def camera_view():
                 if "CameraStream" in subscriber:  # name passed as argument on subscription
                     video_srv.unsubscribe(subscriber)
 
-    except NameError:
+    except (NameError, RuntimeError):
         # happens when camera tab is open when there is no server has been restarted?
         return render_template("camera.html")
 
@@ -916,26 +916,30 @@ def stream_generator():
     while True:
         # frame = camera.get_frame()
         global imgClient
-        alImage = video_srv.getImageRemote(imgClient)
-        if alImage is not None:
-            pil_img = alImage_to_PIL(alImage)
+        try:
+            alImage = video_srv.getImageRemote(imgClient)
+            if alImage is not None:
+                pil_img = alImage_to_PIL(alImage)
 
-            # TODO: make image smaller? Might greatly decrease latency
+                # TODO: make image smaller? Might greatly decrease latency
 
-            timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
-            filename = timestamp + ".jpg"
-            save_path = os.path.join(config["camera_save_dir"], filename)
-            if SAVE_IMGS:
-                pil_img.save(save_path, "JPEG")
+                timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
+                filename = timestamp + ".jpg"
+                save_path = os.path.join(config["camera_save_dir"], filename)
+                if SAVE_IMGS:
+                    pil_img.save(save_path, "JPEG")
 
-            jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
+                jpeg_bytes = PIL_to_JPEG_BYTEARRAY(pil_img)
 
-            counter += 1
+                counter += 1
 
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + jpeg_bytes + b'\r\n\r\n')
 
-        time.sleep(0.01)
+            time.sleep(0.01)
+        except (RuntimeError, NameError):
+            # when session gets disconnected by camera tab is open
+            pass
 
 
 @app.route("/toggle_img_save")
