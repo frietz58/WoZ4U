@@ -76,23 +76,22 @@ Executing that command adds the the NAOqi API to your `PATH`, so that they can b
 `pip install -r requirements.txt`. <br>Here, I assume that your current working directory is still set to the main repository folder: `WoZ4U`. If you changed working directories in the meantime, provide the path to the `requirements.txt` file to the `-r` argument of the `pip install` call.
 
 ### Running WoZ4U
-Assuming that you followed the instructions to this point, the followings conditions are now met:
-1. Paths to the NAOqi API are set in `set_paths.sh`
-2. Virtual environment is active in the current terminal session (activate with `source woz4u_venv/bin/active`).
-3. Requirements are installed in the virtual environment.
-4. The terminal sessions working directory is set to inside the repositories folder (`WoZ4U`)
+Assuming that you followed the installation instructions to this point, the following sequence of commands starts WoZ4U (even in a new terminal session or after having restarted your computer):
+1. Change the working directory into the `WoZ4U` directory (where you cloned this repository, during the installation process): `cd PATH/TO/YOUR/WoZ4U`
+2. Activate the virtualenv containg all the required packages: `source woz4u_venv/bin/active`
+3. Tell the interface where to find the NAOqi API: `source set_paths.sh`
+4. Run the main command: `python server.py`
 
-If all these conditions are met, you can start the WoZ4U interface with the following command: 
+You can also chain the commands together with the `&&` operator (assuming your working directory is set to `WoZ4U`):
 ```bash
-source set_paths.sh && python server.py
+source woz4u_venv/bin/active && source set_paths.sh && python server.py
 ```
 
-If you are running WoZ4U on a Mac and the operating system does not allow the execution of binaries from unoffical sources, see section [Troubleshooting](#troubleshooting).
-
-This executes the script `set_path.sh`, which makes the NAOqi API available to Python, then exectues `python server.py` runs the flask server that hosts the WoZ4U interface. The server will run until you either close the terminal session or kill the process by pressing `CTRL + C`.
-
 While the server is running, you can assess the interface via your browser of choice (developed with Firefox), via the 
-URL `http://0.0.0.0:5000`.
+URL `http://0.0.0.0:5000`. The server will run until you either close the terminal session or kill the process by pressing `CTRL + C`.
+
+
+If you are running WoZ4U on a Mac and the operating system does not allow the execution of binaries from unoffical sources, see section [Troubleshooting](#troubleshooting).
 
 # Configuring WoZ4U
 In order to use WoZ4U with you own Pepper robot and configuring the context and experiment specific items, you only have to edit one central YAML file, that holds the concrete values for all the UI elements in the frontend. As a general rule for working with WoZ4U, only edit, add, or delete ***values***, but never edit ***keys***! When the `config.yaml` file is parsed by the server, the keys in the file (eg names of fields, list, or object) are the only thing that bridges
