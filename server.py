@@ -18,6 +18,8 @@ from utils import is_image
 from utils import is_external_path
 from utils import is_txt_file
 import socket
+import argparse
+
 
 from simple_sound_stream import SpeechRecognitionModule
 
@@ -62,8 +64,6 @@ RECORD_AUDIO = False
 
 global motion_vector
 motion_vector = [0, 0, 0]
-
-CONFIG_FILE = "config.yaml"
 
 # Tablet needs to know where server is running
 HOST_IP = socket.gethostbyname(socket.gethostname())
@@ -1142,6 +1142,13 @@ def pretty_print_shortcut(raw_string):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", dest="config", default="config.yaml", type=str, help="Which YAML configuration file to use. ")
+    args = parser.parse_args()
+
+    global CONFIG_FILE
+    CONFIG_FILE = args.config
+
     read_config()
 
     # register custom filter for jinja2, so that we can use it in the frontend
