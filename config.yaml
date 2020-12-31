@@ -26,7 +26,7 @@ lock_eye_anim_section: "false"
 
 
 # AUTONOMOUS LIFE SETTINGS
-# Leave as empty string to not leave value as is on connection to robot
+# Leave as empty string to leave value as is on connection to robot
 # values must be valid for respective set methods in naoqi API...
 autonomous_life_config:
   autonomous_state: "solitary"
