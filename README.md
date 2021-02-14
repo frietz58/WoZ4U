@@ -18,8 +18,11 @@
 + [Troubleshooting](#troubleshooting)
 
 # WoZ4U - What is this?
-In this repository, we host WoZ4U, a fully configurable interface for Softbank's Pepper robot. Our main objective is 
-to provide an easy to use yet flexible and powerful tool for the conduction of Wizard-of-Oz experiment with Pepper, 
+In this repository, we host WoZ4U, a fully configurable interface forSoftbank's Pepper robot.
+
+WoZ4U was developed by the [Intelligent Robotics Group](https://www.umu.se/en/research/groups/intelligent-robotics/), Umeå University, Sweden, as a collaborative project with the [Knowledge Technology Group](https://www.inf.uni-hamburg.de/en/inst/ab/wtm/) from Hamburg University, Germany.
+
+Our main objective is to provide an easy to use yet flexible and powerful tool for the conduction of Wizard-of-Oz experiment with Pepper, 
 which are an essential method for general HRI research. 
 Further, we hope to make Pepper as a research platform more accessible for 
 non-technical groups (social sciences), by providing means to conduct Wizard-of-Oz experiments on Pepper without needing 
@@ -219,13 +222,13 @@ to make up a shortcut, that will be assigned to the button in the frontend.
 If you use WoZ4U, please cite our work:
 ```
 @article{rietzwoz4u,
-  title = {WoZ4U: An Open Source Wizard-of-Oz Interface for the Pepper robot},
+  title = {WoZ4U: An Open-Source Wizard-of-Oz Interface for Easy, Efficient and Robust HRI Experiments},
   author = {Rietz, Finn and Sutherland, Alexander and Bensch, Suna and Wermter, Stefan and Hellström, Thomas},
-  journal = {TBA},
+  journal = {Frontiers in Robotics and AI},
   volume = {TBA},
   pages = {TBA--TBA},
-  year = {TBA},
-  publisher = {TBA}
+  year = {2021},
+  publisher = {Frontiers Media}
 }
 ```
 
