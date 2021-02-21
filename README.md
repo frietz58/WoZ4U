@@ -69,7 +69,7 @@ Executing that command adds the the NAOqi API to your `PATH`, so that they can b
 
 
 ### Setting up the environment
-1. Install Python 2.7, if you don't have it, from [here](https://www.python.org/downloads/). Verify installation by running `python2.7 --version`, which should output `Python 2.7.16` if you have Python 2.7 installed.
+1. Install Python 2.7, if you don't have it, from [here](https://www.python.org/downloads/). Verify installation by running `python2.7 --version`, which should output something similar to `Python 2.7.16`, if you have Python 2.7 installed.
 2. Verify that Pythons package manager, PIP, is available, by typing: `pip` into your terminal. This sould output somethig like `pip 19.3.1 from ...`. If the command is not availabel, install PIP from [here](https://pip.pypa.io/en/stable/installing/).
 3. Install Python's virtualenv package: `pip install virtualenv --user`
 4. Make a fresh Python 2.7 virtual environment: `virtualenv -p /usr/bin/python2.7 woz4u_venv`. <br>Pay attention to providing the correct Python (**2.7**) interpreter by setting the correct path to the `-p /path/to/interpreter` argument.
@@ -233,4 +233,5 @@ If you use WoZ4U, please cite our work:
 ```
 
 # Troubleshooting
-With newer versions of the Mac operating systems, binaries from unoffcial source are not executable. Some information on this can be found [here](https://www.howtogeek.com/205393/gatekeeper-101-why-your-mac-only-allows-apple-approved-software-by-default/). To be able to run these binaries, for example from the NAOqi API, execute the following command:<br> `sudo spctl --master-disable`.
++ With newer versions of the Mac operating systems, binaries from unoffcial source are not executable. Some information on this can be found [here](https://www.howtogeek.com/205393/gatekeeper-101-why-your-mac-only-allows-apple-approved-software-by-default/). To be able to run these binaries, for example from the NAOqi API, execute the following command:<br> `sudo spctl --master-disable`.
++ With Mac OS El Capitan, Apple introduced additional security measures, that introduced some issue with the NAOqi API. If you get an `SystemError: dynamic module not initialized properly` when importing the naoqi library, run the following command to disable the new security features: `csrutil disable` followed by `reboot`. More on this [here](https://www.macworld.co.uk/how-to/how-turn-off-mac-os-x-system-integrity-protection-rootless-3638975/).
