@@ -6,6 +6,7 @@
     + [Setting up the environment](#setting-up-the-environment)
     + [Running WoZ4U](#running-woz4u)
 + [Configuring WoZ4U](#configuring-woz4u)
+    + [Using a different configuation file](#Using-a-different-configuation-file)   
     + [A word on YAML syntax](#a-word-on-yaml-syntax)
     + [Connecting WoZ4U to your Pepper](#connecting-woz4u-to-your-pepper)
     + [Configuring Pepper's default state](#configuring-peppers-default-state)
@@ -106,6 +107,13 @@ For most sections of the interface, you populate a YAML list with the concrete i
 that are relevant for your use-case. For each element in the list corresponding to each section, UI elements will be
 created in the WoZ4U frontend. Hence, via this configuration file, the interface can be fully configured to any specific
 use-case.
+
+### Using a different configuation file
+The WoZ4U server can be started with the command line argument "-c", which expects a string value. The string value has to correspond to a path of a valid configuration file for WoZ4U. For example, when the server is started without explicitly appending the "-c" argument, the default value will be inserted, which is equivalent to calling `server.py -c "config.yaml"` 
+Thus, to use a different configuration file as the default `config.yaml`, simply pass the name of the file configuration file via the "-c". Using again the full argument from [above](#running-woz4u), we get:
+```bash
+source woz4u_venv/bin/activate && source set_paths.sh && python server.py -c "new_config_file.yaml"
+```
 
 ### A word on YAML syntax
 YAML is a vastly popular markup language. A good guide is available [here](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html).
