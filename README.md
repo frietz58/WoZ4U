@@ -81,13 +81,13 @@ Executing that command adds the the NAOqi API to your `PATH`, so that they can b
 ### Running WoZ4U
 Assuming that you followed the installation instructions to this point, the following sequence of commands starts WoZ4U (even in a new terminal session or after having restarted your computer):
 1. Change the working directory into the `WoZ4U` directory (where you cloned this repository, during the installation process): `cd PATH/TO/YOUR/WoZ4U`
-2. Activate the virtualenv containg all the required packages: `source woz4u_venv/bin/active`
+2. Activate the virtualenv containg all the required packages: `source woz4u_venv/bin/activate`
 3. Tell the interface where to find the NAOqi API: `source set_paths.sh`
 4. Run the main command: `python server.py`
 
 You can also chain the commands together with the `&&` operator (assuming your working directory is set to `WoZ4U`):
 ```bash
-source woz4u_venv/bin/active && source set_paths.sh && python server.py
+source woz4u_venv/bin/activate && source set_paths.sh && python server.py
 ```
 
 While the server is running, you can assess the interface via your browser of choice (developed with Firefox), via the 
