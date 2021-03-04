@@ -1,6 +1,7 @@
 # Table of Contents:
 + [WoZ4U - What is this?](#woz4u---what-is-this)
 + [Installation](#installation)
+    + [Windows Guide](#windows-Guide)
     + [Download WoZ4U](#download-woz4u)
     + [Download NAOqi 2.5](#download-naoqi-api)
     + [Setting up the environment](#setting-up-the-environment)
@@ -32,8 +33,14 @@ expert programming knowledge.
 ![WoZ4U interface](readme_imgs/header.png)
 
 # Installation
-WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which is only available for licensed Pepper owners and only supports **Python 2.7**. Hence, we recommend to set up a dedicated Python 2.7 virtual environment and 
-install all requirements there:
+WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Hence, we recommend to set up a dedicated Python 2.7 virtual environment and 
+install all requirements there in that virtual environment. If you follow the steps as described below, everything will be installed in a virtual environment and you won't have to worry about conflicting package versions.
+
+### Windows Guide
+
+WoZ4U can be installed on all major platforms, namely Debian Based Linux (Ubuntu etc), MacOS, and Windows. However, the installation process on Windows is different, because Bash is not default shell on Windows. Thus, if I wish to install WoZ4U and run on a Windows Machine, please follow follow the steps described in our `windows_readme.md`, [here](https://github.com/frietz58/WoZ4U/blob/master/windows_readme.md).  
+
+If you wish to install WoZ4U on Linux or MacOS, follow the steps below.
 
 ### Download WoZ4U
 For now, just clone this Github Repo to your local machine: `git clone https://github.com/frietz58/WoZ4U.git`
@@ -53,14 +60,15 @@ WoZ4U needs to know where to find the API on your machine. We do this via the sc
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/SITE-PACKAGES/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib/python2.7/site-packages
-    ``` 
+    ```
     + Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
     `lib` folder inside the extracted NAOqi folder:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/LIB/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
     ```
-    
+   
+
 In order to be able to execute the script, make it executable with the following command: `chmod +x set_paths.sh` <br>
 Note, that we assume that your terminal's working directory is located *insider* thw WoZ4U folder, otherwise adjust the command to point to the location of the `set_paths.sh` script.
 
@@ -80,7 +88,10 @@ Executing that command adds the the NAOqi API to your `PATH`, so that they can b
 `pip install -r requirements.txt`. <br>Here, I assume that your current working directory is still set to the main repository folder: `WoZ4U`. If you changed working directories in the meantime, provide the path to the `requirements.txt` file to the `-r` argument of the `pip install` call.
 
 ### Running WoZ4U
+As a reminder, to install and run WoZ4U on Windows, please see the `windows_readme.md`  [here](https://github.com/frietz58/WoZ4U/blob/master/windows_readme.md).  If you have installed WoZ4U on Linux or MacOS, follow the steps below to start the interface.
+
 Assuming that you followed the installation instructions to this point, the following sequence of commands starts WoZ4U (even in a new terminal session or after having restarted your computer):
+
 1. Change the working directory into the `WoZ4U` directory (where you cloned this repository, during the installation process): `cd PATH/TO/YOUR/WoZ4U`
 2. Activate the virtualenv containg all the required packages: `source woz4u_venv/bin/activate`
 3. Tell the interface where to find the NAOqi API: `source set_paths.sh`
@@ -142,7 +153,7 @@ pepper_ips:  # Entry in the dropdown menu will be created for every list item
   - 192.168.10.1  # pepper ip address, should be reachable from the network where the WoZ4Uinterface is hosted.
   - 192.168.10.2
   - 192.168.10.3
-``` 
+```
 
 Naturally, Pepper must actually be reachable via TCP/IP (aka be in the same network as the machine that hosts WoZ4U).
 
