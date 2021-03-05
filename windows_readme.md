@@ -36,7 +36,7 @@ To begin, you will have to download and install a few additional software compon
 Download WoZ4U from GitHub using GitBash, that you installed earlier:
 
 1. Start the GitBash by searching for it in the start menu. This will spawn a Bash terminal, looking similar to this:
-   ![](readme_imgs/gitbash.png)
+   ![](readme_imgs/gitbash.PNG)
 2. Using the `cd` command in GitBash, navigate to the location where you would like to install WoZ4U, for example on the Desktop: `cd Desktop`
 3. Download (clone) the WoZ4U repository onto your machine: `git clone https://github.com/frietz58/WoZ4U.git`. **Don't paste this command** (or anything for that matter) into your GitBash terminal using `CTRL + V`! Instead right-click into the terminal and select paste or type the command manually. If you press `CTRL + V` in GitBash, you will get [this error](https://stackoverflow.com/questions/53988638/git-fatal-protocol-https-is-not-supported).
 
@@ -71,16 +71,16 @@ PYTHONPATH="C:\Users\Finn\Desktop\WoZ4U\pynaoqi-python2.7-2.5.7.1-win32-vs2013\l
 
 4. In the project settings, navigate to the `Python Interpreter` settings (marked with 1) in the following screenshot). Under the interpreter settings,  open the dropdown menu and press the `Show all... option` (marked with 2) in the screenshot):
 
-   ![](readme_imgs/pycharm_settings.png)
+   ![](readme_imgs/pycharm_settings.PNG)
 
 5. In the list of all available python interpreters (if you never used Python before, there should only be one interpreter called Python 2.7), select the plus button to add a new one (1) in the screenshot. The, create a `New environment` (2) in the screenshot). Leave the location as default, which will create the virtual environment inside the project folder This is important, because we assume this location of the environment later. Make sure that you select your Python 2.7 installation as base interpreter (3) in the screenshot). Again, if you just installed Python, there should only be one option. Name the virtual environment as you like (default is `venv`), but you can also call it `woz4u_venv` if you prefer a more descriptive name.
-   ![](readme_imgs/pycharm_venv.png)
+   ![](readme_imgs/pycharm_venv.PNG)
 
 6. Press `OK`. Pycharm will now create your virtual environment. After the process has finished, press `OK`in the remaining dialogues. 
 
 To verify that the virtual environment was created, either in with the Windows Explore or with the file view in Pycharm, check that at the location specified in the setup, a new folder as been created with the following structure:
 
-![](readme_imgs/venv_structure.png)
+![](readme_imgs/venv_structure.PNG)
 
 Notice that there is a script called `activate` in the `venv/Scripts/` folder. We will call this later to activate the virtual environment.
 
@@ -97,7 +97,7 @@ For this, activate the the virtual environment we just created. This is done by 
 
 This should output, in paranthesis, the name of the virtual environment you just activated. If you left the default value in the PyCharm dialogue, it will output `(venv)`.  Further, GitBash will display the name of the active environment after every command you execute, while that environment is active. See the annotations in the following screenshot:
 
-![](readme_imgs/active_venv.png)
+![](readme_imgs/active_venv.PNG)
 
 3. Install the requirements *inside* of the currently active environment (because we just activate the virtual environment for WoZ4U, there won't be any conflicting package versions): `pip install -r requirements.txt`
 
@@ -118,13 +118,13 @@ If you just completed the installation guide, your GitBash terminal should still
 
    The output of that command should be similar to this:
 
-   ![](readme_imgs/woz4u_running.png)
+   ![](readme_imgs/woz4u_running.PNG)
 
 3. To access the interface, start any browser (we recommend FireFox), and type into the URL field: `http://localhost:5000/`
 
    You can now use WoZ4U in your browser: 
 
-![](readme_imgs/woz4u_windows.png)
+![](readme_imgs/woz4u_windows.PNG)
 
 
 
