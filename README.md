@@ -38,9 +38,9 @@ install all requirements there in that virtual environment. If you follow the st
 
 ### Windows Guide
 
-WoZ4U can be installed on all major platforms, namely Debian Based Linux (Ubuntu etc), MacOS, and Windows. However, the installation process on Windows is different, because Bash is not default shell on Windows. Thus, if I wish to install WoZ4U and run on a Windows Machine, please follow follow the steps described in our `windows_readme.md`, [here](https://github.com/frietz58/WoZ4U/blob/master/windows_readme.md).  
+WoZ4U can be installed on all major platforms, namely Debian Based Linux (Ubuntu etc), MacOS, and Windows. However, the installation process on Windows is different, because Bash is not default shell on Windows. Thus, if I wish to install and run WoZ4U on a Windows machine, please follow the steps described in our `windows_readme.md`, [available here](https://github.com/frietz58/WoZ4U/blob/master/windows_readme.md).  
 
-If you wish to install WoZ4U on Linux or MacOS, follow the steps below.
+If you wish to install and run WoZ4U on Linux or MacOS, just follow the steps below.
 
 ### Download WoZ4U
 For now, just clone this Github Repo to your local machine: `git clone https://github.com/frietz58/WoZ4U.git`
