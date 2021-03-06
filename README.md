@@ -55,17 +55,17 @@ From the download page, select the SDK (not Choregraphe), and download the archi
 location. We propose extracting the API inside the `WoZ4U` directory, so that it is not deleted by accident.
 2. To send requests from WoZ4U's browser interface to the NAOqi API (and ultimately onto the physical Pepper), 
 WoZ4U needs to know where to find the API on your machine. We do this via the script `set_paths.sh`:
-    + Edit the first line in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
+    + Edit line 10 in `set_paths.sh` by replacing everything after the colon with the path to the `site-packages` 
     folder inside the extracted NAOqi API folder, that we extracted in the previous step:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/SITE-PACKAGES/FOLDER/IN/NAOQI-API-FOLDER
     export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib/python2.7/site-packages
     ```
-    + Edit the second line in `set_paths.sh` by replacing everything after the colon with the path to the 
+    + Edit line 11 in `set_paths.sh` by replacing everything after the colon with the path to the 
     `lib` folder inside the extracted NAOqi folder:
     ```bash
     # export PYTHONPATH=${PYTHONPATH}:/ABSOLUTE/PATH/TO/LIB/FOLDER/IN/NAOQI-API-FOLDER
-    export PYTHONPATH=${PYTHONPATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
+    export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:/Users/finn/Desktop/WTM/pepper_scripts/pynaoqi-python2.7-2.5.7.1-mac64/lib
     ```
    
 
