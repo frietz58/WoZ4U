@@ -48,6 +48,20 @@ Then, the interface can be access via URL in the browser of your choice on `http
 
 While this is great and probably easiest to get started right away, if you want to make changes to the configuration of the interface (as described under [Configuring WoZ4U](#configuring-woz4u)), you will have to either rebuild the docker image from the provided `Dockerfile` locally after making your changes, or install the system without Docker, directly on your machine, as described below.
 
+To make changes based if you've opted for docker, first clone the repo, then make your changes
+After having made changes to the either the `config.yaml` configuration file, rebuild the docker image with the following command:
+```bash
+# git clone https://github.com/frietz58/WoZ4U.git
+# make your changes 
+# then:
+cd WoZ4U && sudo docker build -t woz4u .
+```
+This will build a local version of the image, which uses the files you've changed locally. The command to start the local version is the same as we used to run remote image, except the name of the images changes:
+```bash
+# before we were running frietz58/woz4u, now its just woz4u, based on how we tagged the image during the build
+sudo docker run -it --network host --device /dev/snd woz4u
+```
+
 ### Windows Guide
 
 WoZ4U can be installed on all major platforms, namely Debian Based Linux (Ubuntu etc), MacOS, and Windows. However, the installation process on Windows is different, because Bash is not default shell on Windows. Thus, if I wish to install and run WoZ4U on a Windows machine, please follow the steps described in our `windows_readme.md`, [available here](https://github.com/frietz58/WoZ4U/blob/master/windows_readme.md).  
