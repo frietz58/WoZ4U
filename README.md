@@ -33,8 +33,19 @@ expert programming knowledge.
 ![WoZ4U interface](readme_imgs/header.png)
 
 # Installation
-WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Hence, we recommend to set up a dedicated Python 2.7 virtual environment and 
-install all requirements there in that virtual environment. If you follow the steps as described below, everything will be installed in a virtual environment and you won't have to worry about conflicting package versions.
+WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Thus, you need some environment where these requirements are satisfied. You can either run WoZ4U from our Docker image (where the entire installation process has been taken care of, see [Docker](#docker)) or install the system manually, see [Windows Guide](#windows-guide) or [Download WoZ4U](#download-woz4u).
+
+Hence, we recommend to set up a dedicated Python 2.7 virtual environment and install all requirements there in that virtual environment. If you follow the steps as described below, everything will be installed in a virtual environment and you won't have to worry about conflicting package versions.
+
+### Docker
+The easiest way run the WoZ4U interface is through our docker image, which won't require any manual installation steps beyond docker. Thus, if you don't have it, install docker from [here](https://docs.docker.com/get-docker/).
+Then, you can immediately start the interface from our image hosted on dockerhub:
+```bash
+sudo docker run -it --network host --device /dev/snd frietz58/woz4u
+```
+Then, the interface can be access via URL in the browser of your choice on `http://0.0.0.0:5000
+
+While this is great and probably easiest to get started right away, if you want to make changes to the configuration of the interface (as described under [Configuring WoZ4U](#configuring-woz4u)), you will have to either rebuild the docker image from the provided `Dockerfile` locally after making your changes, or install the system without Docker, directly on your machine, as described below.
 
 ### Windows Guide
 

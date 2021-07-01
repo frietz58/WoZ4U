@@ -1,7 +1,7 @@
 pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
   - 130.239.182.10
-  - 192.168.10.3
+  - 192.168.104.144
   - 192.168.10.4
 
 
