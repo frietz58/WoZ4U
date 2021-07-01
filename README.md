@@ -3,10 +3,10 @@
 + [Installation](#installation)
     + [Docker](#docker)
     + [Windows Guide](#windows-Guide)
-    + [Download WoZ4U](#download-woz4u)
-    + [Download NAOqi 2.5](#download-naoqi-api)
-    + [Setting up the environment](#setting-up-the-environment)
-    + [Running WoZ4U](#running-woz4u)
+    + [Linux and Mac Guide](#linux-and-mac-guide)
+        + [Download NAOqi 2.5](#download-naoqi-api)
+        + [Setting up the environment](#setting-up-the-environment)
+        + [Running WoZ4U](#running-woz4u)
 + [Configuring WoZ4U](#configuring-woz4u)
     + [Using a different configuation file](#Using-a-different-configuation-file)   
     + [A word on YAML syntax](#a-word-on-yaml-syntax)
@@ -34,17 +34,17 @@ expert programming knowledge.
 ![WoZ4U interface](readme_imgs/header.png)
 
 # Installation
-WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Thus, you need some environment where these requirements are satisfied. You can either run WoZ4U from our Docker image (where the entire installation process has been taken care of, see [Docker](#docker)) or install the system manually, as described in [Windows Guide](#windows-guide) or [Download WoZ4U](#download-woz4u).
+WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Thus, you need some environment where these requirements are satisfied. You can either run WoZ4U from our Docker image (where the entire installation process has been taken care of, see [Docker](#docker)) or install the system manually, as described in [Windows Guide](#windows-guide) or [Linux and Mac Guide](#linux-and-mac-guide).
 
 Hence, we recommend to set up a dedicated Python 2.7 virtual environment and install all requirements there in that virtual environment. If you follow the steps as described below, everything will be installed in a virtual environment and you won't have to worry about conflicting package versions.
 
 ### Docker
-The easiest way run the WoZ4U interface is through our docker image, which won't require any manual installation steps beyond docker. Thus, if you don't have it, install docker from [here](https://docs.docker.com/get-docker/).
+The easiest way run the WoZ4U interface is through our docker image, which won't require any manual installation steps beyond the installation of docker itself. Thus, if you don't have it, install docker from [here](https://docs.docker.com/get-docker/).
 Then, you can immediately start the interface from our image hosted on dockerhub:
 ```bash
 sudo docker run -it --network host --device /dev/snd frietz58/woz4u
 ```
-Then, the interface can be access via URL in the browser of your choice on `http://0.0.0.0:5000
+Now, the interface can be access via URL in the browser of your choice on `http://0.0.0.0:5000`
 
 While this is great and probably easiest to get started right away, if you want to make changes to the configuration of the interface (as described under [Configuring WoZ4U](#configuring-woz4u)), you will have to either rebuild the docker image from the provided `Dockerfile` locally after making your changes, or install the system without Docker, directly on your machine, as described below.
 
@@ -68,7 +68,7 @@ WoZ4U can be installed on all major platforms, namely Debian Based Linux (Ubuntu
 
 If you wish to install and run WoZ4U on Linux or MacOS, just follow the steps below.
 
-### Download WoZ4U
+## Linux and Mac Guide
 For now, just clone this Github Repo to your local machine: `git clone https://github.com/frietz58/WoZ4U.git`
 
 **Change working directory inside the repo folder**: `cd WoZ4U` <br>
