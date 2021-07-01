@@ -1,6 +1,7 @@
 # Table of Contents:
 + [WoZ4U - What is this?](#woz4u---what-is-this)
 + [Installation](#installation)
+    + [Docker](#docker)
     + [Windows Guide](#windows-Guide)
     + [Download WoZ4U](#download-woz4u)
     + [Download NAOqi 2.5](#download-naoqi-api)
@@ -33,7 +34,7 @@ expert programming knowledge.
 ![WoZ4U interface](readme_imgs/header.png)
 
 # Installation
-WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Thus, you need some environment where these requirements are satisfied. You can either run WoZ4U from our Docker image (where the entire installation process has been taken care of, see [Docker](#docker)) or install the system manually, see [Windows Guide](#windows-guide) or [Download WoZ4U](#download-woz4u).
+WoZ4U is implemented as a Flask HTTP server and is accessed via browser, nevertheless,  a few steps are required to run WoZ4U on your machine. Firstly, WoZ4U requires the **NAOqi API v2.5**, which only supports **Python 2.7**. Thus, you need some environment where these requirements are satisfied. You can either run WoZ4U from our Docker image (where the entire installation process has been taken care of, see [Docker](#docker)) or install the system manually, as described in [Windows Guide](#windows-guide) or [Download WoZ4U](#download-woz4u).
 
 Hence, we recommend to set up a dedicated Python 2.7 virtual environment and install all requirements there in that virtual environment. If you follow the steps as described below, everything will be installed in a virtual environment and you won't have to worry about conflicting package versions.
 
