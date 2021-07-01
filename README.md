@@ -45,8 +45,6 @@ Then, you can immediately start the interface from our image hosted on dockerhub
 sudo docker run -it --network host --device /dev/snd frietz58/woz4u  # for linux
 sudo docker run -it -p 5000:5000 frietz58/woz4u  # for mac
 ```
-In this script, we simply check which OS you are on and lunch the docker image accordingly, because there are slight difference depending in the call depending on the OS
-
 Now, the interface can be access via URL in the browser of your choice on `http://0.0.0.0:5000`
 
 While this is great and probably easiest to get started right away, if you want to make changes to the configuration of the interface (as described under [Configuring WoZ4U](#configuring-woz4u)), you will have to either rebuild the docker image from the provided `Dockerfile` locally after making your changes, or install the system without Docker, directly on your machine, as described below.
