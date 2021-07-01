@@ -280,3 +280,5 @@ If you use WoZ4U, please cite our work:
 # Troubleshooting
 + With newer versions of the Mac operating systems, binaries from unoffcial source are not executable. Some information on this can be found [here](https://www.howtogeek.com/205393/gatekeeper-101-why-your-mac-only-allows-apple-approved-software-by-default/). To be able to run these binaries, for example from the NAOqi API, execute the following command:<br> `sudo spctl --master-disable`.
 + With Mac OS El Capitan, Apple introduced additional security measures, that introduced some issue with the NAOqi API. If you get an `SystemError: dynamic module not initialized properly` when importing the naoqi library, run the following command to disable the new security features: `csrutil disable` followed by `reboot`. More on this [here](https://www.macworld.co.uk/how-to/how-turn-off-mac-os-x-system-integrity-protection-rootless-3638975/).
+
++ Python error `OSError: PortAudio library not found`: On Linux, this can be fixed by running: `sudo apt-get install libportaudio2 libasound-dev`. 
