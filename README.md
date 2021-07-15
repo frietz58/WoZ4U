@@ -40,10 +40,9 @@ Hence, we recommend to set up a dedicated Python 2.7 virtual environment and ins
 
 ### Docker
 The easiest way run the WoZ4U interface is through our docker image, which won't require any manual installation steps beyond the installation of docker itself. Thus, if you don't have it, install docker from [here](https://docs.docker.com/get-docker/).
-Then, you can immediately start the interface from our image hosted on dockerhub:
+Then, you can immediately start the interface from our image hosted on dockerhub (however, the docker call needs to be parameterized differently depending on the OS, which is what is happening in the script):
 ```bash
-sudo docker run -it --network host --device /dev/snd frietz58/woz4u  # for linux
-sudo docker run -it -p 5000:5000 frietz58/woz4u  # for mac
+bash start_docker.sh
 ```
 Now, the interface can be access via URL in the browser of your choice on `http://0.0.0.0:5000`
 
@@ -60,8 +59,9 @@ cd WoZ4U && sudo docker build -t woz4u .
 This will build a local version of the image, which uses the files you've changed locally. The command to start the local version is the same as we used to run remote image, except the name of the images changes:
 ```bash
 # before we were running frietz58/woz4u, now its just woz4u, based on how we tagged the image during the build
-sudo docker run -it --network host --device /dev/snd woz4u
+sudo docker run -it --network host --device /dev/snd woz4u  # this is the linux command. 
 ```
+Consider changing the calls in the `start_docker.sh` script so that the locally build `woz4u` container is started instead of the remotly hosted `frietz58/woz4u`... 
 
 ### Windows Guide
 
