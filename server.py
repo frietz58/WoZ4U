@@ -68,7 +68,13 @@ motion_vector = [0, 0, 0]
 # Tablet needs to know where server is running
 HOST_IP = socket.gethostbyname(socket.gethostname())
 FLASK_PORT = 5000
-FLASK_HOME = "http://" + HOST_IP + ":" + str(FLASK_PORT) + "/"
+
+# weird hack to get ip if /etc/hosts maps hostname to 127.0.0.1
+# in that case, hostip would be 127.0.0.1 and pepper fails to reach server under that ip...
+host_name = socket.gethostname()
+host_addr = socket.gethostbyname(host_name + ".local")
+
+FLASK_HOME = "http://" + host_addr + ":" + str(FLASK_PORT) + "/"
 
 
 @app.route('/')
