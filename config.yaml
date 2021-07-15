@@ -6,7 +6,7 @@ pepper_ips:  # Entry in dropdown menu will be create for every list item
 
 
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
-audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp it from there yourself
+audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp or place audio files there yourself
 
 
 # LOCK INTERFACE
