@@ -40,7 +40,7 @@ Hence, we recommend to set up a dedicated Python 2.7 virtual environment and ins
 
 ### Docker
 The easiest way run the WoZ4U interface is through our docker image, which won't require any manual installation steps beyond the installation of docker itself. Thus, if you don't have it, install docker from [here](https://docs.docker.com/get-docker/).
-Then, you can immediately start the interface from our image hosted on dockerhub (however, the docker call needs to be parameterized differently depending on the OS, which is what is happening in the script):
+Then, you can immediately start the interface from our image hosted on dockerhub (however, the docker call needs to be parameterized differently depending on the OS, which is what is happening in the script). Simply run the script like this:
 ```bash
 bash start_docker.sh
 ```
@@ -48,7 +48,7 @@ Now, the interface can be access via URL in the browser of your choice on `http:
 
 While this is great and probably easiest to get started right away, if you want to make changes to the configuration of the interface (as described under [Configuring WoZ4U](#configuring-woz4u)), you will have to either rebuild the docker image from the provided `Dockerfile` locally after making your changes, or install the system without Docker, directly on your machine, as described below.
 
-To make changes based if you've opted for docker, first clone the repo, then make your changes
+To make changes if you've opted for docker, first clone the repo, then make your changes
 After having made changes to the either the `config.yaml` configuration file, rebuild the docker image with the following command:
 ```bash
 # git clone https://github.com/frietz58/WoZ4U.git
