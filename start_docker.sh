@@ -22,7 +22,10 @@
     active_os="MacOS"
     echo " ✔ Active Operating System: ${active_os}"
     # TODO gotta check whether sound works in this case
-    sudo docker run -it -p 5000:5000 frietz58/woz4u
+    brew install pulseaudio
+    brew services start pulseaudio
+
+    sudo docker run -it -p 5000:5000 -e PULSE_SERVER=docker.for.mac.localhost -v ~/.config/pulse:/home/pulseaudio/.config/pulse frietz58/woz4u
 
   elif [[ "$OSTYPE" == "cygwin" ]]; then
     # * POSIX compatibility layer and Linux environment emulation for Windows
