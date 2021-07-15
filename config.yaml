@@ -144,7 +144,8 @@ voice_pitch: 1 # range [1.0 - 4.0], default = 1, 0 disables effect
 
 audio_files:
   # These have to be stored directly on the Pepper, it's the only way properly supported by the naoqi API :/
-  # Button will be created for every item in the list
+  # Check the README.md under section 'adding audio files'
+  # A Button will be created for every item in the list
   -
     title: Imperial March  # This will be shown in the GUI
     location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper

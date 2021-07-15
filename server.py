@@ -511,7 +511,14 @@ def play_audio():
     location = config["audio_files"][index]["location"]
 
     # stored locally on pepper, here we can nicely use the ALAudio_player
-    audio_file = audio_player.loadFile(location)
+    try:
+        audio_file = audio_player.loadFile(location)
+    except RuntimeError, e:
+        return {
+            "status": "error",
+            "msg": "Couldn't load sound file '{}'. Make sure it is saved ON your pepper robot and check our README".format(location)
+        }
+
     audio_player.setVolume(audio_file, tts_srv.getVolume())
     audio_player.play(audio_file)
     audio_player.unloadAllFiles()
