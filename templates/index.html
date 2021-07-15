@@ -234,7 +234,7 @@
 
                     }
                 },
-                timeout: 10000, //10 second timeout,
+                timeout: 30000, //30 second timeout, connecting the session will play peppers stupid wakeup animation and block code execution on the server, which we have to consider here...
                 error: function (jqXHR, status, errorThrown) {   //the status returned will be "timeout"
                     alertify.error("Couldn't connect to " + robot_ip);
                     $(identifier).html("CONNECT"); // set btn text to ...
