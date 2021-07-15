@@ -267,14 +267,16 @@ to make up a shortcut, that will be assigned to the button in the frontend.
 # Citation
 If you use WoZ4U, please cite our work:
 ```
-@article{rietzwoz4u,
-  title = {WoZ4U: An Open-Source Wizard-of-Oz Interface for Easy, Efficient and Robust HRI Experiments},
-  author = {Rietz, Finn and Sutherland, Alexander and Bensch, Suna and Wermter, Stefan and Hellström, Thomas},
-  journal = {Frontiers in Robotics and AI},
-  volume = {TBA},
-  pages = {TBA--TBA},
-  year = {2021},
-  publisher = {Frontiers Media}
+@ARTICLE{10.3389/frobt.2021.668057,
+    AUTHOR={Rietz, Finn and Sutherland, Alexander and Bensch, Suna and Wermter, Stefan and Hellström, Thomas},   
+    TITLE={WoZ4U: An Open-Source Wizard-of-Oz Interface for Easy, Efficient and Robust HRI Experiments},      
+    JOURNAL={Frontiers in Robotics and AI},      
+    VOLUME={8},      
+    PAGES={213},     
+    YEAR={2021},      
+    URL={https://www.frontiersin.org/article/10.3389/frobt.2021.668057},       
+    DOI={10.3389/frobt.2021.668057},      
+    ISSN={2296-9144},   
 }
 ```
 
