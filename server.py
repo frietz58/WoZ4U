@@ -945,6 +945,9 @@ def stream_generator():
                 timestamp = datetime.now().strftime('%Y.%m.%d-%H:%M:%S.%f')[:-3]
                 filename = timestamp + ".jpg"
                 save_path = os.path.join(config["camera_save_dir"], filename)
+                if not os.path.exists(config["camera_save_dir"]):
+                    os.makedirs(config["camera_save_dir"])
+
                 if SAVE_IMGS:
                     pil_img.save(save_path, "JPEG")
 
