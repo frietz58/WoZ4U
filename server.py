@@ -572,6 +572,17 @@ def show_tablet_item(index):
         "item": item
     }
 
+@app.route("/show_tablet_image/<url>")
+def show_tablet_image(url):
+    # tablet item is external website
+    tablet_srv.enableWifi()
+    tablet_srv.showWebview(url)
+    TABLET_STATE["video_or_website"] = True
+    return {
+        "status": "ok",
+        "item": url
+    }
+
 
 def get_tablet_img_from_index(index):
     img_obj = config["tablet_items"][int(index)]

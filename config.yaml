@@ -100,7 +100,7 @@ animated_speech:
     title: Plain  # This will be shown in the GUI
     string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
     tooltip: "Plain message without annotations"  # tooltip for the button in UI
-    key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
+    key_comb: ["ctrl", "9"]  # keyboard shortcut for this action
   - 
     title: Pitch annotation
     string: "This is a message where we \\vct=150\\ change the pitch halfway through."
