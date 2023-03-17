@@ -10,8 +10,7 @@ from timeit import default_timer as timer
 import jinja2
 import sys
 import signal
-from six.moves import urllib
-
+import requests
 
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
@@ -582,11 +581,11 @@ def show_tablet_item(index):
 @app.route("/show_tablet_image")
 def show_tablet_image():
     app.logger.info(request.args)
-    url = urllib.parse("https%3A%2F%2Fmedia.wired.com%2Fphotos%2F5a5547032b3a7778f5ca06cb%2F2%3A1%2Fw_2400%2Ch_1200%2Cc_limit%2FDoggo-FeatureArt2-104685145.jpg")
+    url = requests.utils.unquote(request.args['name'])
     # tablet item is external website
     app.logger.info(url)
     tablet_srv.enableWifi()
-    tablet_srv.showWebview("https://media.wired.com/photos/598e35fb99d76447c4eb1f28/16:9/w_2123,h_1194,c_limit/phonepicutres-TA.jpg")
+    tablet_srv.showWebview(url)
     #tablet_srv.loadUrl("show_img_page/" + url)
     TABLET_STATE["video_or_website"] = True
     return {

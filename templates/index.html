@@ -457,7 +457,6 @@
             let imgUrl = $("#custom_image").val();
             console.log(imgUrl);
 
-
 <!--            $.getJSON(-->
 <!--                    "/clear_tablet",-->
 <!--                    function (data) {-->
@@ -466,6 +465,8 @@
 <!--                    }).done(function () {-->
 <!--                    update_states()-->
 <!--                })-->
+
+
 <!--            const id = "#image_btn_" + index;-->
             //depending on the state of the button, we either want to show or hide an image...
 <!--            if ($(id).text() == "HIDE") {-->
@@ -485,7 +486,8 @@
                 //const url = "show_tablet_item?item=" + img_name;
                 // const url = "show_tablet_item?index=" + index;
                 console.log(imgUrl);
-                var data = {name:"https://media.wired.com/photos/5a5547032b3a7778f5ca06cb/2:1/w_2400,h_1200,c_limit/Doggo-FeatureArt2-104685145.jpg"};
+                var data = {name:imgUrl};
+                console.log(data);
                 $.getJSON(
                     "/show_tablet_image",data,
                     function (data) {
