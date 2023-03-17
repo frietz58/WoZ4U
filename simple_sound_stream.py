@@ -17,7 +17,7 @@ from naoqi import ALProxy
 
 CHANNELS = 1
 SAMPLE_RATE = 48000
-IP = "130.239.182.11"
+IP = "192.168.100.166"
 PORT = 9559
 MOD_NAME = "SpeechRecognition"
 
