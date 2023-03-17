@@ -1286,6 +1286,12 @@
                 }
             );
 
+            document.getElementById("custom_image").addEventListener(
+                "keyup", function (event) {
+                    unfocus_and_click(event, "custom_image", "custom_image_btn")
+                }
+            );
+
             document.getElementById("custom_gesture_string").addEventListener(
                 "keyup", function (event) {
                     unfocus_and_click(event, "custom_gesture_string", "custom_gesture_btn")
@@ -1381,8 +1387,8 @@
         {% endfor %}
         <div class="row">
                 <span>Direct image:</span>
-                <input type="text" placeholder="Type custom message here..." id="custom_text_msg" class="text_input">
-                <button class="example_c" onclick="say_custom_image()" id="custom_text_btn">SHOW IMAGE</button>
+                <input type="text" placeholder="Type custom message here..." id="custom_image" class="text_input">
+                <button class="example_c" onclick="say_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
             </div>
             <br>
 
