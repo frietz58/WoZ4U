@@ -10,6 +10,8 @@ from timeit import default_timer as timer
 import jinja2
 import sys
 import signal
+from six.moves import urllib
+
 
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
@@ -19,6 +21,9 @@ from utils import is_external_path
 from utils import is_txt_file
 import socket
 import argparse
+import logging
+logger = logging.getLogger("mypackage.mymodule")  # or __name__ for current module
+logger.setLevel(logging.ERROR)
 
 
 from simple_sound_stream import SpeechRecognitionModule
@@ -540,7 +545,9 @@ def stop_sound_play():
 
 @app.route("/show_tablet_item/<index>")
 def show_tablet_item(index):
+    app.logger.info('testing info log')
     item = config["tablet_items"][int(index)]["file_name"]
+
 
     if is_external_path(item) and not is_video(item) and not is_image(item):
         # tablet item is external website
@@ -572,15 +579,19 @@ def show_tablet_item(index):
         "item": item
     }
 
-@app.route("/show_tablet_image/<url>")
-def show_tablet_image(url):
+@app.route("/show_tablet_image")
+def show_tablet_image():
+    app.logger.info(request.args)
+    url = urllib.parse("https%3A%2F%2Fmedia.wired.com%2Fphotos%2F5a5547032b3a7778f5ca06cb%2F2%3A1%2Fw_2400%2Ch_1200%2Cc_limit%2FDoggo-FeatureArt2-104685145.jpg")
     # tablet item is external website
+    app.logger.info(url)
     tablet_srv.enableWifi()
-    tablet_srv.showWebview(url)
+    tablet_srv.showWebview("https://media.wired.com/photos/598e35fb99d76447c4eb1f28/16:9/w_2123,h_1194,c_limit/phonepicutres-TA.jpg")
+    #tablet_srv.loadUrl("show_img_page/" + url)
     TABLET_STATE["video_or_website"] = True
     return {
         "status": "ok",
-        "item": url
+        "item": "haha"
     }
 
 

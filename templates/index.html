@@ -453,7 +453,19 @@
             });
         }
 
-        function show_custom_image(imgUrl) {
+        function show_custom_image() {
+            let imgUrl = $("#custom_image").val();
+            console.log(imgUrl);
+
+
+<!--            $.getJSON(-->
+<!--                    "/clear_tablet",-->
+<!--                    function (data) {-->
+<!--                        last_successful_querry = Date.now();-->
+<!--                        console.log(data)-->
+<!--                    }).done(function () {-->
+<!--                    update_states()-->
+<!--                })-->
 <!--            const id = "#image_btn_" + index;-->
             //depending on the state of the button, we either want to show or hide an image...
 <!--            if ($(id).text() == "HIDE") {-->
@@ -472,10 +484,10 @@
                 // show the image on the tablet
                 //const url = "show_tablet_item?item=" + img_name;
                 // const url = "show_tablet_item?index=" + index;
-                // console.log(url);
-
+                console.log(imgUrl);
+                var data = {name:"https://media.wired.com/photos/5a5547032b3a7778f5ca06cb/2:1/w_2400,h_1200,c_limit/Doggo-FeatureArt2-104685145.jpg"};
                 $.getJSON(
-                    "/show_tablet_image/" + imgUrl,
+                    "/show_tablet_image",data,
                     function (data) {
                         console.log(data);
                     }).done(function () {
@@ -1387,8 +1399,8 @@
         {% endfor %}
         <div class="row">
                 <span>Direct image:</span>
-                <input type="text" placeholder="Type custom message here..." id="custom_image" class="text_input">
-                <button class="example_c" onclick="show_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
+                <input type="url" placeholder="Type custom url here..." id="custom_image" class="text_input">
+                <button class="custom" onclick="show_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
             </div>
             <br>
 
