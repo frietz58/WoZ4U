@@ -559,7 +559,7 @@ def show_tablet_item(index):
             # externally hosted video
             video_src = item
         else:
-            # video hosted locally, prepare "external" path foir tablet
+            # video hosted locally, prepare "external" path for tablet
             video_src = FLASK_HOME + config["tablet_root_location"] + item
 
         tablet_srv.enableWifi()
