@@ -427,11 +427,6 @@
                     update_states()
                 })
             } else {
-                // show the image on the tablet
-                //const url = "show_tablet_item?item=" + img_name;
-                // const url = "show_tablet_item?index=" + index;
-                // console.log(url);
-
                 $.getJSON(
                     "/show_tablet_item/" + index,
                     function (data) {
@@ -450,6 +445,30 @@
                     $(iter_id).removeClass("example_c_ongoing")
                 }
 
+            });
+        }
+
+        function show_custom_image() {
+            let imgUrl = $("#custom_image").val();
+            console.log(imgUrl);
+
+            $.getJSON(
+                "/clear_tablet",
+                function (data) {
+                    last_successful_querry = Date.now();
+                    console.log(data)
+                }).done(function () {
+                update_states();
+            });
+
+            var data = {name: imgUrl};
+            console.log(data);
+            $.getJSON(
+                "/show_tablet_image", data,
+                function (data) {
+                    console.log(data);
+                }).done(function () {
+                update_states();
             });
         }
 
@@ -1252,6 +1271,12 @@
                 }
             );
 
+            document.getElementById("custom_image").addEventListener(
+                "keyup", function (event) {
+                    unfocus_and_click(event, "custom_image", "custom_image_btn")
+                }
+            );
+
             document.getElementById("custom_gesture_string").addEventListener(
                 "keyup", function (event) {
                     unfocus_and_click(event, "custom_gesture_string", "custom_gesture_btn")
@@ -1345,6 +1370,12 @@
             {% endif %}
 
         {% endfor %}
+        <div class="row">
+                <span>Direct image:</span>
+                <input type="url" placeholder="Type custom url here..." id="custom_image" class="text_input">
+                <button class="custom" onclick="show_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
+            </div>
+            <br>
 
     </div>
 

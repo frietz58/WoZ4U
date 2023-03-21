@@ -17,7 +17,7 @@ if __name__ == "__main__":
     qi_session = qi.Session()
 
     try:
-        qi_session.connect(str("tcp://" + "130.239.182.11" + ":" + "9559"))
+        qi_session.connect(str("tcp://" + "192.168.100.166" + ":" + "9559"))
     except RuntimeError as msg:
         print("qi session connect error!:")
         print(msg)

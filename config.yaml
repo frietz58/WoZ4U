@@ -1,8 +1,5 @@
 pepper_ips:  # Entry in dropdown menu will be create for every list item
-  - 130.239.182.11  # pepper ip address, should be reachable from network where interface is hosted.
-  - 130.239.182.10
-  - 192.168.104.144
-  - 192.168.10.4
+  - 192.168.100.166
 
 
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
@@ -100,7 +97,7 @@ animated_speech:
     title: Plain  # This will be shown in the GUI
     string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
     tooltip: "Plain message without annotations"  # tooltip for the button in UI
-    key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
+    key_comb: ["ctrl", "9"]  # keyboard shortcut for this action
   - 
     title: Pitch annotation
     string: "This is a message where we \\vct=150\\ change the pitch halfway through."

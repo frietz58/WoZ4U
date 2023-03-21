@@ -10,6 +10,7 @@ from timeit import default_timer as timer
 import jinja2
 import sys
 import signal
+import requests
 
 from utils import alImage_to_PIL
 from utils import PIL_to_JPEG_BYTEARRAY
@@ -19,6 +20,9 @@ from utils import is_external_path
 from utils import is_txt_file
 import socket
 import argparse
+import logging
+logger = logging.getLogger("mypackage.mymodule")  # or __name__ for current module
+logger.setLevel(logging.ERROR)
 
 
 from simple_sound_stream import SpeechRecognitionModule
@@ -540,7 +544,9 @@ def stop_sound_play():
 
 @app.route("/show_tablet_item/<index>")
 def show_tablet_item(index):
+    app.logger.info('testing info log')
     item = config["tablet_items"][int(index)]["file_name"]
+
 
     if is_external_path(item) and not is_video(item) and not is_image(item):
         # tablet item is external website
@@ -553,7 +559,7 @@ def show_tablet_item(index):
             # externally hosted video
             video_src = item
         else:
-            # video hosted locally, prepare "external" path foir tablet
+            # video hosted locally, prepare "external" path for tablet
             video_src = FLASK_HOME + config["tablet_root_location"] + item
 
         tablet_srv.enableWifi()
@@ -570,6 +576,21 @@ def show_tablet_item(index):
     return {
         "status": "ok",
         "item": item
+    }
+
+@app.route("/show_tablet_image")
+def show_tablet_image():
+    app.logger.info(request.args)
+    url = requests.utils.unquote(request.args['name'])
+    # tablet item is external website
+    app.logger.info(url)
+    tablet_srv.enableWifi()
+    tablet_srv.showWebview(url)
+    #tablet_srv.loadUrl("show_img_page/" + url)
+    TABLET_STATE["video_or_website"] = True
+    return {
+        "status": "ok",
+        "item": "haha"
     }
 
 
