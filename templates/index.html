@@ -427,11 +427,6 @@
                     update_states()
                 })
             } else {
-                // show the image on the tablet
-                //const url = "show_tablet_item?item=" + img_name;
-                // const url = "show_tablet_item?index=" + index;
-                // console.log(url);
-
                 $.getJSON(
                     "/show_tablet_item/" + index,
                     function (data) {
@@ -457,48 +452,24 @@
             let imgUrl = $("#custom_image").val();
             console.log(imgUrl);
 
-<!--            $.getJSON(-->
-<!--                    "/clear_tablet",-->
-<!--                    function (data) {-->
-<!--                        last_successful_querry = Date.now();-->
-<!--                        console.log(data)-->
-<!--                    }).done(function () {-->
-<!--                    update_states()-->
-<!--                })-->
+            $.getJSON(
+                "/clear_tablet",
+                function (data) {
+                    last_successful_querry = Date.now();
+                    console.log(data)
+                }).done(function () {
+                update_states();
+            });
 
-
-<!--            const id = "#image_btn_" + index;-->
-            //depending on the state of the button, we either want to show or hide an image...
-<!--            if ($(id).text() == "HIDE") {-->
-<!--                // clear the image from the tablet-->
-<!--                $.getJSON(-->
-<!--                    "/clear_tablet",-->
-<!--                    function (data) {-->
-<!--                        last_successful_querry = Date.now();-->
-<!--                        console.log(data)-->
-<!--                    }).done(function () {-->
-<!--                    $(id).html($(id).attr("default_text")); // set btn text-->
-<!--                    $(id).removeClass("example_c_ongoing");-->
-<!--                    update_states()-->
-<!--                })-->
-<!--            } else {-->
-                // show the image on the tablet
-                //const url = "show_tablet_item?item=" + img_name;
-                // const url = "show_tablet_item?index=" + index;
-                console.log(imgUrl);
-                var data = {name:imgUrl};
-                console.log(data);
-                $.getJSON(
-                    "/show_tablet_image",data,
-                    function (data) {
-                        console.log(data);
-                    }).done(function () {
-<!--                    $(id).html("HIDE"); // set btn text-->
-<!--                    $(id).addClass("example_c_ongoing");-->
-                    update_states();
-                })
-<!--            }-->
-
+            var data = {name: imgUrl};
+            console.log(data);
+            $.getJSON(
+                "/show_tablet_image", data,
+                function (data) {
+                    console.log(data);
+                }).done(function () {
+                update_states();
+            });
         }
 
         function set_engagement_state() {
