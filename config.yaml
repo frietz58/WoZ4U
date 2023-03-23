@@ -55,6 +55,31 @@ default_drive_dist : 10  # move increment
 tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
   -
+    title: Abstract
+    file_name: abstract.png
+    key_comb: [ "ctrl", "shift", 1 ]  # example for more complex shortcut
+
+  -
+    title: Kubist
+    file_name: kubist.png
+    key_comb: [ "ctrl", "shift", 2 ]  # example for more complex shortcut
+
+  -
+    title: Van Gogh
+    file_name: vanGogh.png
+    key_comb: [ "ctrl", "shift", 3 ]  # example for more complex shortcut
+
+  -
+    title: Impressionist
+    file_name: impressionist.png
+    key_comb: [ "ctrl", "shift", 4 ]  # example for more complex shortcut
+
+  -
+    title: Renaissance
+    file_name: renaissance.png
+    key_comb: [ "ctrl", "shift", 5 ]  # example for more complex shortcut
+
+  -
     title: Spotify  # We can also show a website on Pepper's tablet
     file_name: https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI?si=e39a61da55a54114 # Also just put URL to website here
     key_comb: ["ctrl", "shift", 8]
@@ -134,10 +159,94 @@ painting_style:
     # Avoid special characters in messages, this can break the backend.
     # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
-    title: Style  # This will be shown in the GUI
-    string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
+    title: Ask style  # This will be shown in the GUI
+    string: "Do you already have an art style in mind? Or would you like some suggestions?"  # message pepper will say
     tooltip: "Plain message without annotations"  # tooltip for the button in UI
-    key_comb: ["ctrl", "2"]  # keyboard shortcut for this action
+    key_comb: ["ctrl", "s"]  # keyboard shortcut for this action
+
+  -
+    title: Ask Abstract
+    string: "Do you want to try the Abstract style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "d" ]  # keyboard shortcut for this action
+
+  -
+    title: Show Abstract
+    string: "Here is an example of abstract modern style of painting.Abstract art is art that does not attempt to represent an accurate depiction of a visual reality but instead use shapes, colours, forms and gestural marks to achieve its effect. Here is an example."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "f" ]  # keyboard shortcut for this action
+
+  -
+    title: Ask Kubist
+    string: "Do you want to try the Kubist style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "g" ]  # keyboard shortcut for this action
+
+  -
+    title: Show Kubist
+    string: "Cubism is a style of art that emerged in the early 20th century and is characterized by the use of geometric shapes, fragmented forms, and multiple viewpoints to create a complex and abstract image. Here is an example."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "h" ]  # keyboard shortcut for this action
+
+  -
+    title: Ask Van Gogh
+    string: "Do you want to try the Van Gogh style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "j" ]  # keyboard shortcut for this action
+
+  -
+    title: Show Van Gogh
+    string: "Van Gogh style of painting involves bold, dramatic brush strokes which expressed emotion. Here is an example."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "k" ]  # keyboard shortcut for this action
+
+  -
+    title: Ask Impressionist
+    string: "Do you want to try the Impressionist style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "l" ]  # keyboard shortcut for this action
+
+  -
+    title: Show Impressionist
+    string: "The characterizations of the style include small, visible brushstrokes that offer the bare impression of form, unblended color and an emphasis on the accurate depiction of natural light. Here is an example."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "z" ]  # keyboard shortcut for this action
+
+  -
+    title: Ask Renaissance
+    string: "Do you want to try the Abstract style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "x" ]  # keyboard shortcut for this action
+
+  -
+    title: Show Renaissance
+    string: "The Characteristics of the Renaissance include a renewed interest in classical antiquity."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "c" ]  # keyboard shortcut for this action
+
+  -
+    title: wanna pick?
+    string: "Do you want to pick this style?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "v" ]  # keyboard shortcut for this action
+
+  -
+    title: sorry-no answer
+    string: "I'm sorry I dont know the answer to this."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "b" ]  # keyboard shortcut for this action
+
+  -
+    title: sorry-no answer2
+    string: "Thats a really good question, but I dont know the answer to this right now."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "n" ]  # keyboard shortcut for this action
+
+  -
+    title: okay sure
+    string: "Okay sure!"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "m" ]  # keyboard shortcut for this action
 
 painting_session:
     # Avoid special characters in messages, this can break the backend.
