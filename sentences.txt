@@ -1,160 +1,101 @@
 
-
-Initiate session
-----------------------------------------
-Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?
-That's too bad. are you sure? We could make something to show your loved ones when they visit.
-Alright, take care. I'm here if you need me.
-
-Do you want to draw with a pencil or use water colors?
-Sorry we only have these two mediums to paint now.
-
-Do you have the drawing tools and colors in front of you?
-You should have a paper and a pencil.
-You should have a paper, a paint brush, some colors and water.
-
-Let me have the caretaker bring it for you.
-
-Now that we have everything ready, lets decide on what we want to paint today.
-
-Painting style
----------------------------------
-Paint or draw
------------------------------------
-Do you already have an art style in mind? Or would you like some suggestions?
-
-Do you want to try the Abstract style?
-Here is an example of abtract modern style of painting.Abstract art is art that does not attempt to represent an accurate depiction of a visual reality but instead use shapes, colours, forms and gestural marks to achieve its effect. Here is an example.
-
-Do you want to try the  Kubist Style?
-Cubism is a style of art that emerged in the early 20th century and is characterized by the use of geometric shapes, fragmented forms, and multiple viewpoints to create a complex and abstract image. Here is an example.
-
-De Stijl
-
-Do you want to try the Van Gogh Style?
-Van Gogh style of painting involves bold, dramatic brush strokes which expressed emotion. Here is an example.
-
-Do you want to try the Impressionist style?
-
-The characterizations of the style include small, visible brushstrokes that offer the bare impression of form, unblended color and an emphasis on the accurate depiction of natural light. Here is an example.
-
-Do you want to try the Renaissance style?
-The Characteristics of the Renaissance include a renewed interest in classical antiquity.
-
-Do you want to pick this style?
-
-
-I'm sorry I dont know the answer to this.
-
-Thats a really good question, but I dont know the answer to this right now.
-
-Okay sure!
-
-
-Okay, let's pick a topic now! Do you want to draw a specific topic? Or would you like to draw a personal picture?
-
-Would you like to see topics that are already in your chosen style? Or the original pictures?
-
-Great, what do you want to paint? I will show you some nice examples
-
-
-Give me a moment to find a nice picture.
-
-Do you want to pick this?
-
-Oh too bad! Lets try something else! Give me a moment.
-
-Now let's start painting!
-
-
-Painting session
-----------------------------
-
-Here is the reference image.
-
-#With no watercolors:
-(Instructions)
-
-Draw the basic shape of the object, but don't worry about the realism here. It's okay to take some liberties.
-
-Are you done with making the outline?
-
-#no
-Don't worry, you can do it. I trust you. I can help you more if you want.
-#yes
-Nice work! Let's go to the next step.
-
-Once you are happy with the basic sketch, you can start filling in and refining your drawing. Look at the reference image shown on the tablet and add the shades and highlight.
-
-Are you done with adding tones?
-#no
-No worries! The painting is looking great so far, take your time!
-#yes
-Nice work! Let's go to the next step.
-
-Now you can also add textures to the drawing.
-
-Are you done with adding textures?
-#no
-You can do it! I understand drawing can be difficult. Sometimes I mess up while drawing simple objects.
-#yes
-Nice work! Let's go to the next step.
-
-Do you want to refine your painting more or do you want to end the painting session?
-#end session
-I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
-#refine more
-You can see the painting in the tablet and maybe add more textures.
-
-#With watercolors:
-
-Pick the color of the background and paint the whole surface
-
-Are you done with the background?
-#no
-No problem, check the background color of the image shown on the tablet. I'm here if you need me.
-#yes
-Nice work! Let's go to the next step.
-
-Now you can make an outline of what you want to paint next. My suggestion is to use the different tone of the same color as the background. This will help you to easily modify it later on.
-
-Are you done making the outline?
-#no
-Don't worry! Take a closer look at the reference image, I'll wait for you!
-#yes
-Good job! Let's go to the next step.
-
-Now that you have an outline, you can add details to your painting. Start with things that are farther away and then progress to the items that look closer.
-
-Are you done with adding the details?
-#no
-Keep going, you are doing great! Take a closer look at the picture!
-#yes
-Nice work! Let's go to the next step.
-
-Do you want to refine your painting more or do you want to end the painting session?
-#end session
-I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
-#refine more
-You can see the painting in the tablet and maybe add more details.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ - 
+ - Initiate session
+ - ----------------------------------------
+ - Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?
+ - That's too bad. are you sure? We could make something to show your loved ones when they visit.
+ - Alright, take care. I'm here if you need me.
+ - 
+ - Do you want to draw with a pencil or use water colors?
+ - Sorry we only have these two mediums to paint now.
+ - 
+ - Do you have the drawing tools and colors in front of you?
+ - You should have a paper and a pencil.
+ - You should have a paper, a paint brush, some colors and water.
+ - 
+ - Let me have the caretaker bring it for you.
+ - 
+ - Now that we have everything ready, lets decide on what we want to paint today.
+ - 
+ - Painting style
+ - ---------------------------------
+ - Paint or draw
+ - -----------------------------------
+ - Do you already have an art style in mind? Or would you like some suggestions?
+ - 
+ - Do you want to try the Abstract style?
+ - Here is an example of abtract modern style of painting.Abstract art is art that does not attempt to represent an accurate depiction of a visual reality but instead use shapes, colours, forms and gestural marks to achieve its effect. Here is an example.
+ - 
+ - Do you want to try the  Kubist Style?
+ - Cubism is a style of art that emerged in the early 20th century and is characterized by the use of geometric shapes, fragmented forms, and multiple viewpoints to create a complex and abstract image. Here is an example.
+ - 
+ - De Stijl
+ - 
+ - Do you want to try the Van Gogh Style?
+ - Van Gogh style of painting involves bold, dramatic brush strokes which expressed emotion. Here is an example.
+ - 
+ - Do you want to try the Impressionist style?
+ - 
+ - The characterizations of the style include small, visible brushstrokes that offer the bare impression of form, unblended color and an emphasis on the accurate depiction of natural light. Here is an example.
+ - 
+ - Do you want to try the Renaissance style?
+ - The Characteristics of the Renaissance include a renewed interest in classical antiquity.
+ - 
+ - Do you want to pick this style?
+ - 
+ - 
+ - I'm sorry I dont know the answer to this.
+ - 
+ - Thats a really good question, but I dont know the answer to this right now.
+ - 
+ - Okay sure!
+ - 
+ - 
+ - Okay, let's pick a topic now! Do you want to draw a specific topic? Or would you like to draw a personal picture?
+ - 
+ - Would you like to see topics that are already in your chosen style? Or the original pictures?
+ - 
+ - Great, what do you want to paint? I will show you some nice examples
+ - 
+ - 
+ - Give me a moment to find a nice picture.
+ - 
+ - Do you want to pick this?
+ - 
+ - Oh too bad! Lets try something else! Give me a moment.
+ - 
+ - Now let's start painting!
+ - 
+ - 
+ - Painting session
+ - ----------------------------
+ - 
+ - Here is the reference image.
+ - Draw the basic shape of the object, but don't worry about the realism here. It's okay to take some liberties.
+ - Are you done with making the outline?
+ - Don't worry, you can do it. I trust you. I can help you more if you want.
+ - Nice work! Let's go to the next step.
+ - Once you are happy with the basic sketch, you can start filling in and refining your drawing. Look at the reference image shown on the tablet and add the shades and highlight.
+ - Are you done with adding tones?
+ - No worries! The painting is looking great so far, take your time!
+ - Nice work! Let's go to the next step.
+ - Now you can also add textures to the drawing.
+ - Are you done with adding textures?
+ - You can do it! I understand drawing can be difficult. Sometimes I mess up while drawing simple objects.
+ - Nice work! Let's go to the next step.
+ - Do you want to refine your painting more or do you want to end the painting session?
+ - I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
+ - You can see the painting in the tablet and maybe add more textures.
+ - Pick the color of the background and paint the whole surface
+ - Are you done with the background?
+ - No problem, check the background color of the image shown on the tablet. I'm here if you need me.
+ - Now you can make an outline of what you want to paint next. My suggestion is to use the different tone of the same color as the background. This will help you to easily modify it later on.
+ - Are you done making the outline?
+ - Don't worry! Take a closer look at the reference image, I'll wait for you!
+ - Good job! Let's go to the next step.
+ - Now that you have an outline, you can add details to your painting. Start with things that are farther away and then progress to the items that look closer.
+ - Are you done with adding the details?
+ - Keep going, you are doing great! Take a closer look at the picture!
+ - Do you want to refine your painting more or do you want to end the painting session?
+ - I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
+ - You can see the painting in the tablet and maybe add more details.
