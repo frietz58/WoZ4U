@@ -51,44 +51,6 @@ default_drive_dist : 10  # move increment
 
 tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
-  -
-    title: Timeline
-    file_name: climate_change.jpg
-    key_comb: ["ctrl", "shift", 1]  # example for more complex shortcut
-  - 
-    title: Landscape
-    file_name: landscape.jpg
-    key_comb: ["ctrl", "shift", 2]
-  -
-    title: Umea logo
-    is_default_img: True  # image with this flag will be displayed on connect
-    file_name: umea_logo.png
-    key_comb: ["ctrl", "shift", 3]
-  -
-    title: Arrow keys
-    file_name: arrow_keys.png
-    key_comb: ["ctrl", "shift", 4]
-  -
-    title: Sound playing
-    file_name: sound_playing.png
-    key_comb: ["ctrl", "shift", 5]
-  - 
-    title: Local video  # Videos can also be played 
-    file_name: mov_bbb.mp4  # file stored on host machine
-    key_comb: ["ctrl", "shift", 6]
-  - 
-    title: Remote video
-    file_name: http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4  # Remote file also possible, just put URL here
-    key_comb: ["ctrl", "shift", 7]
-  - 
-    title: Website  # We can also show a website on Pepper's tablet
-    file_name: https://www.google.com/  # Also just put URL to website here
-    key_comb: ["ctrl", "shift", 8]
-  -
-    title: Confused cat
-    file_name: https://i.kym-cdn.com/photos/images/facebook/001/564/773/6cf.jpg
-    key_comb: ["ctrl", "shift", 9]
-
 
 animated_speech:
     # Avoid special characters in messages, this can break the backend.
@@ -144,25 +106,9 @@ audio_files:
   # Check the README.md under section 'adding audio files'
   # A Button will be created for every item in the list
   -
-    title: Imperial March  # This will be shown in the GUI
+    title: White Music Playlist  # This will be shown in the GUI
     location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
     key_comb: ["alt", "1"]
-  - 
-    title: Cantina band
-    location: /home/nao/sound_files/CantinaBand60.wav
-    key_comb: ["alt", "2"]
-  -
-    title: Star Wars
-    location: /home/nao/sound_files/StarWars60.wav
-    key_comb: ["alt", "3"]
-  - 
-    title: Pink Panther
-    location: /home/nao/sound_files/PinkPanther60.wav
-    key_comb: ["alt", "4"]
-  -
-    title: Elephant walking
-    location: /home/nao/sound_files/BabyElephantWalk60.wav
-    key_comb: ["alt", "5"]
 
 gestures: # Buttons will be created for every item in the list
   -
@@ -183,7 +129,7 @@ gestures: # Buttons will be created for every item in the list
   -
     title: "Me"
     gesture: "animations/Stand/Gestures/Me_1"
-    tooltip: "Me_1 gestzre"
+    tooltip: "Me_1 gesture"
     key_comb: ["shift", "4"]
   -
     title: "You"
