@@ -268,3 +268,10 @@ random_anim:
 rotate_anim:
   duration: 4
   key_comb: ["ctrl", "alt", 3]
+
+sentences:
+  - Deepali is the best
+  - Dogs are amazing
+  - CHall Bhagg
+  - No No Dog is the best
+  - K Bye.

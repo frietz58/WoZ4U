@@ -10,6 +10,56 @@
     <script src="/static/js/alertifyjs/alertify.min.js"></script>
     <link rel="stylesheet" href="static/js/alertifyjs/css/alertify.css"/>
     <link rel="stylesheet" href="/static/js/alertifyjs/css/themes/default.css"/>
+    <style>
+        #custom_text_msg {
+            box-sizing: border-box;
+            background-image: url('searchicon.png');
+            background-position: 14px 12px;
+            background-repeat: no-repeat;
+            font-size: 16px;
+            padding: 14px 20px 12px 45px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #custom_text_msg:focus {
+            outline: 3px solid #ddd;
+            pointer-events: none;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-options {
+            overflow: scroll;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            background-color: #f6f6f6;
+            min-width: 230px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            z-index: 1;
+        }
+
+        .dropdown-content div {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-option:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
 
     <script type=text/javascript>
 
@@ -110,17 +160,13 @@
 
                         } else if (key == "timestamp") {
                             // just to avoid error, we need the timestamp but don't do anything frontend related with it
-                        }
-
-                        else {
+                        } else {
                             if ($(key).get(0).nodeName == "BUTTON") {
                                 toggle_btn_handle(key, data[key])
-                            }
-                            else if ($(key).get(0).nodeName == "SPAN") {
+                            } else if ($(key).get(0).nodeName == "SPAN") {
                                 // motion vector
                                 $(key).text("[" + data[key].toString() + "]")
-                            }
-                            else if ($(key).get(0).nodeName == "INPUT") {
+                            } else if ($(key).get(0).nodeName == "INPUT") {
                                 if ($(key).attr("type") == "range") {
                                     if (key != "#voice_speed_input") {
                                         // volume and pitch must be multiplied by 100 to so that we get a proper range...
@@ -133,13 +179,11 @@
                                         $(key).val(data[key])
                                     }
                                 }
-                            }
-                            else if ($(key).get(0).nodeName == "SELECT") {
+                            } else if ($(key).get(0).nodeName == "SELECT") {
                                 // engagment and autonomous state
                                 // console.log(key, data[key])
                                 $(key).val(data[key])
-                            }
-                            else if ($(key).get(0).nodeName == "DIV") {
+                            } else if ($(key).get(0).nodeName == "DIV") {
                                 // querried color div
                                 // console.log(key, data[key]);
                                 // set color of "querried" block to querried val
@@ -160,8 +204,7 @@
                                         $(color_identifier).removeClass("example_c_green");
                                         $(color_identifier).removeClass("example_c_red");
                                         $(color_identifier).html("ACTIVE")
-                                    }
-                                    else {
+                                    } else {
                                         $(color_identifier).removeClass("example_c_green");
                                         $(color_identifier).removeClass("example_c_red");
                                         $(color_identifier).removeClass("example_c_ongoing");
@@ -215,14 +258,13 @@
             $.ajax({
                 url: url,
                 dataType: 'json',
-                success: function(data) {
+                success: function (data) {
                     if (data["status"] == "ok") {
                         last_successful_querry = Date.now();
                         const identifier = "#connect_btn";
 
                         unlock_connected_interface(robot_ip)
-                    }
-                    else if (data["status"] == "disconnected") {
+                    } else if (data["status"] == "disconnected") {
                         disable_all();
                         udpate_states_interval
                         clearTimeout(udpate_states_interval);
@@ -407,7 +449,7 @@
                     function (data) {
                         console.log(data);
                         if (data["status"] == "error") {
-                           alertify.error(data["msg"]);
+                            alertify.error(data["msg"]);
                         }
                         last_successful_querry = Date.now();
                     }).done(function () {
@@ -841,19 +883,23 @@
                     $.ajax({
                         url: "/alive_test",
                         dataType: 'json',
-                        success: function(data) {
+                        success: function (data) {
                             console.log("test rquest worked, resetting timeout");
                             last_successful_querry = Date.now();
                             return // if this works, we don't want the confirm dialog
                         },
-                        error: function(data, status, xhr) {
+                        error: function (data, status, xhr) {
                             console.log("test request did not work...");
                             alerted_server_dead = true;
                             msg = alertify.confirm(
                                 "Server dead?",
                                 "Server didn't send any reply within five seconds. Consider restarting it via terminal.",
-                                function () {alerted_server_dead = false;},  // construtor needs these...
-                                function () {alerted_server_dead = false;}
+                                function () {
+                                    alerted_server_dead = false;
+                                },  // construtor needs these...
+                                function () {
+                                    alerted_server_dead = false;
+                                }
                             )
                         }
                     });
@@ -869,7 +915,7 @@
 
 
         //keyboard listener for keyboard control of pepper motors
-       $(document).ready(function () {
+        $(document).ready(function () {
 
             // MOVE HEAD:
             Mousetrap.bind("down", function () {
@@ -1179,7 +1225,7 @@
         }
 
         //disable all elements on load
-        window.onload = disable_all;
+        //window.onload = disable_all;
 
         // for reconnecting upon reload of site
         {% if reconnect_ip != "" %}
@@ -1318,8 +1364,8 @@
             <br>
         </div>
 
-
         <div class="row">
+
             <a href="#" onclick="connect_robot(ip='')">
                 <button class="example_c" id="connect_btn">Connect</button>
             </a>
@@ -1380,12 +1426,12 @@
 
         {% endfor %}
         <div class="row">
-                <span>Direct image:</span>
-                <input type="url" placeholder="Type custom url here..." id="custom_image" class="text_input">
-                <button class="custom" onclick="show_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
-            </div>
-            <br>
-         <!-- COLUMN 2: Audio files-->
+            <span>Direct image:</span>
+            <input type="url" placeholder="Type custom url here..." id="custom_image" class="text_input">
+            <button class="custom" onclick="show_custom_image()" id="custom_image_btn">SHOW IMAGE</button>
+        </div>
+        <br>
+        <!-- COLUMN 2: Audio files-->
         <div style="width: 50%; float: left;" id="audio_files_div">
 
             <h3>Audio files</h3>
@@ -1723,154 +1769,20 @@
                 </td>
             </tr>
         </table>
-
-        <!-- COLUMN 1: Initiate session-->
-        <div style="width: 50%; float: left;" id="animated_speech_div_initiate_session">
-
-            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-                <h3 style="margin-bottom: 5px;">Initiate Session</h3>
-            </a>
-
-            {% for anim_speech in config["initiate_conversation"] %}
-                <div class="row">
-                    <div class="speech_lbl_wrapper">
-                        <span>{{ anim_speech["title"] }}</span>
-                    </div>
-                    <div class="speech_btn_wrapper">
-                        <button
-                                title="{{ anim_speech['tooltip'] }}"
-                                class="example_c capitalize"
-                                id="anim_speech_btn_{{ loop.index0 }}"
-                                default_text="
-                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                                    {% else %}
-                                        EXECUTE
-                                    {% endif %}"
-                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
-                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                            {% else %}
-                                EXECUTE
-                            {% endif %}
-                        </button>
-                    </div>
+        <br>
+        <div class="row">
+            <div id="myDropdown" class="dropdown-content">
+                <input type="text" placeholder="Search.." id="custom_text_msg" onkeyup="filterFunction()">
+                <div class="dropdown-options">
+                    {% for sentence in config['sentences'] %}
+                        <div href="" onclick="selectFunction(event)" class="dropdown-option">{{  sentence }}</div>
+                    {%endfor %}
                 </div>
-                <br>
-
-                <!-- add the keyboard shortcut to the button, if the flag has been given-->
-                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                    <script>
-                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
-                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
-                    </script>
-                {% endif %}
-            {% endfor %}
-            <br>
-
-        </div>
-
-        <!-- COLUMN 2: Style session-->
-        <div style="width: 50%; float: left;" id="animated_speech_div_style_session">
-
-            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-                <h3 style="margin-bottom: 5px;">Painting style session</h3>
-            </a>
-
-            {% for anim_speech in config["painting_style"] %}
-                <div class="row">
-                    <div class="speech_lbl_wrapper">
-                        <span>{{ anim_speech["title"] }}</span>
-                    </div>
-                    <div class="speech_btn_wrapper">
-                        <button
-                                title="{{ anim_speech['tooltip'] }}"
-                                class="example_c capitalize"
-                                id="anim_speech_btn_{{ loop.index0 }}"
-                                default_text="
-                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                                    {% else %}
-                                        EXECUTE
-                                    {% endif %}"
-                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
-                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                            {% else %}
-                                EXECUTE
-                            {% endif %}
-                        </button>
-                    </div>
-                </div>
-                <br>
-
-                <!-- add the keyboard shortcut to the button, if the flag has been given-->
-                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                    <script>
-                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
-                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
-                    </script>
-                {% endif %}
-            {% endfor %}
-            <br>
-
-        </div>
-
-        <!-- COLUMN 3: painting session-->
-        <div style="width: 50%; float: left;" id="animated_speech_div_paint_session1">
-
-            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-                <h3 style="margin-bottom: 5px;">Painting session</h3>
-            </a>
-
-            {% for anim_speech in config["painting_session"] %}
-                <div class="row">
-                    <div class="speech_lbl_wrapper">
-                        <span>{{ anim_speech["title"] }}</span>
-                    </div>
-                    <div class="speech_btn_wrapper">
-                        <button
-                                title="{{ anim_speech['tooltip'] }}"
-                                class="example_c capitalize"
-                                id="anim_speech_btn_{{ loop.index0 }}"
-                                default_text="
-                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                                    {% else %}
-                                        EXECUTE
-                                    {% endif %}"
-                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
-                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
-                            {% else %}
-                                EXECUTE
-                            {% endif %}
-                        </button>
-                    </div>
-                </div>
-                <br>
-
-                <!-- add the keyboard shortcut to the button, if the flag has been given-->
-                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
-                    <script>
-                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
-                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
-                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
-                    </script>
-                {% endif %}
-            {% endfor %}
-
-            <div class="row">
-                <span>Direct message:</span>
-                <input type="text" placeholder="Type custom message here..." id="custom_text_msg" class="text_input">
-                <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
+            <button class="example_c" onclick="say_custom_text()" id="custom_text_btn">SAY IT</button>
             </div>
-            <br>
-
         </div>
     </div>
+
 
     <!-- Camera stream  -->
     <!--
@@ -2208,4 +2120,29 @@
 </div>
 
 </body>
+
+<script>
+
+    function filterFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("custom_text_msg");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("myDropdown");
+        a = div.getElementsByTagName("div");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+    }
+
+    function selectFunction(event) {
+        input = document.getElementById("custom_text_msg");
+        input.value = event.target.innerText;
+        ;
+    }
+</script>
 </html>
