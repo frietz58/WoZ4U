@@ -1,0 +1,51 @@
+
+
+Initiate session
+----------------------------------------
+Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?
+That's too bad. are you sure? We could make something to show your loved ones when they visits.
+Alright, take care. I'm here if you need me.
+
+Do you want to draw with a pencil or use water colors?
+Sorry we only have these two mediums to paint now.
+
+Do you have the drawing tools and colors in front of you?
+You should have a paper and a pencil.
+You should have a paper, a paint brush, some colors and water.
+
+Let me have the caretaker bring it for you.
+
+Now that we have everything ready, lets decide on what we want to paint today.
+
+Painting style
+---------------------------------
+Paint
+-------
+Is there a specifc style ypu have in mind or do you want a suggestion?
+
+Abstract style
+Here is an example of abtract modern style of painting.Abstract art is art that does not attempt to represent an accurate depiction of a visual reality but instead use shapes, colours, forms and gestural marks to achieve its effect.
+
+Would you like to paint in this style?
+
+Kubist Style
+
+De Stijl
+
+
+
+
+
+
+
+
+
+
+Draw
+-------
+What style do you want to draw in?
+
+
+
+
+
