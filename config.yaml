@@ -79,6 +79,10 @@ tablet_items:
     file_name: renaissance.png
     key_comb: [ "ctrl", "shift", 5 ]  # example for more complex shortcut
 
+  - title: Memory
+    file_name: memory.jpg
+    key_comb: [ "ctrl", "shift", 6 ]  # example for more complex shortcut
+
   -
     title: Spotify  # We can also show a website on Pepper's tablet
     file_name: https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI?si=e39a61da55a54114 # Also just put URL to website here
