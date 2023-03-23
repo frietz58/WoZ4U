@@ -51,6 +51,11 @@ default_drive_dist : 10  # move increment
 
 tablet_root_location: static/tablet_items/  # place image or video files here, on host machine
 tablet_items:
+  -
+    title: Spotify  # We can also show a website on Pepper's tablet
+    file_name: https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI?si=e39a61da55a54114 # Also just put URL to website here
+    key_comb: ["ctrl", "shift", 8]
+
 
 animated_speech:
     # Avoid special characters in messages, this can break the backend.
