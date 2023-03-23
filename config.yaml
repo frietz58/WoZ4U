@@ -64,10 +64,71 @@ initiate_conversation:
     # Avoid special characters in messages, this can break the backend.
     # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
-    title: Plain  # This will be shown in the GUI
-    string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
+    title: Hi! Do you wanna paint  # This will be shown in the GUI
+    string: "Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?"  # message pepper will say
     tooltip: "Plain message without annotations"  # tooltip for the button in UI
-    key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
+    key_comb: ["ctrl", "q"]  # keyboard shortcut for this action
+
+  -
+    title: If No to paint
+    string: "That's too bad. are you sure? We could make something to show your loved ones when they visit."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "w" ]  # keyboard shortcut for this action
+
+  -
+    title: If still no to paint
+    string: "Alright, take care. I'm here if you need me."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "e" ]  # keyboard shortcut for this action
+
+  -
+    title: If Yes to paint
+    string: "Do you want to draw with a pencil or use water colors?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "r" ]  # keyboard shortcut for this action
+
+  -
+    title: If no options
+    string: "Sorry we only have these two mediums to paint now."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "t" ]  # keyboard shortcut for this action
+
+  -
+    title: if available - no watercolor
+    string: "Do you have the drawing tools in front of you?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "y" ]  # keyboard shortcut for this action
+
+  -
+    title: if available - watercolor
+    string: "Do you have the drawing tools and colors in front of you?"
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "u" ]  # keyboard shortcut for this action
+
+  -
+    title: now available - no watercolor
+    string: "You should have a paper and a pencil."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "i" ]  # keyboard shortcut for this action
+
+  -
+    title: now available - watercolor
+    string: "You should have a paper, a paint brush, some colors and water."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "o" ]  # keyboard shortcut for this action
+
+  -
+    title: if unavailable
+    string: "Let me have the caretaker bring it for you."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "p" ]  # keyboard shortcut for this action
+
+  -
+    title: ready
+    string: "Now that we have everything ready, lets decide on what we want to paint today."
+    tooltip: "Plain message without annotations"
+    key_comb: [ "ctrl", "a" ]  # keyboard shortcut for this action
+
 
 painting_style:
     # Avoid special characters in messages, this can break the backend.

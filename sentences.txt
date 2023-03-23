@@ -3,7 +3,7 @@
 Initiate session
 ----------------------------------------
 Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?
-That's too bad. are you sure? We could make something to show your loved ones when they visits.
+That's too bad. are you sure? We could make something to show your loved ones when they visit.
 Alright, take care. I'm here if you need me.
 
 Do you want to draw with a pencil or use water colors?
