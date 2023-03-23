@@ -276,8 +276,17 @@
             if ({{ config["lock_movement_control_section"] }}) {
                 $("#movement_control *").prop("disabled", true);
             }
-            if ({{ config["lock_anim_speech_section"] }}) {
-                $("#animated_speech_div *").prop("disabled", true);
+            if ({{ config["lock_anim_speech_section_1"] }}) {
+                $("#animated_speech_div_initiate_session *").prop("disabled", true);
+            }
+            if ({{ config["lock_anim_speech_section_2"] }}) {
+                $("#animated_speech_div_style_session *").prop("disabled", true);
+            }
+            if ({{ config["lock_anim_speech_section_3"] }}) {
+                $("#animated_speech_div_paint_session1 *").prop("disabled", true);
+            }
+            if ({{ config["lock_anim_speech_section_4"] }}) {
+                $("#animated_speech_div_paint_session2 *").prop("disabled", true);
             }
             if ({{ config["lock_tablet_section"] }}) {
                 $(".tablet *").prop("disabled", true);
@@ -1715,14 +1724,108 @@
             </tr>
         </table>
 
-        <!-- COLUMN 1: SPEECH-->
-        <div style="width: 50%; float: left;" id="animated_speech_div">
+        <!-- COLUMN 1: Initiate session-->
+        <div style="width: 50%; float: left;" id="animated_speech_div_initiate_session">
 
             <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
-                <h3 style="margin-bottom: 5px;">Animated speech</h3>
+                <h3 style="margin-bottom: 5px;">Initiate Session</h3>
             </a>
 
-            {% for anim_speech in config["animated_speech"] %}
+            {% for anim_speech in config["initiate_conversation"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ anim_speech["title"] }}</span>
+                    </div>
+                    <div class="speech_btn_wrapper">
+                        <button
+                                title="{{ anim_speech['tooltip'] }}"
+                                class="example_c capitalize"
+                                id="anim_speech_btn_{{ loop.index0 }}"
+                                default_text="
+                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                                    {% else %}
+                                        EXECUTE
+                                    {% endif %}"
+                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
+                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                            {% else %}
+                                EXECUTE
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <br>
+
+                <!-- add the keyboard shortcut to the button, if the flag has been given-->
+                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                    <script>
+                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
+                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
+                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
+                    </script>
+                {% endif %}
+            {% endfor %}
+            <br>
+
+        </div>
+
+        <!-- COLUMN 2: Style session-->
+        <div style="width: 50%; float: left;" id="animated_speech_div_style_session">
+
+            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
+                <h3 style="margin-bottom: 5px;">Painting style session</h3>
+            </a>
+
+            {% for anim_speech in config["painting_style"] %}
+                <div class="row">
+                    <div class="speech_lbl_wrapper">
+                        <span>{{ anim_speech["title"] }}</span>
+                    </div>
+                    <div class="speech_btn_wrapper">
+                        <button
+                                title="{{ anim_speech['tooltip'] }}"
+                                class="example_c capitalize"
+                                id="anim_speech_btn_{{ loop.index0 }}"
+                                default_text="
+                                    {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                        {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                                    {% else %}
+                                        EXECUTE
+                                    {% endif %}"
+                                onclick="exec_anim_speech('{{ anim_speech["title"] }}', {{ loop.index0 }})">
+                            {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                                {{ anim_speech["key_comb"]|safe|prettyshortcut }}
+                            {% else %}
+                                EXECUTE
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <br>
+
+                <!-- add the keyboard shortcut to the button, if the flag has been given-->
+                {% if (anim_speech["key_comb"] is defined) and  anim_speech["key_comb"] %}
+                    <script>
+                        // https://stackoverflow.com/questions/10503981/check-if-an-array-is-not-empty-in-jinja2
+                        // https://stackoverflow.com/questions/15321431/how-to-pass-a-list-from-python-by-jinja2-to-javascript
+                        add_keyboard_shortcut({{ anim_speech["key_comb"]|safe }}, "anim_speech_btn_{{loop.index0}}")
+                    </script>
+                {% endif %}
+            {% endfor %}
+            <br>
+
+        </div>
+
+        <!-- COLUMN 3: painting session-->
+        <div style="width: 50%; float: left;" id="animated_speech_div_paint_session1">
+
+            <a href="http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech.html" target="blank">
+                <h3 style="margin-bottom: 5px;">Painting session</h3>
+            </a>
+
+            {% for anim_speech in config["painting_session"] %}
                 <div class="row">
                     <div class="speech_lbl_wrapper">
                         <span>{{ anim_speech["title"] }}</span>

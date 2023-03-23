@@ -14,7 +14,10 @@ audio_save_dir: /home/nao/ # absolute path on pepper robot, you'll have scp or p
 lock_autonomous_life_section: "false"
 lock_movement_control_section: "false"
 lock_tablet_section: "false"
-lock_anim_speech_section: "false"
+lock_anim_speech_section_1: "false"
+lock_anim_speech_section_2: "false"
+lock_anim_speech_section_3: "false"
+lock_anim_speech_section_4: "false"
 lock_volume_section: "false"
 lock_audio_section: "false"
 lock_gesture_section: "false"
@@ -57,49 +60,33 @@ tablet_items:
     key_comb: ["ctrl", "shift", 8]
 
 
-animated_speech:
+initiate_conversation:
     # Avoid special characters in messages, this can break the backend.
     # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
     title: Plain  # This will be shown in the GUI
     string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
     tooltip: "Plain message without annotations"  # tooltip for the button in UI
-    key_comb: ["ctrl", "9"]  # keyboard shortcut for this action
-  - 
-    title: Pitch annotation
-    string: "This is a message where we \\vct=150\\ change the pitch halfway through."
-    tooltip: "Voice pitch annotated change"
-    key_comb: ["ctrl", "2"]
+    key_comb: ["ctrl", "1"]  # keyboard shortcut for this action
+
+painting_style:
+    # Avoid special characters in messages, this can break the backend.
+    # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
-    title: Speed annotation
-    string: "This is a message where we \\rspd=50\\ change the speed halfway through."
-    tooltip: "Voice speed annotated change"
-    key_comb: ["ctrl", "3"]
+    title: Style  # This will be shown in the GUI
+    string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
+    tooltip: "Plain message without annotations"  # tooltip for the button in UI
+    key_comb: ["ctrl", "2"]  # keyboard shortcut for this action
+
+painting_session:
+    # Avoid special characters in messages, this can break the backend.
+    # EG: Instead if a ', put &apos; into the message, which is the HTML symbol for the apostroph
   -
-    title: Speech and animation
-    string: "Hello there! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
-    tooltip: "Hello there! ^start(animations/Stand/Gestures/Hey_1) I am over here. ^wait(animations/Stand/Gestures/Hey_1)"
-    key_comb: ["ctrl", "4"]
-  -
-    title: Suspended speech
-    string: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
-    tooltip: "Look at me! ^run(animations/Stand/Gestures/ShowSky_8) I am this tall!"
-    key_comb: ["ctrl", "5"]
-  -
-    title: Show tablet
-    string: "^start(animations/Stand/Gestures/ShowTablet_3) Look at my tablet. ^wait(animations/Stand/Gestures/ShowTablet_3)"
-    tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look at my tablet. ^wait(animations/Stand/Gestures/ShowTablet_3)"
-    key_comb: ["ctrl", "6"]
-  -
-    title: Long sequence
-    string: "^start(animations/Stand/Gestures/Hey_1) Look over here. ^wait(animations/Stand/Gestures/Hey_1) I think ^start(animations/Stand/Waiting/ShowSky_1) there is a plane in the sky! ^wait(animations/Stand/Waiting/ShowSky_1)"
-    tooltip: "^start(animations/Stand/Gestures/ShowTablet_3) Look over here. ^wait(animations/Stand/Gestures/ShowTablet_3)"
-    key_comb: ["ctrl", "7"]
-  -
-    title: Peter Rabit
-    string: "static/tale_of_peter_rabit.txt"
-    tooltip: "The tale of Peter rabit"
-    key_comb: ["ctrl", "8"]
+    title: Painting Session  # This will be shown in the GUI
+    string: "This is just a simple message, no animations, no tags or annotations added."  # message pepper will say
+    tooltip: "Plain message without annotations"  # tooltip for the button in UI
+    key_comb: ["ctrl", "3"]  # keyboard shortcut for this action
+
 
 
 volume: 0.5  # range: [0.0 - 1.0], default = 1
