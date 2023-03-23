@@ -3,7 +3,7 @@
 Initiate session
 ----------------------------------------
 Hi there! I'm PaintPal. It is such a nice day today. Do you want to paint?
-That's too bad. are you sure? We could make something to show your loved ones when they visits.
+That's too bad. are you sure? We could make something to show your loved ones when they visit.
 Alright, take care. I'm here if you need me.
 
 Do you want to draw with a pencil or use water colors?
@@ -34,11 +34,11 @@ De Stijl
 Do you want to try the Van Gogh Style?
 Van Gogh style of painting involves bold, dramatic brush strokes which expressed emotion. Here is an example.
 
-Do you want to try the Impressionist style Style?
+Do you want to try the Impressionist style?
 
 The characterizations of the style include small, visible brushstrokes that offer the bare impression of form, unblended color and an emphasis on the accurate depiction of natural light. Here is an example.
 
-Do you want to try the Renaissance style Style?
+Do you want to try the Renaissance style?
 The Characteristics of the Renaissance include a renewed interest in classical antiquity.
 
 Do you want to pick this style?
@@ -62,7 +62,7 @@ Give me a moment to find a nice picture.
 
 Do you want to pick this?
 
-Oh too bad! Lets try somethign else! Give me a moment.
+Oh too bad! Lets try something else! Give me a moment.
 
 Now let's start painting!
 
@@ -70,7 +70,73 @@ Now let's start painting!
 Painting session
 ----------------------------
 
+Here is the reference image.
 
+#With no watercolors:
+(Instructions)
+
+Draw the basic shape of the object, but don't worry about the realism here. It's okay to take some liberties.
+
+Are you done with making the outline?
+
+#no
+Don't worry, you can do it. I trust you. I can help you more if you want.
+#yes
+Nice work! Let's go to the next step.
+
+Once you are happy with the basic sketch, you can start filling in and refining your drawing. Look at the reference image shown on the tablet and add the shades and highlight.
+
+Are you done with adding tones?
+#no
+No worries! The painting is looking great so far, take your time!
+#yes
+Nice work! Let's go to the next step.
+
+Now you can also add textures to the drawing.
+
+Are you done with adding textures?
+#no
+You can do it! I understand drawing can be difficult. Sometimes I mess up while drawing simple objects.
+#yes
+Nice work! Let's go to the next step.
+
+Do you want to refine your painting more or do you want to end the painting session?
+#end session
+I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
+#refine more
+You can see the painting in the tablet and maybe add more textures.
+
+#With watercolors:
+
+Pick the color of the background and paint the whole surface
+
+Are you done with the background?
+#no
+No problem, check the background color of the image shown on the tablet. I'm here if you need me.
+#yes
+Nice work! Let's go to the next step.
+
+Now you can make an outline of what you want to paint next. My suggestion is to use the different tone of the same color as the background. This will help you to easily modify it later on.
+
+Are you done making the outline?
+#no
+Don't worry! Take a closer look at the reference image, I'll wait for you!
+#yes
+Good job! Let's go to the next step.
+
+Now that you have an outline, you can add details to your painting. Start with things that are farther away and then progress to the items that look closer.
+
+Are you done with adding the details?
+#no
+Keep going, you are doing great! Take a closer look at the picture!
+#yes
+Nice work! Let's go to the next step.
+
+Do you want to refine your painting more or do you want to end the painting session?
+#end session
+I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
+#refine more
+You can see the painting in the tablet and maybe add more details.
 
 
 
