@@ -1,5 +1,6 @@
 pepper_ips:  # Entry in dropdown menu will be create for every list item
   - 192.168.100.166
+#  - 192.168.100.162
 
 
 camera_save_dir: record_imgs  # relative folder on host machine, images form camera feed will be saved here
@@ -84,8 +85,8 @@ tablet_items:
     key_comb: [ "ctrl", "shift", 6 ]  # example for more complex shortcut
 
   -
-    title: Spotify  # We can also show a website on Pepper's tablet
-    file_name: https://open.spotify.com/playlist/37i9dQZF1DWV7EzJMK2FUI?si=e39a61da55a54114 # Also just put URL to website here
+    title: Imperial March  # We can also show a website on Pepper's tablet
+    file_name: /home/nao/ImperialMarch60.wav # Also just put URL to website here
     key_comb: ["ctrl", "shift", 8]
 
 
@@ -272,9 +273,14 @@ audio_files:
   # Check the README.md under section 'adding audio files'
   # A Button will be created for every item in the list
   -
-    title: White Music Playlist  # This will be shown in the GUI
-    location: /home/nao/sound_files/ImperialMarch60.wav  # absolute path on the Pepper
+    title: Spring  # This will be shown in the GUI
+    location: /home/nao/Music/springinmystep.wav # absolute path on the Pepper
     key_comb: ["alt", "1"]
+
+  -
+    title: Clearday  # This will be shown in the GUI
+    location: /home/nao/Music/bensound_clearday_track.wav  # absolute path on the Pepper
+    key_comb: [ "alt", "2" ]
 
 gestures: # Buttons will be created for every item in the list
   -
