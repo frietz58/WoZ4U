@@ -84,11 +84,6 @@ tablet_items:
     file_name: memory.jpg
     key_comb: [ "ctrl", "shift", 6 ]  # example for more complex shortcut
 
-  -
-    title: Imperial March  # We can also show a website on Pepper's tablet
-    file_name: /home/nao/ImperialMarch60.wav # Also just put URL to website here
-    key_comb: ["ctrl", "shift", 8]
-
 
 initiate_conversation:
     # Avoid special characters in messages, this can break the backend.
