@@ -416,7 +416,7 @@ sentences:
     - Give me a moment to find a nice picture.
     - Do you want to paint this?
     - Oh too bad! Lets try something else! Give me a moment.
-    - Now let's start painting!
+    - Now lets start painting!
     - Here is the reference image.
     - Draw the basic shape of the object, but don't worry about the realism here. It's okay to take some liberties.
     - Are you done with making the outline?
@@ -447,3 +447,6 @@ sentences:
     - I am so proud of you, this looks so beautiful. Now let me take a picture of this so I can share this with your loved one!
     - You can see the painting in the tablet and maybe add more details. Whatever feels right.
     - Let me call the caretaker for you.
+    - Looks like we are running out of time today. See you in the next session. Bye. Take care.
+    - Do you wanna listen to music while you paint. You can ask me to stop anytime in between.
+    - You did an amazing job, I am so proud of you. See you in the next session. Bye. Take care.
