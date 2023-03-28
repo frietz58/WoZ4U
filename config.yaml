@@ -389,6 +389,7 @@ sentences:
     - Alright, take care. I'm here if you need me.
     - Cool, lets start making art. Do you want to draw with a pencil or use water colors?
     - Sorry we only have these two mediums to paint now.
+    - Do you have the drawing tools in front of you?
     - Do you have the drawing tools and colors in front of you?
     - You should have a paper and a pencil.
     - You should have a paper, a paint brush, some colors and water.
@@ -418,6 +419,7 @@ sentences:
     - Oh too bad! Lets try something else! Give me a moment.
     - Now lets start painting!
     - Here is the reference image.
+    - Do you wanna listen to music while you paint. You can ask me to stop anytime in between.
     - Draw the basic shape of the object, but don't worry about the realism here. It's okay to take some liberties.
     - Are you done with making the outline?
     - Don't worry, you can do it. I trust you. I can help you more if you want.
@@ -448,5 +450,4 @@ sentences:
     - You can see the painting in the tablet and maybe add more details. Whatever feels right.
     - Let me call the caretaker for you.
     - Looks like we are running out of time today. See you in the next session. Bye. Take care.
-    - Do you wanna listen to music while you paint. You can ask me to stop anytime in between.
     - You did an amazing job, I am so proud of you. See you in the next session. Bye. Take care.
